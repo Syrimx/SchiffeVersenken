@@ -6,13 +6,12 @@ package SchiffeVersenken;
  * Methoden:
     public int[][] getData() 
     public void setData(int[][] data) 
-    public int[][] connectToServerAndReceive() 
-    public void sendData(int[][] data)
+
 
  * 
 */
 
-public class DataModel implements Client {
+public class DataModel {
     private int[][] playgroundMatrix    = null; //Wie groß darf sie werden ?
     private int[] fireLocation          = null; //gewonnen durch GUI.getCurrentLocation
 
@@ -23,18 +22,6 @@ public class DataModel implements Client {
 
     public void setData(int[][] data) {
         this.playgroundMatrix = data;
-    }
-
-    /* Client Methoden */
-    @Override
-    public int[][] connectToServerAndReceive() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'connectToServerAndReceiveData'");
-    }
-
-    @Override
-    public void sendData() {
-        //send fireLocation
     }
 
 }
