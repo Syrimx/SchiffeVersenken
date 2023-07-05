@@ -13,26 +13,27 @@ import java.util.*;
 */
 
 public class DataModel {
-    private int[][] playgroundMatrix    = null; //Wie groß darf sie werden ?
+    private char[][] playgroundMatrix    = null; //Wie groß darf sie werden ?                               //int durch char getauscht, um mehr möglichkeiten zu haben, wie Nutzung von X
     private int[] fireLocation          = null; //gewonnen durch GUI.getCurrentLocation
 
     /* DataModel Methoden */
     public int[][] getData() {
 
-        Scanner sc = new Scanner(System.in);
-        
-        System.out.print("Wie lang soll das Spielfeld sein?");
-         int rows = sc.nextInt();
+        // Groeße des Feldes nach klassischen Spielregeln 10 x 10 
+        private char[][] playgroundMatrix = new char [10][10];
 
-        System.out.print("Und wie breit soll das Spielfeld werden?");
-         int columns = sc.nextInt();
-
-        int [][] playgroundMatrix = new int [rows][columns];        //User kann bestimmen, wie groß das Spielfeld sein soll, muss hier bereits Eingabe erfolgen oder eher in der Gui? Nochmal recherchieren!
+            //Erzeugen eines 10 x 10 Feldes gefüllt mit Nullen zum testen des Arrays
+            for(int i = 0, i < playgroundMatrix.length; i++){
+                for(j = 0, j < playgroundMatrix[i].length; j++){
+                    System.out.print(playgroundMatrix[i][j] + " ");
+                }
+                System.out.println();           //geht eine Zeile nach unten
+            }
 
         return playgroundMatrix;
     }
 
-    public void setData(int[][] data) {
+    public void setData(char[][] data) {
         this.playgroundMatrix = data;
     }
 
