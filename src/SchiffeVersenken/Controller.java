@@ -18,6 +18,7 @@ import java.util.HashMap;
 public class Controller {
     /* Eigenschaften */
     private HashMap<String, int[][]> gameState = null;
+    private int roundToken = 0; 
 
     public Controller() {
         gameState = new HashMap<String, int[][]>();
