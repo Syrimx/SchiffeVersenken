@@ -11,9 +11,10 @@ public class MenuWindow extends JFrame
     private DataModel data;
     private JButton playButtonBot;
 
-    public MenuWindow(DataModel d){
+    //DataModel d 
+    public MenuWindow(){
         //
-        this.data = d;
+        //this.data = d;
 		this.setLayout(null);
 		this.getContentPane().setBackground(Color.lightGray);
 		this.setLocation(400, 400);
@@ -23,12 +24,12 @@ public class MenuWindow extends JFrame
         playButtonBot.setBounds(100, 5, 110, 30);
         this.add(playButtonBot);
         playButtonBot.addActionListener(e-> openGameWindow());
-		
+		setVisible(true);
     }
 
     private void openGameWindow(){
         this.dispose(); //Schliesse das Menu Fenster
-        gameWindow = new GameWindow();
+        gameWindow = new GameWindow(this);
     }
 
     public void backToMenu(){
