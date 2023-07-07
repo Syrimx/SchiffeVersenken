@@ -5,15 +5,31 @@ import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+/* View
+ * |-> bezieht Matrix von Model
+ * 
+ * Eigenschaften:
+ *  model -> DataModel
+ *  
+ * 
+ * Methoden:
+ *  DrawMap()
+ *  RefreshMap()
+ *  getCurrentPosition() -> userinput
+ * 
+ */
+
 public class GameWindow extends JFrame
 {
-	//private DataModel data;
     private MenuWindow menuWindow;
     private JButton backtoMenuButton;
+    /* Eigenschaften */
+    private DataModel model;
     
     public GameWindow(MenuWindow menuWindow) {
     	this.menuWindow = menuWindow;
-//    	this.data = d;
+    	//Datenmodel in View eingebunden, sodass Daten einfacher aufrufbar sind
+        this.model = new DataModel();
     	
     	this.setLayout(null);
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
@@ -25,5 +41,18 @@ public class GameWindow extends JFrame
     	backtoMenuButton.setBounds(100, 5, 110, 30);
     	this.add(backtoMenuButton);
     	setVisible(true);
+    }
+    
+    /*Methoden*/
+    public void drawMap() {
+
+    }
+
+    public void refreshMap() {
+
+    }
+
+    public int[] getCurrentPosition() {
+        return null;
     }
 }
