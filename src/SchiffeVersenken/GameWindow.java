@@ -7,15 +7,17 @@ import javax.swing.JFrame;
 
 public class GameWindow extends JFrame
 {
+	//private DataModel data;
     private MenuWindow menuWindow;
     private JButton backtoMenuButton;
     
     public GameWindow(MenuWindow menuWindow) {
     	this.menuWindow = menuWindow;
+//    	this.data = d;
     	
     	this.setLayout(null);
-		this.getContentPane().setBackground(Color.yellow);
-		this.setLocation(400, 400);
+		this.getContentPane().setBackground(Color.LIGHT_GRAY);
+		this.setLocation(200, 200);
 		this.setSize(800, 600); 
 		
     	backtoMenuButton = new JButton("Zurueck zum Menue");

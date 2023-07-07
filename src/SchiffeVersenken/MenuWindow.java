@@ -8,17 +8,16 @@ import javax.swing.JFrame;
 public class MenuWindow extends JFrame
 {
     private GameWindow gameWindow;
-    private DataModel data;
+   // private DataModel data;
     private JButton playButtonBot;
 
-    //DataModel d 
     public MenuWindow(){
         //
         //this.data = d;
 		this.setLayout(null);
 		this.getContentPane().setBackground(Color.lightGray);
 		this.setLocation(400, 400);
-		this.setSize(400, 300);
+		this.setSize(500, 400);
 
         playButtonBot = new JButton("Spiel gegen Bot");
         playButtonBot.setBounds(100, 5, 110, 30);
