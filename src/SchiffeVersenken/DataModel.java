@@ -38,8 +38,8 @@ public class DataModel {
         this.playgroundMatrix = new char [10][10];
 
             //Erzeugen eines 10 x 10 Feldes gefüllt mit Nullen zum testen des Arrays
-            for(int i = 0, i < playgroundMatrix.length; i++){
-                for(j = 0, j < playgroundMatrix[i].length; j++){
+            for(int i = 0;  i < playgroundMatrix.length; i++){
+                for(int j = 0; j < playgroundMatrix[i].length; j++){
                     System.out.print(playgroundMatrix[i][j] + " ");
                 }
                 System.out.println();           //geht eine Zeile nach unten
