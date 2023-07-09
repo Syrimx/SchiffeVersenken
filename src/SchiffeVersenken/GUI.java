@@ -1,5 +1,10 @@
 package SchiffeVersenken;
 
+import java.awt.Color;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+
 /* View
  * |-> bezieht Matrix von Model
  * 
@@ -13,17 +18,31 @@ package SchiffeVersenken;
  *  getCurrentPosition() -> userinput
  * 
  */
-
-public class GUI {
+//GameWindow
+public class GUI extends JFrame
+{
+    private MenuWindow menuWindow;
+    private JButton backtoMenuButton;
     /* Eigenschaften */
-    private DataModel model  = null;
-
-    public GUI() {
-        //Datenmodel in View eingebunden, sodass Daten einfacher aufrufbar sind
+    private DataModel model;
+    
+    public GUI(MenuWindow menuWindow) {
+    	this.menuWindow = menuWindow;
+    	//Datenmodel in View eingebunden, sodass Daten einfacher aufrufbar sind
         this.model = new DataModel();
+    	
+    	this.setLayout(null);
+		this.getContentPane().setBackground(Color.LIGHT_GRAY);
+		this.setLocation(200, 200);
+		this.setSize(800, 600); 
+		
+    	backtoMenuButton = new JButton("Zurueck zum Menue");
+    	backtoMenuButton.addActionListener(e -> menuWindow.backToMenu());
+    	backtoMenuButton.setBounds(100, 5, 110, 30);
+    	this.add(backtoMenuButton);
+    	setVisible(true);
     }
-
-
+    
     /*Methoden*/
     public void drawMap() {
 
@@ -37,4 +56,3 @@ public class GUI {
         return null;
     }
 }
-

@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 
 public class MenuWindow extends JFrame
 {
-    private GameWindow gameWindow;
+    private GUI gameWindow;
    // private DataModel data;
     private JButton playButtonBot;
 
@@ -28,7 +28,7 @@ public class MenuWindow extends JFrame
 
     private void openGameWindow(){
         this.dispose(); //Schliesse das Menu Fenster
-        gameWindow = new GameWindow(this);
+        gameWindow = new GUI(this);
     }
 
     public void backToMenu(){
