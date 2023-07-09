@@ -32,6 +32,7 @@ public class GUI extends JFrame
         this.model = new DataModel();
     	
     	this.setLayout(null);
+    	this.setTitle("Schiffe versenken");
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
 		this.setLocation(200, 200);
 		this.setSize(800, 600); 
