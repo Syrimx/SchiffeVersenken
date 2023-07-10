@@ -40,6 +40,11 @@ public class DataModel {
 
      public void placeShips(int startX, int startY, int endX, int endY){
 
+        //prüfen, ob Start- und Endfeld bereits belegt sind
+        if(playgroundMatrix[startX][startY] != 0 || playgroundMatrix[endX][endY] != 0){
+            System.out.println("Feld bereits durch ein anderes Schiff belegt. Bitte ein anderes Feld auswählen");
+            return;
+        }
 
         //Diagonalität vermeiden
         while(startX == endX || startY == endY){
