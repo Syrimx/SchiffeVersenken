@@ -28,8 +28,8 @@ public class Client {
 
     //Write Server Data -> ungetested
     //input data muss im vorfeld umgewandelt werden
-    public void writeServerData() {
-        //byte[] data = null;
+    public String writeServerData() {
+        String serverData = null;
         try {
             this.output = new ObjectOutputStream(this.clientSocket.getOutputStream());
             //this.output.writeObject(this.datamodel.getPlaygroundMatrix());
@@ -39,11 +39,21 @@ public class Client {
             //data returend from the server
             this.input = new ObjectInputStream(this.clientSocket.getInputStream());
             System.out.println(this.input.readObject().toString());
+            serverData = this.input.readObject().toString();
 
         } catch(IOException ex) {
             System.out.println("[I/O Error] " + ex.getMessage());
         } catch(Exception e) {
             e.printStackTrace();
+        }
+        return serverData;
+    }
+
+    public static void run() {
+        //initializiere den client
+        Client client = new Client();
+        while(true) {
+            client.writeServerData();
         }
     }
 }

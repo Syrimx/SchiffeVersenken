@@ -53,7 +53,7 @@ public class GUI extends JFrame
     public GUI(MenuWindow menuWindow) {
     	this.menuWindow = menuWindow;
     	//Datenmodel in View eingebunden, sodass Daten einfacher aufrufbar sind
-        this.model = new DataModel();
+        //this.model = new DataModel();
     	
     	this.setLayout(new BorderLayout());
     	this.setTitle("Schiffe versenken");

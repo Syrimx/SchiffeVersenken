@@ -16,7 +16,7 @@ public class Spieler {
     public Spieler(String name) {
         this.name = name;
         this.roundToken = random.nextInt(100);
-        this.gui = new GUI();
+        //this.gui = new GUI();
     }
 
     //Constructs payload which is transmitted over with the client
@@ -34,8 +34,6 @@ public class Spieler {
     public int[] setShip() {
         return this.gui.getCurrentPosition();
     }
-
-
 
     /* Helper Methoden */
     public String getName() {

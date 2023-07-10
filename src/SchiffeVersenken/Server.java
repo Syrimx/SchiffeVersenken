@@ -6,6 +6,7 @@ import java.io.*;
 
 public class Server {
     private HashMap<String, String> test = new HashMap<String, String>();
+    private Controller controller = new Controller();
 
 
     private ServerSocket serverSocket = null;
@@ -49,4 +50,12 @@ public class Server {
         return dataString; //-> returns the datastring
     }
 
+    public static void run() {
+        //initializiert den server
+        Server server = new Server();
+        while(true) {
+            String clientData = server.readClientData();
+            System.out.println(clientData);
+        }
+    }
 }
