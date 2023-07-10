@@ -83,12 +83,17 @@ public class GUI extends JFrame
 		enemyLabelPanel.setBackground(Color.black);
 		
 		GridBagConstraints gbc = new GridBagConstraints();
+	    //Komponenten werden horizontal &vertikal gestreckt und nehmen den verfügbaren Paltz ein
 	    gbc.fill = GridBagConstraints.BOTH;
+	    //Gewicht der Komponenten in vertikaler und horizontaler Richtung,nehmen gleich stark Platz ein
 	    gbc.weightx = 1.0;
 	    gbc.weighty = 1.0;
 
+	    //Festlegung der Position
 	    gbc.gridx = 0;
 	    gbc.gridy = 0;
+	    
+	    //Abstand um die Panels
 	    gbc.insets = new Insets(40, 40, 40, 40); // Lücke um die Panels herum
 	    mainPanel.add(enemyPanel, gbc);
 
