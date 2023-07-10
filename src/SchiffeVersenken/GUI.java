@@ -3,7 +3,10 @@ package SchiffeVersenken;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,6 +15,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 /* View
  * |-> bezieht Matrix von Model
@@ -32,11 +36,18 @@ public class GUI extends JFrame
     private MenuWindow menuWindow;
     private JPanel instructionPanel;
     private JPanel playerPanel;
+    private JPanel playerLabelPanel;
+    private JPanel enemyLabelPanel;
     private JPanel enemyPanel;
     private JLabel instructionLabel;
+    private JPanel mainPanel;
     private JMenuBar menubar;
     private JMenu menuGame;
     private JMenuItem backtoMenu;
+    private JButton[][] playerButtons;
+    private JButton[][] enemyButtons;
+    private JLabel xAxisLabeling;
+    private JLabel yAxisLabeling;
     private DataModel model;
     
     public GUI(MenuWindow menuWindow) {
@@ -48,22 +59,84 @@ public class GUI extends JFrame
     	this.setTitle("Schiffe versenken");
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
 		this.setLocation(200, 200);
-		this.setSize(800, 600); 
+		this.setSize(900, 700); 
+		
+		mainPanel = new JPanel(new GridBagLayout());
+		mainPanel.setBackground(Color.LIGHT_GRAY);
+		add(mainPanel,BorderLayout.CENTER);
 		
 		instructionPanel = new JPanel();
-		instructionPanel.setPreferredSize(new Dimension(800,50));
+		instructionPanel.setPreferredSize(new Dimension(900,200));
 		instructionPanel.setBackground(Color.LIGHT_GRAY);
 		add(instructionPanel,BorderLayout.NORTH);
 		
-		enemyPanel = new JPanel(new GridLayout(10,10));
-		enemyPanel.setPreferredSize(new Dimension(400,550)); //Mindestgroess für playerPanel
-		enemyPanel.setBackground(Color.DARK_GRAY);
-		add(enemyPanel, BorderLayout.WEST);
-		
 		playerPanel = new JPanel(new GridLayout(10,10));
-		playerPanel.setPreferredSize(new Dimension(400,550));
 		playerPanel.setBackground(Color.WHITE);
-		add(playerPanel, BorderLayout.EAST);
+		
+		playerLabelPanel = new JPanel(new GridLayout(11,1));
+		playerLabelPanel.setBackground(Color.white);
+		
+		enemyPanel = new JPanel(new GridLayout(10,10));
+		enemyPanel.setBackground(Color.DARK_GRAY);
+		
+		enemyLabelPanel = new JPanel(new GridLayout(11,1));
+		enemyLabelPanel.setBackground(Color.black);
+		
+		GridBagConstraints gbc = new GridBagConstraints();
+	    //Komponenten werden horizontal &vertikal gestreckt und nehmen den verfügbaren Paltz ein
+	    gbc.fill = GridBagConstraints.BOTH;
+	    //Gewicht der Komponenten in vertikaler und horizontaler Richtung,nehmen gleich stark Platz ein
+	    gbc.weightx = 1.0;
+	    gbc.weighty = 1.0;
+
+	    //Festlegung der Position
+	    gbc.gridx = 0;
+	    gbc.gridy = 0;
+	    
+	    //Abstand um die Panels
+	    gbc.insets = new Insets(40, 40, 40, 40); // Lücke um die Panels herum
+	    mainPanel.add(enemyPanel, gbc);
+
+	    gbc.gridx = 1;
+	    mainPanel.add(playerPanel, gbc);
+		
+	    ////////
+		
+		//Beschriftung für x-Achse im playerPanel und enemyPanel
+		for(int col = 0; col < 10; col++) {
+			String xlabel = String.valueOf(col +1);
+			xAxisLabeling = new JLabel(xlabel, SwingConstants.CENTER);
+			playerLabelPanel.add(xAxisLabeling);
+			enemyLabelPanel.add(xAxisLabeling);
+		}
+		
+		//Beschriftung für y-Achse im playerPanel und enemyPanel
+		for(int row = 0; row < 10; row++) {
+			char ylabel = (char)('A' + row);
+			yAxisLabeling = new JLabel(String.valueOf(ylabel), SwingConstants.CENTER);
+			playerLabelPanel.add(yAxisLabeling);
+			enemyLabelPanel.add(yAxisLabeling);
+		}
+		
+		///////
+		
+		//Felder erstellen für playerPanel und enemyPanel
+		playerButtons = new JButton[10][10];
+		enemyButtons = new JButton[10][10];
+		
+		for(int row = 0; row < 10; row++) {
+			for(int col = 0; col < 10; col++) {
+				playerButtons[row][col] = new JButton();
+				playerButtons[row][col].setPreferredSize(new Dimension(40,40)); //Größe festlegen
+				playerButtons[row][col].setBackground(Color.BLUE);
+				playerPanel.add(playerButtons[row][col]);
+				
+				enemyButtons[row][col] = new JButton();
+				enemyButtons[row][col].setPreferredSize(new Dimension(40,40)); //Größe festlegen
+				enemyButtons[row][col].setBackground(Color.BLUE);
+				enemyPanel.add(enemyButtons[row][col]);
+			}
+		}
 		
 		menubar = new JMenuBar();
 		menuGame = new JMenu("Menü");
@@ -76,7 +149,7 @@ public class GUI extends JFrame
 		instructionLabel = new JLabel("Platziere deine Schiffe!");
 		instructionLabel.setBounds(200, 5, 300, 40);
 		instructionPanel.add(instructionLabel);
-    	
+	
     	
     	setVisible(true);
     }
