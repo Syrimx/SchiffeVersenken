@@ -1,13 +1,14 @@
 package SchiffeVersenken;
 
+/* Client an das lokale Netzwerk anbinden */
+
 import java.net.*;
 import java.util.HashMap;
 import java.io.*;
 
 public class Client {
-    private HashMap<String, String> test = new HashMap<String, String>();
-    private DataModel datamodel = new DataModel();
-
+    private static HashMap<String, String> test = new HashMap<String, String>();
+    //private DataModel datamodel = new DataModel();
     private Socket clientSocket = null;
     //Send Server Data
     private ObjectOutputStream output = null;
@@ -15,45 +16,68 @@ public class Client {
     private ObjectInputStream input = null;
 
     public Client() {
-        this.test.put("Test", "Hello Server");   //Initialize Test Object
-        try {
-            this.clientSocket = new Socket("127.0.0.1",7777);
-            System.out.println("[CLIENT] Connected..");
-        } catch(IOException ex){
-            System.out.println("[I/O Error] " + ex.getMessage());
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        Client.test.put("Test", "Hello Server");   //Initialize Test Object
     }
 
     //Write Server Data -> ungetested
-    //input data muss im vorfeld umgewandelt werden
-    public String writeServerData() {
-        String serverData = null;
+    //Server sendet das neue Feld zurück muss vom Spieler an Datamodel gesendet werden
+    public char[][] writeServerData(HashMap<Integer, int[]> data) {
+        char[][] serverData = null;
         try {
-            this.output = new ObjectOutputStream(this.clientSocket.getOutputStream());
-            //this.output.writeObject(this.datamodel.getPlaygroundMatrix());
-            //test Object
-            this.output.writeObject(this.test);
+            //Connect Client to Server
+            this.clientSocket = new Socket("127.0.0.1", 7777);
+            System.out.println("[CLIENT] Connected..");
 
-            //data returend from the server
+            this.output = new ObjectOutputStream(this.clientSocket.getOutputStream());
+            this.output.writeObject(data);
+
+            //data returned from the server
             this.input = new ObjectInputStream(this.clientSocket.getInputStream());
-            System.out.println(this.input.readObject().toString());
-            serverData = this.input.readObject().toString();
+            serverData = (char[][]) this.input.readObject();    //ggf deserialzing von Object zu char[][]
+
+            System.out.println(serverData.toString());
+            System.out.println("[CLIENT] Connection closed...");
+            this.clientSocket.close();
 
         } catch(IOException ex) {
             System.out.println("[I/O Error] " + ex.getMessage());
         } catch(Exception e) {
             e.printStackTrace();
         }
-        return serverData;
+        return serverData; // später return server data
     }
 
-    public static void run() {
+    //Test Methode
+    public String writeServerDataTest(HashMap<String, String> data) {
+        String serverData = null;
+        try {
+            //Connect Client to Server
+            this.clientSocket = new Socket("127.0.0.1",7777);
+            System.out.println("[CLIENT] Connected..");
+
+            this.output = new ObjectOutputStream(this.clientSocket.getOutputStream());
+            //this.output.writeObject(this.datamodel.getPlaygroundMatrix());
+            //test Object
+            this.output.writeObject(Client.test);
+
+            //data returend from the server
+            this.input = new ObjectInputStream(this.clientSocket.getInputStream());
+            serverData = this.input.readObject().toString();
+            System.out.println(serverData);
+            System.out.println("[CLIENT] Connection closed...");
+            this.clientSocket.close();
+
+        } catch(IOException ex) {
+            System.out.println("[I/O Error] " + ex.getMessage());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null; // später return server data
+    }
+
+    public static void main(String[] args) {
         //initializiere den client
         Client client = new Client();
-        while(true) {
-            client.writeServerData();
-        }
+        client.writeServerDataTest(Client.test);
     }
 }

@@ -89,8 +89,7 @@ public class DataModel {
      }
 
 
-    }
-
+    //setzt das neue datenFeld -> wird von spieler aufgerufen
     public void setData(char[][] data) {
         this.playgroundMatrix = data;
     }
@@ -103,3 +102,4 @@ public class DataModel {
      * tatsächlich schiff setzen
      * Frage: muss überprüft werden, ob Koordinaten innerhalb des Feldes liegen, oder wird das im GUI gemacht
      */
+}
