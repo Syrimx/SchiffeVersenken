@@ -9,5 +9,5 @@ git pull
 
 ## veränderungen machen & pushen
 git add .
-git commit -m "<Kommentar>"
+git commit -m <Kommentar> &&
 git push -u origin master
