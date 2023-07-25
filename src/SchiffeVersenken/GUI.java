@@ -49,7 +49,7 @@ import javax.swing.SwingConstants;
  * Einbindung des akuallisierten Feldes -> resresh(DataModel.playgroundMatrix)
  *  
  * 
- * Hello 
+ * Hello Ronja
  */
 //GameWindow
 public class GUI extends JFrame
