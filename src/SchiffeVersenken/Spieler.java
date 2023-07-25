@@ -9,9 +9,8 @@ public class Spieler {
     private String name = null;
     private int roundToken = 0; //Token mit dem sich die Spieler gegenüber dem controller Identifizieren
                                 //Controller nutzt diesen um zu schauen wer dran ist
-    private GUI gui = null;     //GUI Objekt
     private DataModel datamodel = new DataModel();
-    private int[] currentPosition = null;
+    private Object currentPosition = null;
     private Integer ships = 0;
 
     //der Spielerklasse wird die GUI als Objekt übergeben, damit die Spielerklasse auf deren Funktionen zugreifen kann
@@ -27,9 +26,9 @@ public class Spieler {
     //it receives the coordinates triggered with playground.getCurrentPosition() 
     //and returns this objekt ->
     //-> this objekt will be send via the client to the server to fullfill a legit action during the respective turn
-    public HashMap<Integer, int[]> buildPayload() {
-        HashMap<Integer, int[]> payload = new HashMap<Integer, int[]>();
-        this.currentPosition = this.gui.getCurrentPosition();   //Speichert die, vom gui objekt bezogene Click Position
+    public HashMap<Integer, Object> buildPayload(Object currentPosition) {
+        HashMap<Integer, Object> payload = new HashMap<Integer, Object>();
+        this.currentPosition = currentPosition;   //Speichert die, vom gui objekt bezogene Click Position
         payload.put(this.roundToken, this.currentPosition); //Which datatype is returned by GUI ?
 
         return payload;

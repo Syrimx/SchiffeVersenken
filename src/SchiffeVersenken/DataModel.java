@@ -23,7 +23,7 @@ public class DataModel {
     int cruiser = 2;
     int battleship = 1;
 
-    public char [][] DataMode() {
+    public char [][] DataModel() {
         // -> Intiale Matrix erstellen // also einmal beim Initialisierendes Objektes
         // Groeße des Feldes nach klassischen Spielregeln 10 x 10 
         this.playgroundMatrix = new char [10][10];

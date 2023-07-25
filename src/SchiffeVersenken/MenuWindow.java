@@ -53,4 +53,8 @@ public class MenuWindow extends JFrame
         gameWindow.dispose(); //Schliesse das Spiel Fenster
         setVisible(true); //Zeige das Menu Fenster 
     }
+
+    public Object getCurrentPosition() {
+        return this.gameWindow.getCurrentPosition;
+    }
 }

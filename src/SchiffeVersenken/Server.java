@@ -9,7 +9,7 @@ import java.io.*;
 
 public class Server {
     public static void main(String[] args) {
-        //Controller controller = new Controller();
+        Controller controller = new Controller();
         HashMap<String, String> test = new HashMap<String, String>();
         test.put("Test", "Hello Client");   //Initialize Test Object
 
@@ -18,7 +18,7 @@ public class Server {
             //Controller controller = new Controller();
             ServerSocket serverSocket = new ServerSocket(7777);
             Socket socket = null;
-            System.out.println("[SERVER] startet...");
+            System.out.println("[SERVER] startet auf Localhost:7777...");
             //Get Data from Server
             while(true) {
                 //Abbruchbedingung erfüllt
@@ -36,9 +36,12 @@ public class Server {
                 //read client message
                 System.out.println(input.readObject().toString());
                 /*respond object -> something done with the controller */
-                //HashMap<Integer, char[][]> response = controller.manipulateData(input.readObject());
+                
+                HashMap<Integer, char[][]> response = controller.manipulateData(input.readObject());
                 /*actual response*/
-                //output.writeObject(response);
+                output.writeObject(response);
+
+
                 /*Test Response Message*/
                 output.writeObject(test);
             }

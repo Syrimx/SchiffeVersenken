@@ -21,19 +21,20 @@ public class Client {
 
     //Write Server Data -> ungetested
     //Server sendet das neue Feld zurück muss vom Spieler an Datamodel gesendet werden
-    public char[][] writeServerData(HashMap<Integer, int[]> data) {
-        char[][] serverData = null;
+    public char[][] writeServerData(HashMap<Integer, Object> data) {
+        HashMap<Integer, char[][]> serverData = null;
         try {
             //Connect Client to Server
             this.clientSocket = new Socket("127.0.0.1", 7777);
-            System.out.println("[CLIENT] Connected..");
+            System.out.println("[CLIENT] Connected to Localhost:7777..");
 
+            //Send Packet to Server
             this.output = new ObjectOutputStream(this.clientSocket.getOutputStream());
             this.output.writeObject(data);
 
             //data returned from the server
             this.input = new ObjectInputStream(this.clientSocket.getInputStream());
-            serverData = (char[][]) this.input.readObject();    //ggf deserialzing von Object zu char[][]
+            serverData =(HashMap<Integer, char[][]>) this.input.readObject();    //ggf deserialzing von Object zu char[][]
 
             System.out.println(serverData.toString());
             System.out.println("[CLIENT] Connection closed...");

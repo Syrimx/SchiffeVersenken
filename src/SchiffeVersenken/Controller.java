@@ -20,19 +20,10 @@ public class Controller {
     private HashMap<Integer, char[][]> gameState = null;    //-> vielleicht eine HashMap<Hashmap<Integer, String>, char[][]> ?
     public static int gamePhase = 1; //-> 0 Preparation Phase; 1 Main Phase; 2 Endgame Phase
     private Integer[] roundToken = null;
-    private int counter = 0;
+    private int counter = 0; //Anzahl der Schiffe ?
     
     public Controller() {
         gameState = new HashMap<Integer, char[][]>();
-    }
-
-
-    public void endPhase() {
-
-    }
-
-    public void setGameState() {
-
     }
 
     public Integer[] getRoundToken() {
@@ -70,15 +61,15 @@ public class Controller {
     //nimmt die Koordinaten entgegen und liest sie gegen das aktuelle feld, gibt statuscode zurück
     //0 -> wasser; 1 -> neu getroffen; -> 2 -> bekannt getroffen
     //gibt zusätzlich das neue Feld zurück
-    public HashMap<Integer, char[][]> evaluateImpact(HashMap<Integer, int[]> data) {
+    public HashMap<Integer, char[][]> evaluateImpact(HashMap<Integer, Object> data) {
         HashMap<Integer, char[][]> response = new HashMap<Integer, char[][]>();
         int[] firePosition = data.getValues()[0];
-        char[][] field = this.gameState.getValue(data.getKeys()[0]);
-        char token = field[firePosition[0]][firePosition[1]];
+        char[][] field = this.gameState.getValue(!data.getKeys()[0]); //anderer Spieler, also identifier == komplement des tokens
+        char token = field[firePosition[0]][firePosition[1]]; //Value des felds
         Integer status = null;
-        
+
         /* was sind die feldcharacter ?*/
-        //wassser
+        //wasser
         if(token == 'w') {
             status = 0;
             field[firePosition[0]][firePosition[1]] = "b";    //setze feld auf bekannt
@@ -91,15 +82,16 @@ public class Controller {
         
         //Neues Gamestate Object
         response.put(status, field);
+        //Gamestate im controller anpasssen, indem feidl eingelesen wird
         
         return response;
     }
 
     //Spielfeld auslesen, prüfen ob der Zug legit ist
     //Schuss verarbeiten, neues spielfeld zurückgeben (ggf anzahl der schiffe zurückgeben)
-    public HashMap<Integer, char[][]> manipulateData(HashMap<Integer, int[]> data) {
+    public HashMap<Integer, char[][]> manipulateData(HashMap<Integer, Object> data) {
         //Testen ob RoundToken valide ist -> wer ist aktuell dran ?
-        this.testIfValid(data.getKey());
+        this.testIfValid(data.getKey()); //bedingung if/else
         //Spielfeld auslesen -> bei den schusswerten character setzen in gamestate einfügen
         char[][] newGameField = this.evaluateImpact(data);  //Prüft wie effektiv der gesetzte Schuss war
         return null;

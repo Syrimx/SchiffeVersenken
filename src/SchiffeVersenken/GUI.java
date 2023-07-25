@@ -163,7 +163,7 @@ public class GUI extends JFrame
 
     }
 
-    public int[] getCurrentPosition() {
+    public Object getCurrentPosition() {
         return null;
     }
 }
