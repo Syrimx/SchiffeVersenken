@@ -24,9 +24,9 @@ import javax.swing.SwingConstants;
  * -> Datamodel datentyp char[][]
  * 
  * [		Zeilen
- *  [x,x,x] A[0][0-2]
- *  [x,x,x] A[1][0-2]
- *  [x,x,x] A[2][0-2]
+ *  [x,!,x] A[0][0-2] ! = int[0,1]
+ *  [x,x,?] A[1][0-2] ? = int[1][2]
+ *  [x,*,x] A[2][0-2] * = int[2][1]
  *
  * ]
  * 
