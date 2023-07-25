@@ -14,7 +14,7 @@ import java.util.*;
 
 public class DataModel {
     private char[][] playgroundMatrix    = null; //Wie groß darf sie werden ?                               //int durch char getauscht, um mehr möglichkeiten zu haben, wie Nutzung von X
-    private int[] fireLocation          = null; //gewonnen durch GUI.getCurrentLocation
+    private char[][] enemyMatrix         = null;
 
 
     //verschiedene Schiffsklassen und deren Anzahl 

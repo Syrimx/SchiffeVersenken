@@ -18,16 +18,37 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 /* View
- * |-> bezieht Matrix von Model
+	1)
+ * Action Listener für Buttons Implementieren
+ * -> Rückgabe position auf dem Feld -> Datentyp ? 
+ * -> Datamodel datentyp char[][]
  * 
- * Eigenschaften:
- *  model -> DataModel
+ * [		Zeilen
+ *  [x,x,x] A[0][0-2]
+ *  [x,x,x] A[1][0-2]
+ *  [x,x,x] A[2][0-2]
+ *
+ * ]
+ * 
+ * Spalten	 0
+ * A[0-2][0] x
+ * 			 x
+ * 			 x
+ * 
+ * 			  1
+ * A[0-2][1]  x
+ * 			  x
+ * 			  x
+ * 
+ * 			   2
+ * A[0-2][2]   x
+ * 			   x
+ * 			   x
+ * 
+ * 2)
+ * Einbindung des akuallisierten Feldes -> resresh(DataModel.playgroundMatrix)
  *  
  * 
- * Methoden:
- *  DrawMap()
- *  RefreshMap()
- *  getCurrentPosition() -> userinput
  * 
  */
 //GameWindow
@@ -35,7 +56,6 @@ public class GUI extends JFrame
 {
     private MenuWindow menuWindow;
     private JPanel instructionPanel;
-    private JPanel playerPanel;
     private JPanel playerLabelPanel;
     private JPanel enemyLabelPanel;
     private JPanel enemyPanel;
