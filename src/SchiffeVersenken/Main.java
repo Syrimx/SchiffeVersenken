@@ -28,6 +28,8 @@ public class Main {
 					//-> spieler prüft status ?
 					//neues datamodel
 					datamodel.setData(newGameField.getValues()[0]);
+					//GUI neu zeichnen
+					menuWindow.refreshMaps();
 					//prüft ob nochmal geschossen werden darf
 					again = newGameField.getKey();
 					//neues Spielfeld wird an Spieler und von diesem an das DataModel weitergegeben
