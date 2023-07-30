@@ -176,16 +176,58 @@ public class GUI extends JFrame
 				playerButtons[row][col] = new JButton();
 				playerButtons[row][col].setPreferredSize(new Dimension(40,40)); //Größe festlegen
 				playerButtons[row][col].setBackground(Color.BLUE);
+				
+				final int finalRow = row; // temporäre final Variablen 
+	            final int finalCol = col;
+	            
+				//Aktion Button
+				//playerButtons[row][col].addActionListener(e -> onPlayerButtonClicked(finalRow, finalCol));
+				
 				playerPanel.add(playerButtons[row][col]);
 				
 				enemyButtons[row][col] = new JButton();
 				enemyButtons[row][col].setPreferredSize(new Dimension(40,40)); //Größe festlegen
 				enemyButtons[row][col].setBackground(Color.BLUE);
+				//Aktion Button
+				enemyButtons[row][col].addActionListener(e -> onEnemyButtonClicked(finalRow, finalCol));
+
 				enemyPanel.add(enemyButtons[row][col]);
 			}
 		}
     }
 
+  //Aktionen Buttons Definieren
+//    private void onPlayerButtonClicked(int row, int col) {
+//        
+//    }
+ 
+    private void onEnemyButtonClicked(int row, int col) {
+    	char enemyStatus = model.getEnemyStatus(row, col);
+    	switch (enemyStatus) {
+        case 'w': // schieße auf Wasser 
+                    enemyButtons[row][col].setBackground(Color.LIGHT_GRAY);
+                    enemyButtons[row][col].setText("o");
+            break;
+        case 's': // schieße auf Schiff
+        			enemyButtons[row][col].setBackground(Color.RED);
+        			enemyButtons[row][col].setText("x");  
+            break;
+        case 'x': // Scieße auf totes Schiff
+                    //Passiert nichts
+            break;
+        case 'b': // schieße auf bekanntes Wasser Feld
+	                //Passiert nichts
+            break;
+        default: // unbekannter Status
+                    enemyButtons[row][col].setText("???");
+            break;
+    	}   
+         //Aktuelle Position
+    	//currentposition[row][col];
+          
+    }
+    
+    
 //Aktualisierung
     //Aktuallisierung des Status der enemy Map
     private void setButtonStatusenemy(JButton enemyButton, char status) {
@@ -199,12 +241,12 @@ public class GUI extends JFrame
                         enemyButton.setText("");  
                 break;
             case 'x': // Schiff getroffen
-                        enemyButton.setBackground(Color.GRAY);
+                        enemyButton.setBackground(Color.RED);
                         enemyButton.setText("x");
                 break;
             case 'b': // Wasser getroffen, jetzt bekannt
-		                enemyButton.setBackground(Color.BLUE);
-		                enemyButton.setText("x");
+		                enemyButton.setBackground(Color.LIGHT_GRAY);
+		                enemyButton.setText("o");
                 break;
             default: // unbekannter Status
                         enemyButton.setBackground(Color.WHITE);
@@ -225,12 +267,12 @@ public class GUI extends JFrame
                         playerButton.setText("");
                 break;
             case 'x': // Schiff getroffen
-                        playerButton.setBackground(Color.GRAY);
+                        playerButton.setBackground(Color.RED);
                         playerButton.setText("x");
                 break;
             case 'b': // Wasser getroffen, jetzt bekannt
-		                playerButton.setBackground(Color.BLUE);
-		                playerButton.setText("x");
+		                playerButton.setBackground(Color.LIGHT_GRAY);
+		                playerButton.setText("o");
                 break;
             default: // unbekannter Status
                         playerButton.setBackground(Color.WHITE);
@@ -253,6 +295,7 @@ public class GUI extends JFrame
 		}
     }
 
+    //aktuell geklickter Button übergeben
     public char[][] getCurrentPosition() {
         return currentposition;
     }
