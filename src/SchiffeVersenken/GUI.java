@@ -202,7 +202,7 @@ public class GUI extends JFrame
                         enemyButton.setBackground(Color.GRAY);
                         enemyButton.setText("x");
                 break;
-            case 'b': // Schiff getroffen
+            case 'b': // Wasser getroffen, jetzt bekannt
 		                enemyButton.setBackground(Color.BLUE);
 		                enemyButton.setText("x");
                 break;
@@ -228,7 +228,7 @@ public class GUI extends JFrame
                         playerButton.setBackground(Color.GRAY);
                         playerButton.setText("x");
                 break;
-            case 'b': // Schiff getroffen
+            case 'b': // Wasser getroffen, jetzt bekannt
 		                playerButton.setBackground(Color.BLUE);
 		                playerButton.setText("x");
                 break;
@@ -244,7 +244,7 @@ public class GUI extends JFrame
     {
     	for(int row = 0; row < 10; row++) {
 			for(int col = 0; col < 10; col++) {
-				char playerStatus = model.getPlayerStatus(row, col);
+				char playerStatus = model.getPlayerStatus(row, col); //hole Status von Datamodel
 		        char enemyStatus = model.getEnemyStatus(row, col);
 		        
 				setButtonStatusplayer(playerButtons[row][col],playerStatus);
