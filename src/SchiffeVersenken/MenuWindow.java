@@ -54,7 +54,7 @@ public class MenuWindow extends JFrame
         setVisible(true); //Zeige das Menu Fenster 
     }
 
-    public Object getCurrentPosition() {
-        return this.gameWindow.getCurrentPosition;
+    public char[][] getCurrentPosition() {
+        return this.gameWindow.getCurrentPosition();
     }
 }

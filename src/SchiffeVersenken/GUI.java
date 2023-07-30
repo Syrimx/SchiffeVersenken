@@ -54,11 +54,14 @@ import javax.swing.SwingConstants;
 //GameWindow
 public class GUI extends JFrame
 {
+	private DataModel model;
+	
     private MenuWindow menuWindow;
     private JPanel instructionPanel;
     private JPanel playerLabelPanel;
     private JPanel enemyLabelPanel;
     private JPanel enemyPanel;
+    private JPanel playerPanel;
     private JLabel instructionLabel;
     private JPanel mainPanel;
     private JMenuBar menubar;
@@ -68,7 +71,9 @@ public class GUI extends JFrame
     private JButton[][] enemyButtons;
     private JLabel xAxisLabeling;
     private JLabel yAxisLabeling;
-    private DataModel model;
+    private char[][] currentposition;
+    private char playerStatus;
+    private char enemyStatus;
     
     public GUI(MenuWindow menuWindow) {
     	this.menuWindow = menuWindow;
@@ -120,7 +125,7 @@ public class GUI extends JFrame
 	    gbc.gridx = 1;
 	    mainPanel.add(playerPanel, gbc);
 		
-	    ////////
+	    ////////!!!!
 		
 		//Beschriftung für x-Achse im playerPanel und enemyPanel
 		for(int col = 0; col < 10; col++) {
@@ -138,25 +143,10 @@ public class GUI extends JFrame
 			enemyLabelPanel.add(yAxisLabeling);
 		}
 		
-		///////
+		///////!!!!
 		
 		//Felder erstellen für playerPanel und enemyPanel
-		playerButtons = new JButton[10][10];
-		enemyButtons = new JButton[10][10];
-		
-		for(int row = 0; row < 10; row++) {
-			for(int col = 0; col < 10; col++) {
-				playerButtons[row][col] = new JButton();
-				playerButtons[row][col].setPreferredSize(new Dimension(40,40)); //Größe festlegen
-				playerButtons[row][col].setBackground(Color.BLUE);
-				playerPanel.add(playerButtons[row][col]);
-				
-				enemyButtons[row][col] = new JButton();
-				enemyButtons[row][col].setPreferredSize(new Dimension(40,40)); //Größe festlegen
-				enemyButtons[row][col].setBackground(Color.BLUE);
-				enemyPanel.add(enemyButtons[row][col]);
-			}
-		}
+		drawMap();
 		
 		menubar = new JMenuBar();
 		menuGame = new JMenu("Menü");
@@ -175,15 +165,95 @@ public class GUI extends JFrame
     }
     
     /*Methoden*/
-    public void drawMap() {
-
+    public void drawMap() 
+    {
+		//Felder erstellen für playerPanel und enemyPanel
+		playerButtons = new JButton[10][10];
+		enemyButtons = new JButton[10][10];
+		
+		for(int row = 0; row < 10; row++) {
+			for(int col = 0; col < 10; col++) {
+				playerButtons[row][col] = new JButton();
+				playerButtons[row][col].setPreferredSize(new Dimension(40,40)); //Größe festlegen
+				playerButtons[row][col].setBackground(Color.BLUE);
+				playerPanel.add(playerButtons[row][col]);
+				
+				enemyButtons[row][col] = new JButton();
+				enemyButtons[row][col].setPreferredSize(new Dimension(40,40)); //Größe festlegen
+				enemyButtons[row][col].setBackground(Color.BLUE);
+				enemyPanel.add(enemyButtons[row][col]);
+			}
+		}
     }
 
-    public void refreshMap() {
-
+//Aktualisierung
+    //Aktuallisierung des Status der enemy Map
+    private void setButtonStatusenemy(JButton enemyButton, char status) {
+        switch (status) {
+            case 'w': // Wasser
+                        enemyButton.setBackground(Color.BLUE);
+                        enemyButton.setText("");
+                break;
+            case 's': // Schiff
+                        enemyButton.setBackground(Color.YELLOW);
+                        enemyButton.setText("");  
+                break;
+            case 'x': // Schiff getroffen
+                        enemyButton.setBackground(Color.GRAY);
+                        enemyButton.setText("x");
+                break;
+            case 'b': // Schiff getroffen
+		                enemyButton.setBackground(Color.BLUE);
+		                enemyButton.setText("x");
+                break;
+            default: // unbekannter Status
+                        enemyButton.setBackground(Color.WHITE);
+                        enemyButton.setText("");
+                break;
+        }
+    }
+    
+    //Aktuallisierung des Status der player Map
+    private void setButtonStatusplayer(JButton playerButton, char status) {
+        switch (status) {
+            case 'w': // Wasser
+                        playerButton.setBackground(Color.BLUE);
+                        playerButton.setText("");
+                break;
+            case 's': // Schiff
+                        playerButton.setBackground(Color.YELLOW);
+                        playerButton.setText("");
+                break;
+            case 'x': // Schiff getroffen
+                        playerButton.setBackground(Color.GRAY);
+                        playerButton.setText("x");
+                break;
+            case 'b': // Schiff getroffen
+		                playerButton.setBackground(Color.BLUE);
+		                playerButton.setText("x");
+                break;
+            default: // unbekannter Status
+                        playerButton.setBackground(Color.WHITE);
+                        playerButton.setText("");
+                break;
+        }
+    }
+///////////
+    
+    public void refreshMap() 
+    {
+    	for(int row = 0; row < 10; row++) {
+			for(int col = 0; col < 10; col++) {
+				char playerStatus = model.getPlayerStatus(row, col);
+		        char enemyStatus = model.getEnemyStatus(row, col);
+		        
+				setButtonStatusplayer(playerButtons[row][col],playerStatus);
+				setButtonStatusenemy(enemyButtons[row][col],enemyStatus);
+			}
+		}
     }
 
-    public Object getCurrentPosition() {
-        return null;
+    public char[][] getCurrentPosition() {
+        return currentposition;
     }
 }
