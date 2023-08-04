@@ -71,7 +71,11 @@ public class GUI extends JFrame
     private JButton[][] enemyButtons;
     private JLabel xAxisLabeling;
     private JLabel yAxisLabeling;
+    //
+    //für Übergabe an Controller
     private char[][] currentposition;
+    private char[][] enemyMatrix;
+    private char[][] playerMatrix;
     private char playerStatus;
     private char enemyStatus;
     
@@ -195,7 +199,35 @@ public class GUI extends JFrame
 			}
 		}
     }
+    
+    
+    public char[][] convertButtonsToCharArray(JButton[][] buttons) {
+        char[][] charArray = new char[10][10];
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+                JButton button = buttons[row][col];
+                // Status = Wasser
+                if (button.getBackground() == Color.BLUE) {
+                    charArray[row][col] = 'w'; 
+                // Status = Schiff
+                } else if (button.getBackground() == Color.YELLOW) {
+                    charArray[row][col] = 's'; 
+                // Status = Schiff getroffen
+                } else if (button.getBackground() == Color.RED && button.getText().equals("x")) {
+                    charArray[row][col] = 'x'; 
+                // Status = Wasser getroffen, bekanntes Feld
+                } else if (button.getBackground() == Color.LIGHT_GRAY && button.getText().equals("o")) {
+                    charArray[row][col] = 'b'; 
+                // Unbekannter Status oder leeres Feld
+                } else {
+                    charArray[row][col] = ' '; 
+                }
+            }
+        }
+        return charArray;
+    }
 
+    
   //Aktionen Buttons Definieren
 //    private void onPlayerButtonClicked(int row, int col) {
 //        
@@ -223,7 +255,8 @@ public class GUI extends JFrame
             break;
     	}   
          //Aktuelle Position
-    	//currentposition[row][col];
+//    	currentposition = convertButtonsToCharArray(enemyButtons);
+//    	currentposition = currentposition[row][col];
           
     }
     
@@ -295,8 +328,25 @@ public class GUI extends JFrame
 		}
     }
 
+   
     //aktuell geklickter Button übergeben
     public char[][] getCurrentPosition() {
         return currentposition;
     }
+    
+    //Enemy Matrix übergeben
+    public char[][] getEnemyMatrix(){
+    	enemyMatrix = convertButtonsToCharArray(enemyButtons);
+		return enemyMatrix;
+    	
+    }
+    
+    //Player Matrix übergeben
+    public char[][] getPlayerMatrix(){
+    	playerMatrix = convertButtonsToCharArray(playerButtons);
+		return playerMatrix;
+    	
+    }
+    
+    
 }
