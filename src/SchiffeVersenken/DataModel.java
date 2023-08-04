@@ -8,6 +8,8 @@ import java.util.*;
     public int[][] getData() 
     public void setData(int[][] data) 
 
+//getter Schiffe für GUI
+ *
 
  * 
 */
@@ -66,7 +68,7 @@ public class DataModel {
         }else if(endX - startX == 2 || startX - endX == -2 || endY - startY == 2 || startY - endY == -2){
             frigate--;
             if(frigate <= 0){
-                System.out.print("Du hast Frigatten mehr");
+                System.out.print("Du hast keine Frigatten mehr");
             }else{}
 
         }else if (endX - startX == 3 || startX - endX == -3 || endY - startY == 3 || startY - endY == -3){
