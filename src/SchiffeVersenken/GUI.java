@@ -241,7 +241,7 @@ public class GUI extends JFrame
     //Aktionen in der Schießen Phase, Spieler darf nur Gegner Feld manipulieren
     private void onEnemyButtonClicked(int row, int col) {
     	//Schießen Phase
-    	char enemyStatus = model.getEnemyStatus(row, col);
+    	char enemyStatus = model.getEnemyCellStatus(row, col);
     	switch (enemyStatus) {
         case 'w': // schieße auf Wasser 
                     enemyButtons[row][col].setBackground(Color.LIGHT_GRAY);
@@ -302,8 +302,8 @@ public class GUI extends JFrame
     {
     	for(int row = 0; row < 10; row++) {
 			for(int col = 0; col < 10; col++) {
-				char playerStatus = model.getPlayerStatus(row, col); //hole Status von Datamodel
-		        char enemyStatus = model.getEnemyStatus(row, col);
+				char playerStatus = model.getPlaygroundCellStatus(row, col); //hole Status von Datamodel
+		        char enemyStatus = model.getEnemyCellStatus(row, col);
 		        
 				setButtonStatus(playerButtons[row][col],playerStatus);
 				setButtonStatus(enemyButtons[row][col],enemyStatus);
