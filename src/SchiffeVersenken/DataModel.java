@@ -15,8 +15,8 @@ import java.util.*;
 */
 
 public class DataModel {
-    private char[][] playgroundMatrix    = null; //Wie groß darf sie werden ?                               //int durch char getauscht, um mehr möglichkeiten zu haben, wie Nutzung von X
-    private char[][] enemyMatrix         = null;
+    private char[][] playerMatrix    = null; //Wie groß darf sie werden ? //int durch char getauscht, um mehr möglichkeiten zu haben, wie Nutzung von X
+    private char[][] enemyMatrix     = null;
 
 
     //verschiedene Schiffsklassen und deren Anzahl 
@@ -35,16 +35,16 @@ public class DataModel {
     public void DataModel() {
         // -> Intiale Matrix erstellen // also einmal beim Initialisierendes Objektes
         // Groeße des Feldes nach klassischen Spielregeln 10 x 10 
-        this.playgroundMatrix = new char [10][10];
+        this.playerMatrix = new char [10][10];
         this.enemyMatrix = new char[10][10];
 
             //Erzeugen eines 10 x 10 Feldes gefüllt mit Nullen zum testen des Arrays
-            for(int i = 0; i < playgroundMatrix.length; i++){
-                for(int j = 0; j < playgroundMatrix[i].length; j++){
-                	playgroundMatrix[i][j] = '0';
+            for(int i = 0; i < playerMatrix.length; i++){
+                for(int j = 0; j < playerMatrix[i].length; j++){
+                	playerMatrix[i][j] = '0';
                     enemyMatrix[i][j] = '0';
         
-                    System.out.print(playgroundMatrix[i][j] + " "); 
+                    System.out.print(playerMatrix[i][j] + " "); 
                 }
                 System.out.println();           //geht eine Zeile nach unten
             }
@@ -56,7 +56,12 @@ public class DataModel {
     
     //Methode um zu prüfen, ob alle Spieler Schiffe gesetzt wurden
     public boolean alleSpielerSchiffePlatziert() {
-        return submarine == 0 && frigate == 0 && cruiser == 0 && battleship == 0;
+        if(submarine == 0 && frigate == 0 && cruiser == 0 && battleship == 0) {
+        	return true;
+        }else {
+        	return false;
+        }
+        
     }
     
     // Methode, um die Phase zu setzen
@@ -83,7 +88,7 @@ public class DataModel {
     	
     	
         //prüfen, ob Start- und Endfeld bereits belegt sind
-        if(playgroundMatrix[startX][startY] != 0 || playgroundMatrix[endX][endY] != 0){
+        if(playerMatrix[startX][startY] != 0 || playerMatrix[endX][endY] != 0){
             System.out.println("Feld bereits durch ein anderes Schiff belegt. Bitte ein anderes Feld auswählen");
             return;
         }
@@ -151,16 +156,16 @@ public class DataModel {
 //Uebergeben von Werten an GUI
     //setzt das neue datenFeld -> wird von spieler aufgerufen
     public void setData(char[][] data) {
-        this.playgroundMatrix = data;
+        this.playerMatrix = data;
     }
 
     // Getter and setter fuer playgroundMatrix
     public char[][] getPlaygroundMatrix() {
-        return playgroundMatrix;
+        return playerMatrix;
     }
 
     public void setPlaygroundMatrix(char[][] matrix) {
-        this.playgroundMatrix = matrix;
+        this.playerMatrix = matrix;
     }
 
     // Getter and setter fuer enemyMatrix
@@ -184,7 +189,7 @@ public class DataModel {
 
     // Getter fuer Zellen Status in playgroundMatrix
     public char getPlaygroundCellStatus(int row, int col) {
-        return playgroundMatrix[row][col];
+        return playerMatrix[row][col];
     }
 
     // Getter fuer Zellen Status in enemyMatrix

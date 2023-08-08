@@ -66,6 +66,7 @@ public class GUI extends JFrame
     private JPanel enemyPanel;
     private JPanel playerPanel;
     private JLabel instructionLabel;
+    private JLabel instructionshipLabel;
     private JPanel mainPanel;
     private JMenuBar menubar;
     private JMenu menuGame;
@@ -74,6 +75,7 @@ public class GUI extends JFrame
     private JButton[][] enemyButtons;
     private JLabel xAxisLabeling;
     private JLabel yAxisLabeling;
+    private int shipLength;
     //
     //für Übergabe an Controller
     private int[] currentposition = new int[2];
@@ -95,12 +97,14 @@ public class GUI extends JFrame
 		
 		mainPanel = new JPanel(new GridBagLayout());
 		mainPanel.setBackground(Color.LIGHT_GRAY);
-		add(mainPanel,BorderLayout.CENTER);
+		add(mainPanel,BorderLayout.CENTER); 
 		
 		instructionPanel = new JPanel();
 		instructionPanel.setPreferredSize(new Dimension(900,200));
 		instructionPanel.setBackground(Color.LIGHT_GRAY);
+		instructionPanel.setLayout(new GridLayout(2, 1));
 		add(instructionPanel,BorderLayout.NORTH);
+		
 		
 		playerPanel = new JPanel(new GridLayout(10,10));
 		playerPanel.setBackground(Color.WHITE);
@@ -163,13 +167,38 @@ public class GUI extends JFrame
 		this.setJMenuBar(menubar);
 		backtoMenu.addActionListener(e -> menuWindow.backToMenu());
 		
-		instructionLabel = new JLabel("Platziere deine Schiffe!");
-		instructionLabel.setBounds(200, 5, 300, 40);
+		
+		instructionLabel = new JLabel();
+		instructionLabel.setText("Platziere die Schiffe!");
+		instructionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		instructionLabel.setVerticalAlignment(SwingConstants.CENTER);
 		instructionPanel.add(instructionLabel);
-	
+		//if case 1 (Schiffe setzen) Phase oder 2 (Angriff)
+		
+		
+		instructionshipLabel = new JLabel();
+		instructionshipLabel.setText(WriteShipInfo());
+		instructionshipLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		instructionshipLabel.setVerticalAlignment(SwingConstants.TOP);
+		instructionPanel.add(instructionshipLabel);
     	
     	setVisible(true);
     }
+    
+    
+    private String WriteShipInfo() //Will nicht funktionieren?????
+    {
+    	String shipInfo = ""; // Initialisiere mit leerer Zeichenkette
+        int[] shipCounts = model.getShipCounts();
+        String[] shipNames = model.getShipTypes();
+        for (int i = 0; i < shipNames.length; i++) {
+            shipInfo += shipNames[i] + " Anzahl: " + shipCounts[i] + " ";
+        }
+
+        return shipInfo; // Gib den zusammengestellten Text zurück
+    	
+    }
+    
     
     /*Methoden*/
     public void drawMap() 
@@ -188,7 +217,7 @@ public class GUI extends JFrame
 	            final int finalCol = col;
 	            
 				//Aktion Button
-				playerButtons[row][col].addActionListener(e -> onPlayerButtonClicked(finalRow, finalCol));
+				//playerButtons[row][col].addActionListener(e -> onPlayerButtonClicked(finalRow, finalCol));
 				
 				playerPanel.add(playerButtons[row][col]);
 				
@@ -232,15 +261,116 @@ public class GUI extends JFrame
     }
 
 ///Aktionen    
-    //Aktionen in der Schiffe setzen Phase, Spieler darf nur eigenes Feld manipulieren
-    private void onPlayerButtonClicked(int row, int col) {
-    	//Schiffe setzen
-    	
-   }
+//    //Aktionen in der Schiffe setzen Phase, Spieler darf nur eigenes Feld manipulieren
+//    private void onPlayerButtonClicked(int row, int col) {
+//    	//Schiffe setzen, Phase 1
+//    	if(model.isPhaseOne() && !model.alleSpielerSchiffePlatziert()) 
+//    	{
+//    		// Überprüfe, ob die Auswahl gültig ist (z. B. nicht bereits belegt)
+//            // ...
+//
+//            // Zeige mögliche Endpositionen grün an oder ungültige Positionen rot
+//            // ...
+//
+//            // Rufe model.placeShips auf und verarbeite das Ergebnis
+//            // ...
+//
+//            // Passe den Button-Status an (deaktiviere oder ändere Farbe)
+//    		  if (shipPlaced) {
+//                   // Aktualisiere den Button-Status in der GUI
+//                   playerButtons[row][col].setBackground(Color.YELLOW); // Zeige platziertes Schiff an
+//                   //playerButtons[][].setEnabled(false); // Deaktiviere Startposition
+//               } 
+//        	
+//        	
+//    		
+//            
+//         
+//        	
+//        	model.placeShips(row, col, Endrow, Endcol);
+//        	//Startposition 
+//        	playerButtons[row][col].setEnabled(false); //Button nicht funktionstüchtig
+//        	//Kreuze grün,Buttons setEnable(false) bei Auswahl, Möglichkeiten grün anzeigen , je nachdem Schiff vorhanden?
+//    		
+//    		
+//    		
+//    	}else {
+//    		
+//    	}
+//   }
+//    
+//    /////////////
+//    private void onPlayerButtonClicked(int row, int col) {
+//        if (model.isPhaseOne() && !model.alleSpielerSchiffePlatziert()) {
+//            // Überprüfe, ob die Auswahl gültig ist (z. B. nicht bereits belegt)
+//            if (model.isValidPlacement(row, col, shipLength)) {
+//                // Berechne die möglichen Endpositionen für das Schiff
+//                List<int[]> possibleEndPositions = model.calculatePossibleEndPositions(row, col, shipLength);
+//
+//                // Markiere die möglichen Endpositionen auf der GUI
+//                markPossibleEndPositions(possibleEndPositions);
+//
+//                // Warte auf Auswahl einer Endposition durch den Spieler
+//                addEndButtonListener((endRow, endCol) -> {
+//                    // Deaktiviere Buttons für platziertes Schiff
+//                    disablePlacedShipButtons(row, col, endRow, endCol);
+//
+//                    // Platziere das Schiff im DataModel
+//                    boolean shipPlaced = model.placeShips(row, col, endRow, endCol);
+//
+//                    if (shipPlaced) {
+//                        // Aktualisiere den Button-Status in der GUI
+//                        gui.updatePlayerButtonStatus(row, col, endRow, endCol, shipLength);
+//                        // Setze die Phase auf 2 (Angriffsphase)
+//                        model.setPhase(2);
+//                        // Wechsle zur Angriffsphase in der GUI (falls erforderlich)
+//                        // ...
+//                    } else {
+//                        // Zeige Fehlermeldung oder ändere Button-Farbe, falls das Schiff nicht platziert werden kann
+//                        // ...
+//                    }
+//
+//                    // Entferne den Listener für die Endpositionsauswahl
+//                    gui.removeEndButtonListener();
+//                    // Setze mögliche Endpositionen zurück
+//                    gui.resetPossibleEndPositions();
+//                });
+//                
+//            } else {
+//                // Zeige Fehlermeldung oder ändere Button-Farbe für ungültige Auswahl
+//                // ...
+//            }
+//        }
+//    }
+
     
+    ////////////
+    
+//    //Markierung der möglichen Endpositionen
+//    private void markPossibleEndPositions(List<int[]> positions) {
+//        for (int[] pos : positions) {
+//            int endRow = pos[0];
+//            int endCol = pos[1];
+//            playerButtons[endRow][endCol].setBackground(Color.GREEN); // Beispiel: Markiere grün
+//        }
+//    }
+    
+    //Nachdem Setzen eines Schiffes: Felder nicht mehr auswählbar
+    private void disablePlacedShipButtons(int startRow, int startCol, int endRow, int endCol) {
+        //Schleife durch die betroffenen Buttons und deaktiviere sie
+        for (int row = startRow; row <= endRow; row++) {
+            for (int col = startCol; col <= endCol; col++) {
+                playerButtons[row][col].setEnabled(false);
+            }
+        }
+    }
+    
+    
+    ///////
     //Aktionen in der Schießen Phase, Spieler darf nur Gegner Feld manipulieren
     private void onEnemyButtonClicked(int row, int col) {
-    	//Schießen Phase
+    	//Schießen Phase, Phase 2
+    	if(model.isPhaseOne()== false) {
     	char enemyStatus = model.getEnemyCellStatus(row, col);
     	switch (enemyStatus) {
         case 'w': // schieße auf Wasser 
@@ -264,8 +394,9 @@ public class GUI extends JFrame
         //Aktuelle Position speichern im currentposition Array
     	currentposition[0]= row;
     	currentposition[1]= col;
-   	
-    	
+    	}else {
+    		//Phase 1 vorhanden
+    	}
     }
     
     
@@ -312,7 +443,7 @@ public class GUI extends JFrame
     }
 
    
-    //aktuell geklickter Button übergeben
+    //aktuell geklickter Button übergeben 
     public int[] getCurrentPosition() {
         return currentposition;      
     }
