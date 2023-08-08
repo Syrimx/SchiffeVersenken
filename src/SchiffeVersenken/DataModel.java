@@ -98,7 +98,7 @@ public class DataModel {
             System.out.println("Dieses Feld ist grün");
         }
 
-        while(startX != endX || startY != endY){
+        while(startX != endX || startY != endY){ 
             System.out.println("Dieses Feld ist rot");
         }
 

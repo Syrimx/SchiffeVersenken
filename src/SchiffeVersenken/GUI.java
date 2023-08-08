@@ -87,7 +87,7 @@ public class GUI extends JFrame
     public GUI(MenuWindow menuWindow) {
     	this.menuWindow = menuWindow;
     	//Datenmodel in View eingebunden, sodass Daten einfacher aufrufbar sind
-        //this.model = new DataModel();
+        this.model = new DataModel();
     	
     	this.setLayout(new BorderLayout());
     	this.setTitle("Schiffe versenken");
@@ -184,19 +184,29 @@ public class GUI extends JFrame
     	
     	setVisible(true);
     }
-    
-    
-    private String WriteShipInfo() //Will nicht funktionieren?????
-    {
-    	String shipInfo = ""; // Initialisiere mit leerer Zeichenkette
+
+    //Schiff Typen und Anzahl Ausgabe
+    private String WriteShipInfo() {
+        StringBuilder shipInfo = new StringBuilder(); // Verwende StringBuilder, um Text zusammenzustellen
         int[] shipCounts = model.getShipCounts();
         String[] shipNames = model.getShipTypes();
+        
         for (int i = 0; i < shipNames.length; i++) {
-            shipInfo += shipNames[i] + " Anzahl: " + shipCounts[i] + " ";
+            shipInfo.append(shipNames[i]).append(": ").append(shipCounts[i]);
+            
+            // Füge eine Trennzeichen nach jedem Eintrag hinzu, außer beim letzten Eintrag
+            if (i < shipNames.length - 1) {
+                shipInfo.append(", ");
+            }
         }
 
-        return shipInfo; // Gib den zusammengestellten Text zurück
-    	
+        return shipInfo.toString(); // Gib den zusammengestellten Text zurück
+    }
+    
+    //Anweisung für  die jeweilige Phasen Ausgabe
+    private String WritePhaseInstruction() 
+    {
+    	return "x";
     }
     
     
