@@ -437,7 +437,7 @@ public class GUI extends JFrame
                 break;
         }
     }
-///////////
+
     
     public void refreshMap() 
     {
