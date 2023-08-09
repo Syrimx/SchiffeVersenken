@@ -143,10 +143,10 @@ public class DataModel {
         }
     //schiessen auf schiffe
     char status = enemyMatrix[row][col];
-    if (status == '0') {
-        enemyMatrix[row][col] = 'm'; // Feld verfehlt
+    if (status == 'w') { //w für Wasser
+        enemyMatrix[row][col] = 'b'; // Feld verfehlt, bekanntes Feld
     } else if (status == 's') {
-        enemyMatrix[row][col] = 'h'; // Schiff getroffen
+        enemyMatrix[row][col] = 'x'; // Schiff getroffen
         // Koordinaten des getroffenen Feldes zur Liste hinzufügen
         hits.add(new int[]{row, col});
     }
