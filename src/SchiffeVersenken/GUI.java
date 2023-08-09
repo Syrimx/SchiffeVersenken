@@ -3,11 +3,13 @@ package SchiffeVersenken;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.security.KeyPair;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -73,6 +75,7 @@ public class GUI extends JFrame
     private JMenuItem backtoMenu;
     private JButton[][] playerButtons;
     private JButton[][] enemyButtons;
+    private JButton[] shipType; //Länge auswählen
     private JLabel xAxisLabeling;
     private JLabel yAxisLabeling;
     private int shipLength;
@@ -166,7 +169,7 @@ public class GUI extends JFrame
 		menuGame.add(backtoMenu);
 		this.setJMenuBar(menubar);
 		backtoMenu.addActionListener(e -> menuWindow.backToMenu());
-		
+		 
 		
 		instructionLabel = new JLabel();
 		instructionLabel.setText("Platziere die Schiffe!");
@@ -177,40 +180,20 @@ public class GUI extends JFrame
 		
 		
 		instructionshipLabel = new JLabel();
-		instructionshipLabel.setText(WriteShipInfo());
+		///
+		instructionshipLabel.setLayout(new GridBagLayout()); // Verwende ein GridBagLayout
+		///
 		instructionshipLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		instructionshipLabel.setVerticalAlignment(SwingConstants.TOP);
 		instructionPanel.add(instructionshipLabel);
+		//Auswahl Buttons für Schiffart
+		setupShipSelectionButtons();
     	
     	setVisible(true);
     }
 
-    //Schiff Typen und Anzahl Ausgabe
-    private String WriteShipInfo() {
-        StringBuilder shipInfo = new StringBuilder(); // Verwende StringBuilder, um Text zusammenzustellen
-        int[] shipCounts = model.getShipCounts();
-        String[] shipNames = model.getShipTypes();
-        
-        for (int i = 0; i < shipNames.length; i++) {
-            shipInfo.append(shipNames[i]).append(": ").append(shipCounts[i]);
-            
-            // Füge eine Trennzeichen nach jedem Eintrag hinzu, außer beim letzten Eintrag
-            if (i < shipNames.length - 1) {
-                shipInfo.append(", ");
-            }
-        }
-
-        return shipInfo.toString(); // Gib den zusammengestellten Text zurück
-    }
     
-    //Anweisung für  die jeweilige Phasen Ausgabe
-    private String WritePhaseInstruction() 
-    {
-    	return "x";
-    }
-    
-    
-    /*Methoden*/
+    //Button Array Feld zeichnen
     public void drawMap() 
     {
 		//Felder erstellen für playerPanel und enemyPanel
@@ -227,7 +210,7 @@ public class GUI extends JFrame
 	            final int finalCol = col;
 	            
 				//Aktion Button
-				//playerButtons[row][col].addActionListener(e -> onPlayerButtonClicked(finalRow, finalCol));
+				playerButtons[row][col].addActionListener(e -> onPlayerButtonClicked(finalRow, finalCol));
 				
 				playerPanel.add(playerButtons[row][col]);
 				
@@ -243,31 +226,66 @@ public class GUI extends JFrame
     }
     
     
-    //JButtons[][] in char[][] konvertieren
-    public char[][] convertButtonsToCharArray(JButton[][] buttons) {
-        char[][] charArray = new char[10][10];
-        for (int row = 0; row < 10; row++) {
-            for (int col = 0; col < 10; col++) {
-                JButton button = buttons[row][col];
-                // Status = Wasser
-                if (button.getBackground() == Color.BLUE) {
-                    charArray[row][col] = 'w'; 
-                // Status = Schiff
-                } else if (button.getBackground() == Color.YELLOW) {
-                    charArray[row][col] = 's'; 
-                // Status = Schiff getroffen
-                } else if (button.getBackground() == Color.RED && button.getText().equals("x")) {
-                    charArray[row][col] = 'x'; 
-                // Status = Wasser getroffen, bekanntes Feld
-                } else if (button.getBackground() == Color.LIGHT_GRAY && button.getText().equals("o")) {
-                    charArray[row][col] = 'b'; 
-                // Unbekannter Status oder leeres Feld
-                } else {
-                    charArray[row][col] = ' '; 
-                }
-            }
+    //Buttons für Auswahl für Schifftyp
+    private void setupShipSelectionButtons() {
+        String[] shipTypes = model.getShipTypes();
+        int[] shipCounts = model.getShipCounts();
+
+        JPanel shipSelectionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0)); // Zentriert, mit Abstand
+        instructionshipLabel.add(shipSelectionPanel);
+
+        for (int i = 0; i < shipTypes.length; i++) {
+        	final int shipIndex = i; // Deklariere eine final Variable, um i zu speichern
+            JButton shipTypeButton = new JButton(shipTypes[i]);
+            shipTypeButton.setPreferredSize(new Dimension(100, 40)); // Größe der Buttons anpassen
+            shipSelectionPanel.add(shipTypeButton);
+            shipTypeButton.addActionListener(e -> onShipTypeButtonClicked(shipTypes[shipIndex]));
+            
+            JLabel shipCountLabel = new JLabel("Anzahl: " + shipCounts[i]);
+            shipSelectionPanel.add(shipCountLabel);
         }
-        return charArray;
+    }
+
+
+    //Aktion: Auswahl Schiff, speicher die Länge
+    private void onShipTypeButtonClicked(String shipType) {
+    	switch(shipType) {
+    	case "submarine":
+    		shipLength= 1;
+    		System.out.println(shipLength);
+    		break;
+    	case "frigate":
+    		shipLength=2;
+    		System.out.println(shipLength); //Problem: shipLength verändert sich nicht
+    		break;
+    	case "cruiser":
+    		shipLength=3;
+    		System.out.println(shipLength);
+    		break;
+    	case "battleship":
+    		shipLength=4;
+    		System.out.println(shipLength);
+    		break;
+    	default:
+    		shipLength=0;
+    		System.out.println(shipLength);
+    	break;
+    	}
+    }
+    
+    
+////!!
+    //Anweisung für  die jeweilige Phasen Ausgabe !!
+    private String WritePhaseInstruction() 
+    {
+    	return "blahblah";
+    }
+////!!
+    
+    
+    private void onPlayerButtonClicked(int row, int col) {
+    markPossibleEndPositions(row, col);
+    
     }
 
 ///Aktionen    
@@ -356,14 +374,55 @@ public class GUI extends JFrame
     
     ////////////
     
-//    //Markierung der möglichen Endpositionen
-//    private void markPossibleEndPositions(List<int[]> positions) {
-//        for (int[] pos : positions) {
-//            int endRow = pos[0];
-//            int endCol = pos[1];
-//            playerButtons[endRow][endCol].setBackground(Color.GREEN); // Beispiel: Markiere grün
-//        }
-//    }
+    //Markierung der möglichen Endpositionen
+    private void markPossibleEndPositions(int row, int col) {
+    	if(shipLength != 0) {
+    		switch(shipLength) {
+    		case '1':
+    			markPossiblePosition(row, col);
+    			break;
+    		case '2':
+	    		markPossiblePosition(row+1, col);
+	    		markPossiblePosition(row-1, col);
+	    		markPossiblePosition(row, col+1);
+	    		markPossiblePosition(row, col-1);
+    			break;
+    		case '3':
+    			markPossiblePosition(row+2, col);
+	    		markPossiblePosition(row-2, col);
+	    		markPossiblePosition(row, col+2);
+	    		markPossiblePosition(row, col+2);
+    			break;
+    		case '4':
+    			markPossiblePosition(row+3, col);
+	    		markPossiblePosition(row-3, col);
+	    		markPossiblePosition(row, col+3);
+	    		markPossiblePosition(row, col-3);
+    			break;
+    		default:
+    			
+    			break;
+    		}
+            
+    	}else {
+    		instructionshipLabel.setText("Wähle zuerst ein Schiffstyp aus!");
+    	}
+    }
+    
+    //nur markieren wenn auch im Feld vorhanden und nicht bereits besetzt
+    private void markPossiblePosition(int row, int col) {
+        if (row >= 0 && row < 10 && col >= 0 && col < 10) {
+        	if (playerButtons[row][col].isEnabled()) {
+        		
+        		playerButtons[row][col].setBackground(Color.GREEN);
+        	}
+        }
+    } 
+
+
+    
+    
+    
     
     //Nachdem Setzen eines Schiffes: Felder nicht mehr auswählbar
     private void disablePlacedShipButtons(int startRow, int startCol, int endRow, int endCol) {
@@ -373,7 +432,9 @@ public class GUI extends JFrame
                 playerButtons[row][col].setEnabled(false);
             }
         }
+        shipLength=0;
     }
+    
     
     
     ///////
@@ -452,6 +513,32 @@ public class GUI extends JFrame
 		}
     }
 
+    //JButtons[][] in char[][] konvertieren
+    public char[][] convertButtonsToCharArray(JButton[][] buttons) {
+        char[][] charArray = new char[10][10];
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+                JButton button = buttons[row][col];
+                // Status = Wasser
+                if (button.getBackground() == Color.BLUE) {
+                    charArray[row][col] = 'w'; 
+                // Status = Schiff
+                } else if (button.getBackground() == Color.YELLOW) {
+                    charArray[row][col] = 's'; 
+                // Status = Schiff getroffen
+                } else if (button.getBackground() == Color.RED && button.getText().equals("x")) {
+                    charArray[row][col] = 'x'; 
+                // Status = Wasser getroffen, bekanntes Feld
+                } else if (button.getBackground() == Color.LIGHT_GRAY && button.getText().equals("o")) {
+                    charArray[row][col] = 'b'; 
+                // Unbekannter Status oder leeres Feld
+                } else {
+                    charArray[row][col] = ' '; 
+                }
+            }
+        }
+        return charArray;
+    }
    
     //aktuell geklickter Button übergeben 
     public int[] getCurrentPosition() {
@@ -472,5 +559,25 @@ public class GUI extends JFrame
     	
     }
     
+    
+    
+    //ersetzt durch setShipsSelectionButtons
+//  //Schiff Typen und Anzahl Ausgabe
+//  private String WriteShipInfo() {
+//      StringBuilder shipInfo = new StringBuilder(); // Verwende StringBuilder, um Text zusammenzustellen
+//      int[] shipCounts = model.getShipCounts();
+//      String[] shipNames = model.getShipTypes();
+//      
+//      for (int i = 0; i < shipNames.length; i++) {
+//          shipInfo.append(shipNames[i]).append(": ").append(shipCounts[i]);
+//          
+//          // Füge eine Trennzeichen nach jedem Eintrag hinzu, außer beim letzten Eintrag
+//          if (i < shipNames.length - 1) {
+//              shipInfo.append(", ");
+//          }
+//      }
+//
+//      return shipInfo.toString(); // Gib den zusammengestellten Text zurück
+//  }
     
 }
