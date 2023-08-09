@@ -21,7 +21,7 @@ public class Client {
 
     //Write Server Data -> ungetested
     //Server sendet das neue Feld zurück muss vom Spieler an Datamodel gesendet werden
-    public char[][] writeServerData(HashMap<Integer, Object> data) {
+    public HashMap<Integer, char[][]> writeServerData(HashMap<Integer, int[]> data) {
         HashMap<Integer, char[][]> serverData = null;
         try {
             //Connect Client to Server

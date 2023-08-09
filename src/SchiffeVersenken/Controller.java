@@ -1,6 +1,7 @@
 package SchiffeVersenken;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 /* Controller -> Server
  * 
@@ -20,6 +21,8 @@ public class Controller {
     private HashMap<Integer, char[][]> gameState = null;    //-> vielleicht eine HashMap<Hashmap<Integer, String>, char[][]> ?
     public static int gamePhase = 1; //-> 0 Preparation Phase; 1 Main Phase; 2 Endgame Phase
     private Integer[] roundToken = null;
+    private int[] firePosition = null;
+    private Integer identifyToken = null;
     private int counter = 0; //Anzahl der Schiffe ?
     
     public Controller() {
@@ -40,8 +43,9 @@ public class Controller {
     //Setze den Initialen Gamestate : roundtoken -> reihenfolge & char[][] -> initiales Spielfeld
     public void setInitialGameState(HashMap<Integer, char[][]> data) {
         this.gameState = data;
-
-        this.roundToken[this.counter] = data.getKey();  //nutze das Keyelement der Hashmap als rountToken
+        for(Integer item : data.keySet()) {
+            this.roundToken[this.counter] = item;
+        }
         this.counter++;
 
         Controller.gamePhase = 1;
@@ -49,8 +53,8 @@ public class Controller {
 
     //Teste ob der Spieler (erkennbar am roundToken welcher mit dem Schuss mitgesendet wird)
     //befähigt ist einen zug zu machen
-    public boolean testIfValid(Integer roundToken) {
-        if(this.roundToken[0] == roundToken) {
+    public boolean testIfValid() {
+        if(this.roundToken[0] == this.identifyToken) {
             this.swapRoundToken();
             return true;
         } 
@@ -61,21 +65,25 @@ public class Controller {
     //nimmt die Koordinaten entgegen und liest sie gegen das aktuelle feld, gibt statuscode zurück
     //0 -> wasser; 1 -> neu getroffen; -> 2 -> bekannt getroffen
     //gibt zusätzlich das neue Feld zurück
-    public HashMap<Integer, char[][]> evaluateImpact(HashMap<Integer, Object> data) {
+    public HashMap<Integer, char[][]> evaluateImpact(HashMap<Integer, int[]> data) {
         HashMap<Integer, char[][]> response = new HashMap<Integer, char[][]>();
-        int[] firePosition = data.getValues()[0];
-        char[][] field = this.gameState.getValue(!data.getKeys()[0]); //anderer Spieler, also identifier == komplement des tokens
-        char token = field[firePosition[0]][firePosition[1]]; //Value des felds
+        char[][] field = null;
+        for(Entry<Integer, char[][]> element : this.gameState.entrySet()) {
+            if(element.getKey() != this.identifyToken) {
+                field = element.getValue();
+            }
+        }
+        char token = field[this.firePosition[0]][this.firePosition[1]]; //Value des felds
         Integer status = null;
 
         /* was sind die feldcharacter ?*/
         //wasser
         if(token == 'w') {
             status = 0;
-            field[firePosition[0]][firePosition[1]] = "b";    //setze feld auf bekannt
+            field[this.firePosition[0]][this.firePosition[1]] = "b";    //setze feld auf bekannt
         } else if(token == 's') {   //schiff
             status = 1;
-            field[firePosition[0]][firePosition[1]] = "x"; //setze feld auf getroffen
+            field[this.firePosition[0]][this.firePosition[1]] = "x"; //setze feld auf getroffen
         } else {    //kein gültiger schuss -> vielleicht vorher schon abfangen (GUI?)
             status = 2;
         }
@@ -89,8 +97,12 @@ public class Controller {
 
     //Spielfeld auslesen, prüfen ob der Zug legit ist
     //Schuss verarbeiten, neues spielfeld zurückgeben (ggf anzahl der schiffe zurückgeben)
-    public HashMap<Integer, char[][]> manipulateData(HashMap<Integer, Object> data) {
+    public HashMap<Integer, char[][]> manipulateData(HashMap<Integer, int[]> data) {
         //Testen ob RoundToken valide ist -> wer ist aktuell dran ?
+        for(Entry<Integer, int[]> item : data.entrySet()) {
+            this.roundToken = item.getValue();
+            this.firePosition = item.getKey();
+        }
         this.testIfValid(data.getKey()); //bedingung if/else
         //Spielfeld auslesen -> bei den schusswerten character setzen in gamestate einfügen
         char[][] newGameField = this.evaluateImpact(data);  //Prüft wie effektiv der gesetzte Schuss war

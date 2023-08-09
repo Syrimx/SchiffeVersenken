@@ -1,6 +1,7 @@
 package SchiffeVersenken;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class Main {
 
@@ -10,6 +11,7 @@ public class Main {
 		//-> GUI?
 		Spieler spieler 		= new Spieler("Mona");
 		Client client 			= new Client();
+		DataModel datamodel		= new DataModel();
 		
 		//GameLoop
 		while(true) {
@@ -27,7 +29,9 @@ public class Main {
 					HashMap<Integer, char[][]> newGameField = client.writeServerData(spieler.buildPayload(menuWindow.getCurrentPosition()));
 					//-> spieler prüft status ?
 					//neues datamodel
-					datamodel.setData(newGameField.getValues()[0]);
+					for(Entry<Integer, char[][]> element : newGameField.entrySet()) {
+						datamodel.setData(element.getValue());
+					}
 					//GUI neu zeichnen
 					menuWindow.refreshMaps();
 					//prüft ob nochmal geschossen werden darf

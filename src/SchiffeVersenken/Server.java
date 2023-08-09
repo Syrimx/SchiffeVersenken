@@ -37,7 +37,7 @@ public class Server {
                 System.out.println(input.readObject().toString());
                 /*respond object -> something done with the controller */
                 
-                HashMap<Integer, char[][]> response = controller.manipulateData(input.readObject());
+                HashMap<Integer, char[][]> response = controller.manipulateData((HashMap<Integer, int[]>)input.readObject());
                 /*actual response*/
                 output.writeObject(response);
 

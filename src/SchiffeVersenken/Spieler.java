@@ -27,7 +27,7 @@ public class Spieler {
     //and returns this objekt ->
     //-> this objekt will be send via the client to the server to fullfill a legit action during the respective turn
     public HashMap<Integer, Object> buildPayload(Object currentPosition) {
-        HashMap<Integer, Object> payload = new HashMap<Integer, Object>();
+        HashMap<Integer, Object> payload = new HashMap<Integer, int[]>();
         this.currentPosition = currentPosition;   //Speichert die, vom gui objekt bezogene Click Position
         payload.put(this.roundToken, this.currentPosition); //Which datatype is returned by GUI ?
 
