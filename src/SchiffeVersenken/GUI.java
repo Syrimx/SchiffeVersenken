@@ -91,6 +91,7 @@ public class GUI extends JFrame
     //Schiffe setzen 
     
     private int shipLength = 0;
+    private int tmpshipLength = 0;
     private int startRow = -1;
     private int startCol = -1;
     private int endRow = -1;
@@ -265,25 +266,20 @@ public class GUI extends JFrame
     //Aktion: Auswahl Schiff, speicher die Länge
     private void onShipTypeButtonClicked(String shipType) {
     	switch(shipType) {
-    	case "submarine":
+    	case "Submarine":
     		shipLength= 1;
-    		System.out.println(shipLength);
     		break;
-    	case "frigate":
+    	case "Frigate":
     		shipLength=2;
-    		System.out.println(shipLength); //Problem: shipLength verändert sich nicht
     		break;
-    	case "cruiser":
+    	case "Cruiser":
     		shipLength=3;
-    		System.out.println(shipLength);
     		break;
-    	case "battleship":
+    	case "Battleship":
     		shipLength=4;
-    		System.out.println(shipLength);
     		break;
     	default:
     		shipLength=0;
-    		System.out.println(shipLength);
     	break;
     	}
     }
@@ -308,17 +304,21 @@ public class GUI extends JFrame
             } else if (startRow == -1 && startCol == -1 ) {
                 // Speichern der Startposition
                 startRow = row;
-                startCol = col;
+                startCol = col; 
+                tmpshipLength = shipLength; //temporär gespeichert, zuständig zur Möglichkeit 
+                //rumzuklicken bis man was wirklich setzen will
+                playerButtons[startRow][startCol].setBackground(Color.ORANGE); //Startposition markieren
+                System.out.println(row + " und "+ col); //TEST
                 instructionshipLabel.setText("Wähle die Endposition aus!");
                 //Markierung der möglichen Endpositionen
-                markPossibleEndPositions(startRow, endCol);
+                markPossibleEndPositions(startRow, startCol);
             } else if (endRow == -1 && endCol == -1 && playerButtons[row][col].getBackground() == Color.GREEN) {
                 // Speichern der Endposition
                 endRow = row;
                 endCol = col;
                 // Hier können Sie die Schiffplatzierung durchführen
                 model.placeShips(startRow, startCol, endRow, endCol);
-                //SchiffButtons deaktivieren
+                //SchiffButtons deaktivieren und gelb färben
                 disablePlacedShipButtons(startRow,startCol, endRow, endCol);
                 // Start- und Endpositionen zurücksetzen
                 startRow = -1;
@@ -330,6 +330,8 @@ public class GUI extends JFrame
                 
                 //Anzeige der Anahl Schiffe Aktualisieren
                 setupShipSelectionButtons();
+                //Aktualisierung Status, holt Status von DataModel
+                refreshMap();
             }
         }
     }
@@ -337,6 +339,7 @@ public class GUI extends JFrame
     
     //Markierung der möglichen Endpositionen
     private void markPossibleEndPositions(int row, int col) {
+    	System.out.println(shipLength);
     	if(shipLength != 0) {
     		switch(shipLength) {
     		case '1':
@@ -387,6 +390,7 @@ public class GUI extends JFrame
         for (int row = startRow; row <= endRow; row++) {
             for (int col = startCol; col <= endCol; col++) {
                 playerButtons[row][col].setEnabled(false);
+                playerButtons[row][col].setBackground(Color.yellow);
             }
         }
         shipLength=0;

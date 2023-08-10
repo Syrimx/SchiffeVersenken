@@ -78,6 +78,7 @@ public class DataModel {
         return phaseOne;
     }
     
+    
     // Methode zum Setzen von Schiffen in Phase 1
     public void placeShips(int startX, int startY, int endX, int endY){
 
