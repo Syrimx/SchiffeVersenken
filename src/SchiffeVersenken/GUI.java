@@ -75,10 +75,10 @@ public class GUI extends JFrame
     private JMenuItem backtoMenu;
     private JButton[][] playerButtons;
     private JButton[][] enemyButtons;
-    private JButton[] shipType; //Länge auswählen
+    private JButton[] shipTypeButtons; //Länge auswählen
     private JLabel xAxisLabeling;
     private JLabel yAxisLabeling;
-    private int shipLength;
+    private JPanel shipSelectionPanel;
     //
     //für Übergabe an Controller
     private int[] currentposition = new int[2];
@@ -86,6 +86,16 @@ public class GUI extends JFrame
     private char[][] playerMatrix;
     private char playerStatus;
     private char enemyStatus;
+    
+    ////
+    //Schiffe setzen 
+    
+    private int shipLength = 0;
+    private int startRow = -1;
+    private int startCol = -1;
+    private int endRow = -1;
+    private int endCol = -1;
+    ////
     
     public GUI(MenuWindow menuWindow) {
     	this.menuWindow = menuWindow;
@@ -225,26 +235,31 @@ public class GUI extends JFrame
 		}
     }
     
+   
     
-    //Buttons für Auswahl für Schifftyp
     private void setupShipSelectionButtons() {
         String[] shipTypes = model.getShipTypes();
         int[] shipCounts = model.getShipCounts();
-
-        JPanel shipSelectionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0)); // Zentriert, mit Abstand
+        
+        instructionshipLabel.setText("Wähle ein Schiffstyp aus!");
+        
+        shipSelectionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         instructionshipLabel.add(shipSelectionPanel);
 
+        shipTypeButtons = new JButton[shipTypes.length]; // Array für Schaltflächen erstellen
+
         for (int i = 0; i < shipTypes.length; i++) {
-        	final int shipIndex = i; // Deklariere eine final Variable, um i zu speichern
-            JButton shipTypeButton = new JButton(shipTypes[i]);
-            shipTypeButton.setPreferredSize(new Dimension(100, 40)); // Größe der Buttons anpassen
-            shipSelectionPanel.add(shipTypeButton);
-            shipTypeButton.addActionListener(e -> onShipTypeButtonClicked(shipTypes[shipIndex]));
+            final int shipIndex = i; // Deklariere eine final Variable, um i zu speichern
+            shipTypeButtons[i] = new JButton(shipTypes[i]); // Schaltfläche erstellen und im Array speichern
+            shipTypeButtons[i].setPreferredSize(new Dimension(100, 40));
+            shipSelectionPanel.add(shipTypeButtons[i]);
+            shipTypeButtons[i].addActionListener(e -> onShipTypeButtonClicked(shipTypes[shipIndex]));
             
             JLabel shipCountLabel = new JLabel("Anzahl: " + shipCounts[i]);
             shipSelectionPanel.add(shipCountLabel);
         }
     }
+
 
 
     //Aktion: Auswahl Schiff, speicher die Länge
@@ -276,103 +291,49 @@ public class GUI extends JFrame
     
 ////!!
     //Anweisung für  die jeweilige Phasen Ausgabe !!
-    private String WritePhaseInstruction() 
+    private String WritePhaseInstruction()  
     {
     	return "blahblah";
     }
 ////!!
     
     
+  ///Aktionen   
+//Aktionen in der Schiffe setzen Phase, Spieler darf nur eigenes Feld manipulieren
     private void onPlayerButtonClicked(int row, int col) {
-    markPossibleEndPositions(row, col);
-    
+    	if(model.isPhaseOne() && !model.alleSpielerSchiffePlatziert()) 
+        	{
+    		if (shipLength == 0) {
+                instructionshipLabel.setText("Wähle einen Schiffstyp aus!");
+            } else if (startRow == -1 && startCol == -1 ) {
+                // Speichern der Startposition
+                startRow = row;
+                startCol = col;
+                instructionshipLabel.setText("Wähle die Endposition aus!");
+                //Markierung der möglichen Endpositionen
+                markPossibleEndPositions(startRow, endCol);
+            } else if (endRow == -1 && endCol == -1 && playerButtons[row][col].getBackground() == Color.GREEN) {
+                // Speichern der Endposition
+                endRow = row;
+                endCol = col;
+                // Hier können Sie die Schiffplatzierung durchführen
+                model.placeShips(startRow, startCol, endRow, endCol);
+                //SchiffButtons deaktivieren
+                disablePlacedShipButtons(startRow,startCol, endRow, endCol);
+                // Start- und Endpositionen zurücksetzen
+                startRow = -1;
+                startCol = -1;
+                endRow = -1;
+                endCol = -1;
+                //Schiffslänge zurücksetzen
+                shipLength = 0;
+                
+                //Anzeige der Anahl Schiffe Aktualisieren
+                setupShipSelectionButtons();
+            }
+        }
     }
-
-///Aktionen    
-//    //Aktionen in der Schiffe setzen Phase, Spieler darf nur eigenes Feld manipulieren
-//    private void onPlayerButtonClicked(int row, int col) {
-//    	//Schiffe setzen, Phase 1
-//    	if(model.isPhaseOne() && !model.alleSpielerSchiffePlatziert()) 
-//    	{
-//    		// Überprüfe, ob die Auswahl gültig ist (z. B. nicht bereits belegt)
-//            // ...
-//
-//            // Zeige mögliche Endpositionen grün an oder ungültige Positionen rot
-//            // ...
-//
-//            // Rufe model.placeShips auf und verarbeite das Ergebnis
-//            // ...
-//
-//            // Passe den Button-Status an (deaktiviere oder ändere Farbe)
-//    		  if (shipPlaced) {
-//                   // Aktualisiere den Button-Status in der GUI
-//                   playerButtons[row][col].setBackground(Color.YELLOW); // Zeige platziertes Schiff an
-//                   //playerButtons[][].setEnabled(false); // Deaktiviere Startposition
-//               } 
-//        	
-//        	
-//    		
-//            
-//         
-//        	
-//        	model.placeShips(row, col, Endrow, Endcol);
-//        	//Startposition 
-//        	playerButtons[row][col].setEnabled(false); //Button nicht funktionstüchtig
-//        	//Kreuze grün,Buttons setEnable(false) bei Auswahl, Möglichkeiten grün anzeigen , je nachdem Schiff vorhanden?
-//    		
-//    		
-//    		
-//    	}else {
-//    		
-//    	}
-//   }
-//    
-//    /////////////
-//    private void onPlayerButtonClicked(int row, int col) {
-//        if (model.isPhaseOne() && !model.alleSpielerSchiffePlatziert()) {
-//            // Überprüfe, ob die Auswahl gültig ist (z. B. nicht bereits belegt)
-//            if (model.isValidPlacement(row, col, shipLength)) {
-//                // Berechne die möglichen Endpositionen für das Schiff
-//                List<int[]> possibleEndPositions = model.calculatePossibleEndPositions(row, col, shipLength);
-//
-//                // Markiere die möglichen Endpositionen auf der GUI
-//                markPossibleEndPositions(possibleEndPositions);
-//
-//                // Warte auf Auswahl einer Endposition durch den Spieler
-//                addEndButtonListener((endRow, endCol) -> {
-//                    // Deaktiviere Buttons für platziertes Schiff
-//                    disablePlacedShipButtons(row, col, endRow, endCol);
-//
-//                    // Platziere das Schiff im DataModel
-//                    boolean shipPlaced = model.placeShips(row, col, endRow, endCol);
-//
-//                    if (shipPlaced) {
-//                        // Aktualisiere den Button-Status in der GUI
-//                        gui.updatePlayerButtonStatus(row, col, endRow, endCol, shipLength);
-//                        // Setze die Phase auf 2 (Angriffsphase)
-//                        model.setPhase(2);
-//                        // Wechsle zur Angriffsphase in der GUI (falls erforderlich)
-//                        // ...
-//                    } else {
-//                        // Zeige Fehlermeldung oder ändere Button-Farbe, falls das Schiff nicht platziert werden kann
-//                        // ...
-//                    }
-//
-//                    // Entferne den Listener für die Endpositionsauswahl
-//                    gui.removeEndButtonListener();
-//                    // Setze mögliche Endpositionen zurück
-//                    gui.resetPossibleEndPositions();
-//                });
-//                
-//            } else {
-//                // Zeige Fehlermeldung oder ändere Button-Farbe für ungültige Auswahl
-//                // ...
-//            }
-//        }
-//    }
-
     
-    ////////////
     
     //Markierung der möglichen Endpositionen
     private void markPossibleEndPositions(int row, int col) {
@@ -418,10 +379,6 @@ public class GUI extends JFrame
         	}
         }
     } 
-
-
-    
-    
     
     
     //Nachdem Setzen eines Schiffes: Felder nicht mehr auswählbar
