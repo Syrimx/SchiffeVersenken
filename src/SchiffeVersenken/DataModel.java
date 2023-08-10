@@ -15,8 +15,8 @@ import java.util.*;
 */
 
 public class DataModel {
-    private char[][] playerMatrix    = null; //Wie groß darf sie werden ? //int durch char getauscht, um mehr möglichkeiten zu haben, wie Nutzung von X
-    private char[][] enemyMatrix     = null;
+    private char[][] playerMatrix; //Wie groß darf sie werden ? //int durch char getauscht, um mehr möglichkeiten zu haben, wie Nutzung von X
+    private char[][] enemyMatrix;
 
 
     //verschiedene Schiffsklassen und deren Anzahl 
@@ -38,11 +38,20 @@ public class DataModel {
         this.playerMatrix = new char [10][10];
         this.enemyMatrix = new char[10][10];
 
-            //Erzeugen eines 10 x 10 Feldes gefüllt mit Nullen zum testen des Arrays
+        //playerMatrix und enemyMatrix zuerst Grundstatus Wasser geben
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                playerMatrix[i][j] = 'w';
+                enemyMatrix[i][j] = 'w';
+            }
+        }
+        //////
+        
+            //Erzeugen eines 10 x 10 Feldes gefüllt mit Wasser zum testen des Arrays
             for(int i = 0; i < playerMatrix.length; i++){
                 for(int j = 0; j < playerMatrix[i].length; j++){
-                	playerMatrix[i][j] = '0';
-                    enemyMatrix[i][j] = '0';
+                	playerMatrix[i][j] = 'w';
+                    enemyMatrix[i][j] = 'w';
         
                     System.out.print(playerMatrix[i][j] + " "); 
                 }
@@ -157,7 +166,22 @@ public class DataModel {
 	    } 
     }
     
+    //Kollisionen überprüfen, damit Schiffe nicht überlappen, für GUI
+    public boolean checkCollision(int startX, int startY, int endX, int endY) {
+        int dx = Integer.compare(endX, startX);
+        int dy = Integer.compare(endY, startY);
 
+        for (int x = startX; x != endX + dx; x += dx) {
+            for (int y = startY; y != endY + dy; y += dy) {
+                if (playerMatrix[x][y] == 's') {
+                    return true; // Kollision gefunden
+                }
+            }
+        }
+        return false; // Keine Kollision gefunden
+    }
+
+    
     // Methode zum Schießen auf gegnerisches Feld in Phase 2
     public void shootEnemyField(int row, int col) {
         if (phaseOne) {

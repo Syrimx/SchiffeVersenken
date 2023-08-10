@@ -84,9 +84,7 @@ public class GUI extends JFrame
     private int[] currentposition = new int[2];
     private char[][] enemyMatrix;
     private char[][] playerMatrix;
-    private char playerStatus;
-    private char enemyStatus;
-    
+  
     ////
     //Schiffe setzen 
     
@@ -262,7 +260,6 @@ public class GUI extends JFrame
     }
 
 
-
     //Aktion: Auswahl Schiff, speicher die Länge
     private void onShipTypeButtonClicked(String shipType) {
     	switch(shipType) {
@@ -301,14 +298,17 @@ public class GUI extends JFrame
         	{
     		if (shipLength == 0) {
                 instructionshipLabel.setText("Wähle einen Schiffstyp aus!");
-            } else if (startRow == -1 && startCol == -1 ) {
+            } if(playerButtons[row][col].getBackground() == Color.YELLOW) {
+            	instructionshipLabel.setText("Auf diesem Feld steht bereits ein Schiff! Wähle ein anderes aus!");	
+        	} else if (startRow == -1 && startCol == -1 || tmpshipLength != shipLength) {
                 // Speichern der Startposition
+//            	refreshMap();
                 startRow = row;
                 startCol = col; 
                 tmpshipLength = shipLength; //temporär gespeichert, zuständig zur Möglichkeit 
                 //rumzuklicken bis man was wirklich setzen will
-                playerButtons[startRow][startCol].setBackground(Color.ORANGE); //Startposition markieren
-                System.out.println(row + " und "+ col); //TEST
+                playerButtons[startRow][startCol].setBackground(Color.CYAN); //Startposition markieren
+           
                 instructionshipLabel.setText("Wähle die Endposition aus!");
                 //Markierung der möglichen Endpositionen
                 markPossibleEndPositions(startRow, startCol);
@@ -316,20 +316,18 @@ public class GUI extends JFrame
                 // Speichern der Endposition
                 endRow = row;
                 endCol = col;
-                // Hier können Sie die Schiffplatzierung durchführen
+                // Schiffplatzierung 
                 model.placeShips(startRow, startCol, endRow, endCol);
-                //SchiffButtons deaktivieren und gelb färben
-                disablePlacedShipButtons(startRow,startCol, endRow, endCol);
                 // Start- und Endpositionen zurücksetzen
                 startRow = -1;
-                startCol = -1;
+                startCol = -1; 
                 endRow = -1;
                 endCol = -1;
                 //Schiffslänge zurücksetzen
                 shipLength = 0;
                 
                 //Anzeige der Anahl Schiffe Aktualisieren
-                setupShipSelectionButtons();
+                setupShipSelectionButtons(); //komische Formatierung nach Aufruf?????
                 //Aktualisierung Status, holt Status von DataModel
                 refreshMap();
             }
@@ -337,40 +335,63 @@ public class GUI extends JFrame
     }
     
     
-    //Markierung der möglichen Endpositionen
+  //Markierung der möglichen Endpositionen
     private void markPossibleEndPositions(int row, int col) {
-    	System.out.println(shipLength);
-    	if(shipLength != 0) {
-    		switch(shipLength) {
-    		case '1':
-    			markPossiblePosition(row, col);
-    			break;
-    		case '2':
-	    		markPossiblePosition(row+1, col);
-	    		markPossiblePosition(row-1, col);
-	    		markPossiblePosition(row, col+1);
-	    		markPossiblePosition(row, col-1);
-    			break;
-    		case '3':
-    			markPossiblePosition(row+2, col);
-	    		markPossiblePosition(row-2, col);
-	    		markPossiblePosition(row, col+2);
-	    		markPossiblePosition(row, col+2);
-    			break;
-    		case '4':
-    			markPossiblePosition(row+3, col);
-	    		markPossiblePosition(row-3, col);
-	    		markPossiblePosition(row, col+3);
-	    		markPossiblePosition(row, col-3);
-    			break;
-    		default:
-    			
-    			break;
-    		}
-            
-    	}else {
-    		instructionshipLabel.setText("Wähle zuerst ein Schiffstyp aus!");
-    	}
+        System.out.println(shipLength);
+        if (shipLength != 0) {
+            switch (shipLength) {
+                case 1: // Note: Use integers here, not characters
+                    markPossiblePosition(row, col);
+                    break;
+                case 2:
+                	//Überprüfe das die Schiffe sich nicht überlappen
+                	if(!model.checkCollision(row, col, row + 1, col)) {
+                		markPossiblePosition(row + 1, col);
+                	}
+                	if(!model.checkCollision(row, col, row -1, col)) {
+                    markPossiblePosition(row - 1, col);
+                	}
+                	if(!model.checkCollision(row, col, row, col+1)) {
+                    markPossiblePosition(row, col + 1);
+                	}
+                	if(!model.checkCollision(row, col, row, col-1)) {
+                    markPossiblePosition(row, col - 1);
+                	}
+                    break;
+                case 3:
+                	if(!model.checkCollision(row, col, row + 2, col)) {
+                    markPossiblePosition(row + 2, col);
+                	}
+                	if(!model.checkCollision(row, col, row - 2, col)) {
+                    markPossiblePosition(row - 2, col);
+                	}
+                	if(!model.checkCollision(row, col, row, col+2)) {
+                    markPossiblePosition(row, col + 2);
+                	}
+                	if(!model.checkCollision(row, col, row, col-2)) {
+                    markPossiblePosition(row, col - 2); 
+                	}
+                    break;
+                case 4:
+                	if(!model.checkCollision(row, col, row +3, col)) {
+                    markPossiblePosition(row + 3, col);
+                	}
+                	if(!model.checkCollision(row, col, row - 3, col)) {
+                    markPossiblePosition(row - 3, col);
+                	}
+                	if(!model.checkCollision(row, col, row, col+3)) {
+                    markPossiblePosition(row, col + 3);
+                	}
+                	if(!model.checkCollision(row, col, row, col-3)) {
+                    markPossiblePosition(row, col - 3);
+                	}
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            instructionshipLabel.setText("Wähle zuerst ein Schiffstyp aus!");
+        }
     }
     
     //nur markieren wenn auch im Feld vorhanden und nicht bereits besetzt
@@ -382,20 +403,6 @@ public class GUI extends JFrame
         	}
         }
     } 
-    
-    
-    //Nachdem Setzen eines Schiffes: Felder nicht mehr auswählbar
-    private void disablePlacedShipButtons(int startRow, int startCol, int endRow, int endCol) {
-        //Schleife durch die betroffenen Buttons und deaktiviere sie
-        for (int row = startRow; row <= endRow; row++) {
-            for (int col = startCol; col <= endCol; col++) {
-                playerButtons[row][col].setEnabled(false);
-                playerButtons[row][col].setBackground(Color.yellow);
-            }
-        }
-        shipLength=0;
-    }
-    
     
     
     ///////
