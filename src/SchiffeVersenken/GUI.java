@@ -79,6 +79,7 @@ public class GUI extends JFrame
     private JLabel xAxisLabeling;
     private JLabel yAxisLabeling;
     private JPanel shipSelectionPanel;
+    private JLabel[] shipCountLabels;
     //
     //für Übergabe an Controller
     private int[] currentposition = new int[2];
@@ -234,8 +235,7 @@ public class GUI extends JFrame
 		}
     }
     
-   
-    
+ 
     private void setupShipSelectionButtons() {
         String[] shipTypes = model.getShipTypes();
         int[] shipCounts = model.getShipCounts();
@@ -245,21 +245,30 @@ public class GUI extends JFrame
         shipSelectionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         instructionshipLabel.add(shipSelectionPanel);
 
-        shipTypeButtons = new JButton[shipTypes.length]; // Array für Schaltflächen erstellen
+        shipTypeButtons = new JButton[shipTypes.length];
+        shipCountLabels = new JLabel[shipTypes.length]; // Initialize the shipCountLabels array
 
         for (int i = 0; i < shipTypes.length; i++) {
-            final int shipIndex = i; // Deklariere eine final Variable, um i zu speichern
-            shipTypeButtons[i] = new JButton(shipTypes[i]); // Schaltfläche erstellen und im Array speichern
+            final int shipIndex = i;
+            shipTypeButtons[i] = new JButton(shipTypes[i]);
             shipTypeButtons[i].setPreferredSize(new Dimension(100, 40));
             shipSelectionPanel.add(shipTypeButtons[i]);
             shipTypeButtons[i].addActionListener(e -> onShipTypeButtonClicked(shipTypes[shipIndex]));
             
-            JLabel shipCountLabel = new JLabel("Anzahl: " + shipCounts[i]);
-            shipSelectionPanel.add(shipCountLabel);
+            shipCountLabels[i] = new JLabel("Anzahl: " + shipCounts[i]); // Store the shipCountLabel in the array
+            shipSelectionPanel.add(shipCountLabels[i]);
         }
     }
-
-
+   
+    private void updateShipCountLabels(){
+    	String[] shipTypes = model.getShipTypes();
+        int[] shipCounts = model.getShipCounts();
+    	for (int i = 0; i < shipTypes.length; i++) {
+    		shipCountLabels[i] = new JLabel("Anzahl: " + shipCounts[i]);
+    	}
+    }
+    
+    
     //Aktion: Auswahl Schiff, speicher die Länge
     private void onShipTypeButtonClicked(String shipType) {
     	switch(shipType) {
@@ -282,15 +291,6 @@ public class GUI extends JFrame
     }
     
     
-////!!
-    //Anweisung für  die jeweilige Phasen Ausgabe !!
-    private String WritePhaseInstruction()  
-    {
-    	return "blahblah";
-    }
-////!!
-    
-    
   ///Aktionen   
 //Aktionen in der Schiffe setzen Phase, Spieler darf nur eigenes Feld manipulieren
     private void onPlayerButtonClicked(int row, int col) {
@@ -302,7 +302,7 @@ public class GUI extends JFrame
             	instructionshipLabel.setText("Auf diesem Feld steht bereits ein Schiff! Wähle ein anderes aus!");	
         	} else if (startRow == -1 && startCol == -1 || tmpshipLength != shipLength) {
                 // Speichern der Startposition
-//            	refreshMap();
+//            	refreshMap(); Problem !!!
                 startRow = row;
                 startCol = col; 
                 tmpshipLength = shipLength; //temporär gespeichert, zuständig zur Möglichkeit 
@@ -317,7 +317,7 @@ public class GUI extends JFrame
                 endRow = row;
                 endCol = col;
                 // Schiffplatzierung 
-                model.placeShips(startRow, startCol, endRow, endCol);
+//                model.placeShips(startRow, startCol, endRow, endCol); //Problem!!!
                 // Start- und Endpositionen zurücksetzen
                 startRow = -1;
                 startCol = -1; 
@@ -325,11 +325,10 @@ public class GUI extends JFrame
                 endCol = -1;
                 //Schiffslänge zurücksetzen
                 shipLength = 0;
-                
-                //Anzeige der Anahl Schiffe Aktualisieren
-                setupShipSelectionButtons(); //komische Formatierung nach Aufruf?????
+                //Anzeige der Anzahl Schiffe Aktualisieren
+                updateShipCountLabels();
                 //Aktualisierung Status, holt Status von DataModel
-                refreshMap();
+//                refreshMap(); //Problem mit DataModel !!!
             }
         }
     }
@@ -347,42 +346,33 @@ public class GUI extends JFrame
                 	//Überprüfe das die Schiffe sich nicht überlappen
                 	if(!model.checkCollision(row, col, row + 1, col)) {
                 		markPossiblePosition(row + 1, col);
-                	}
-                	if(!model.checkCollision(row, col, row -1, col)) {
+                	}if(!model.checkCollision(row, col, row -1, col)) {
                     markPossiblePosition(row - 1, col);
-                	}
-                	if(!model.checkCollision(row, col, row, col+1)) {
+                	}if(!model.checkCollision(row, col, row, col+1)) {
                     markPossiblePosition(row, col + 1);
-                	}
-                	if(!model.checkCollision(row, col, row, col-1)) {
+                	}if(!model.checkCollision(row, col, row, col-1)) {
                     markPossiblePosition(row, col - 1);
                 	}
                     break;
                 case 3:
                 	if(!model.checkCollision(row, col, row + 2, col)) {
                     markPossiblePosition(row + 2, col);
-                	}
-                	if(!model.checkCollision(row, col, row - 2, col)) {
+                	}if(!model.checkCollision(row, col, row - 2, col)) {
                     markPossiblePosition(row - 2, col);
-                	}
-                	if(!model.checkCollision(row, col, row, col+2)) {
+                	}if(!model.checkCollision(row, col, row, col+2)) {
                     markPossiblePosition(row, col + 2);
-                	}
-                	if(!model.checkCollision(row, col, row, col-2)) {
+                	}if(!model.checkCollision(row, col, row, col-2)) {
                     markPossiblePosition(row, col - 2); 
                 	}
                     break;
                 case 4:
                 	if(!model.checkCollision(row, col, row +3, col)) {
                     markPossiblePosition(row + 3, col);
-                	}
-                	if(!model.checkCollision(row, col, row - 3, col)) {
+                	}if(!model.checkCollision(row, col, row - 3, col)) {
                     markPossiblePosition(row - 3, col);
-                	}
-                	if(!model.checkCollision(row, col, row, col+3)) {
+                	}if(!model.checkCollision(row, col, row, col+3)) {
                     markPossiblePosition(row, col + 3);
-                	}
-                	if(!model.checkCollision(row, col, row, col-3)) {
+                	}if(!model.checkCollision(row, col, row, col-3)) {
                     markPossiblePosition(row, col - 3);
                 	}
                     break;
@@ -527,25 +517,5 @@ public class GUI extends JFrame
     	
     }
     
-    
-    
-    //ersetzt durch setShipsSelectionButtons
-//  //Schiff Typen und Anzahl Ausgabe
-//  private String WriteShipInfo() {
-//      StringBuilder shipInfo = new StringBuilder(); // Verwende StringBuilder, um Text zusammenzustellen
-//      int[] shipCounts = model.getShipCounts();
-//      String[] shipNames = model.getShipTypes();
-//      
-//      for (int i = 0; i < shipNames.length; i++) {
-//          shipInfo.append(shipNames[i]).append(": ").append(shipCounts[i]);
-//          
-//          // Füge eine Trennzeichen nach jedem Eintrag hinzu, außer beim letzten Eintrag
-//          if (i < shipNames.length - 1) {
-//              shipInfo.append(", ");
-//          }
-//      }
-//
-//      return shipInfo.toString(); // Gib den zusammengestellten Text zurück
-//  }
     
 }

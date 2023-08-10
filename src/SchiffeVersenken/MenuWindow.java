@@ -57,4 +57,8 @@ public class MenuWindow extends JFrame
     public int[] getCurrentPosition() {
         return this.gameWindow.getCurrentPosition();
     }
+    
+    public void refreshMaps() {
+    	this.gameWindow.refreshMap();
+    }
 }
