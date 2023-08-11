@@ -9,9 +9,10 @@ public class Main {
 	{
 		MenuWindow menuWindow 	= new MenuWindow();
 		//-> GUI?
-		Spieler spieler 		= new Spieler("Mona");
-		//DataModel datamodel		= new DataModel();
-		//Client client 			= new Client();
+		Spieler spieler 		= new Spieler();
+		Controller controller 	= new Controller();
+		//DataModel datamodel	= new DataModel();
+		//Client client 		= new Client();
 		
 		//Test one shot
 		System.out.println("this is the first shot");

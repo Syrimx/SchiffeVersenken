@@ -21,7 +21,7 @@ public class Server {
             //Get Data from Server
             while(true) {
                 //Abbruchbedingung erfüllt
-                if(controller.gameState == 2) {
+                if(Controller.gamePhase == 2) {
                     serverSocket.close();
                     socket.close();
                     System.out.println("[SERVER] Shutdown Server...");
@@ -36,7 +36,7 @@ public class Server {
                 System.out.println(input.readObject().toString());
                 /*respond object -> something done with the controller */
                 
-                HashMap<Integer, char[][]> response = controller.manipulateData((HashMap<Integer, int[]>)input.readObject());
+                HashMap<Integer, char[][]> response = controller.manipulateData((HashMap<Integer, int[]>) input.readObject());
                 /*actual response*/
                 output.writeObject(response);
 

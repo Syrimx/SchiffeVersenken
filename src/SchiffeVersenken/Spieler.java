@@ -6,7 +6,6 @@ import java.util.Random;
 public class Spieler {
 
     Random random = new Random();
-    private String name = null;
     private int roundToken = 0; //Token mit dem sich die Spieler gegenüber dem controller Identifizieren
                                 //Controller nutzt diesen um zu schauen wer dran ist
     private DataModel datamodel = new DataModel();
@@ -14,8 +13,7 @@ public class Spieler {
 
     //der Spielerklasse wird die GUI als Objekt übergeben, damit die Spielerklasse auf deren Funktionen zugreifen kann
     //insbesondere receiveCoordinates()
-    public Spieler(String name) {
-        this.name = name;
+    public Spieler() {
         this.roundToken = random.nextInt(100);
     }
 

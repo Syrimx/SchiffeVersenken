@@ -85,10 +85,10 @@ public class Controller {
         //wasser
         if(token == 'w') {
             status = 0;
-            field[this.firePosition[0]][this.firePosition[1]] = "b";    //setze feld auf bekannt
+            field[this.firePosition[0]][this.firePosition[1]] = 'b';    //setze feld auf bekannt
         } else if(token == 's') {   //schiff
             status = 1;
-            field[this.firePosition[0]][this.firePosition[1]] = "x"; //setze feld auf getroffen
+            field[this.firePosition[0]][this.firePosition[1]] = 'x'; //setze feld auf getroffen
         } else {    //kein gültiger schuss -> vielleicht vorher schon abfangen (GUI?)
             status = 2;
         }
@@ -115,14 +115,139 @@ public class Controller {
         return null;
     }
 
+    /*** Robot Section ***/
+    /*check if field is set*/
+    //                       left right        up/down
+    ////-> {row and column}, {stepsHorizontal, stepsVertical}
+    //return -1 in every field element to flag that the field is not fine
+    public int[][] checkCollision(int row, int column, int shipLength) {
+        int[][] validPosition = {{-1,-1}, {0,0}};
+        int horizontalSteps = 0;
+        int verticalSteps = 0;
+
+        //check if the selected position is already set
+        //return inital validPosition array if place is already set
+        if(this.robotMatrix[row][column] != 'w') {
+            return validPosition;
+        //return valid array, when position is fine and ship length is 1
+        } else if(shipLength == 1 && this.robotMatrix[row][column] == 'w') {
+            int[][] temp = {{row, column},{0,0}};
+            return temp;
+        }   
+
+        //check horizontally
+        //negative numbers are representing down and left within the steps that can be taken
+        for(int i = 0; i < this.robotMatrix.length; i++) {
+            //check right
+            for(int j = 1; i <= shipLength; j++) {
+                //check if coordinate still within the field
+                if(row + j > 10) {
+                    break;
+                }
+                //check if fields to the left of given coordinate is valid
+                if(this.robotMatrix[row+j][column] != 'w') {
+                    break;
+                }
+                //if every field is check set the setps
+                if(j == shipLength) {
+                    horizontalSteps = shipLength; // -> place seems to valid so the horizontal field can be set
+                }
+            }
+
+            //check left
+            if(horizontalSteps == 0) {
+                for(int j = 1; i <= shipLength; j++) {
+                    //check if coordinate still within the field
+                    if(row - j < 0) {
+                        break;
+                    }
+                    //check if fields to the left of given coordinate is valid
+                    if(this.robotMatrix[row-j][column] != 'w') {
+                        break;
+                    }
+                    //if every field is check set the setps
+                    if(j == shipLength) {
+                        horizontalSteps = shipLength; // -> place seems to valid so the horizontal field can be set
+                    }                
+                }
+            }
+ 
+        }
+
+        //check vertically 
+        if(horizontalSteps == 0) {
+            for(int i = 0; i < this.robotMatrix.length; i++) {
+                //check up
+                for(int j = 1; i <= shipLength; j++) {
+                    //check if coordinate still within the field
+                    if(column + j > 10) {
+                        break;
+                    }
+                    //check if fields to the left of given coordinate is valid
+                    if(this.robotMatrix[row][column+j] != 'w') {
+                        break;
+                    }
+                    //if every field is check set the setps
+                    if(j == shipLength) {
+                        verticalSteps = shipLength; // -> place seems to valid so the horizontal field can be set
+                    }                
+                }
+
+                //check down
+                if(verticalSteps == 0) {
+                    for(int j = 1; i <= shipLength; j++) {
+                        //check if coordinate still within the field
+                        if(column - j < 0) {
+                            break;
+                        }
+                        //check if fields to the left of given coordinate is valid
+                        if(this.robotMatrix[row][column-1] != 'w') {
+                            break;
+                        }
+                        //if every field is check set the setps
+                        if(j == shipLength) {
+                            verticalSteps = shipLength*(-1); // -> place seems to valid so the horizontal field can be set
+                        }         
+                    }
+       
+                }
+            }
+        }
+
+
+        //set new steps
+        validPosition[1][0] = horizontalSteps;
+        validPosition[1][1] = verticalSteps;
+
+
+        return validPosition; // -> new positions must be validated while setting
+    }
+
     //setze initiale schiffe für den roboter
+    //10 schiffe: [4mal 1x1, 3mal 2x2, 2mal 3x3, 1mal 4x4]
     public void setShipsRobot() {
+        int[] ships = {4,3,3,2,2,2,1,1,1,1};
         //initialize robotMatrix
         for(int i; i < this.robotMatrix.length; i++) {
             for(int j; j < this.robotMatrix.length; j++) {
                 this.robotMatrix[i][j] = 'w';
             }
         }
+
+        //set ships -> ungetested
+        for(int ship : ships) {
+            //check if position is valid                                     let/ right        up/down
+            int[][] validPosition   = {{-1,-1}, {0,0}}; //-> {row and column}, {stepsHorizontal, stepsVertical}
+            int row                 = 0;
+            int column              = 0;
+            do{
+                row     = random.nextInt(10);
+                column  = random.nextInt(10);
+                validPosition = checkCollision(row, column, ship);
+            } while(validPosition[0][0] == -1);
+
+        }
+        
 
     }
 
