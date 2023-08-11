@@ -15,7 +15,6 @@ public class Server {
 
         //initializiert den server
         try {
-            //Controller controller = new Controller();
             ServerSocket serverSocket = new ServerSocket(7777);
             Socket socket = null;
             System.out.println("[SERVER] startet auf Localhost:7777...");

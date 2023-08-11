@@ -2,6 +2,9 @@ package SchiffeVersenken;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Arrays;
+import java.util.Random;
+
 
 /* Controller -> Server
  * 
@@ -24,6 +27,7 @@ public class Controller {
     private int[] firePosition = null;
     private Integer identifyToken = null;
     private int counter = 0; //Anzahl der Schiffe ?
+    Random random = new Random();
     
     public Controller() {
         gameState = new HashMap<Integer, char[][]>();
@@ -106,8 +110,15 @@ public class Controller {
         }
          //bedingung if/else
         //Spielfeld auslesen -> bei den schusswerten character setzen in gamestate einfügen
-        char[][] newGameField = this.evaluateImpact(data);  //Prüft wie effektiv der gesetzte Schuss war
+        HashMap<Integer, char[][]> newGameField = this.evaluateImpact(data);  //Prüft wie effektiv der gesetzte Schuss war
         return null;
+    }
+
+    //setze initiale schiffe für den roboter
+    public void setShipsRobot() {
+        char[][] robotMatrix = new Array<char[][]>();
+
+
     }
 }
 
