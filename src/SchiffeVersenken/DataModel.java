@@ -15,8 +15,8 @@ import java.util.*;
 */
 
 public class DataModel {
-    private char[][] playerMatrix; //Wie groß darf sie werden ? //int durch char getauscht, um mehr möglichkeiten zu haben, wie Nutzung von X
-    private char[][] enemyMatrix;
+    private char[][] playerMatrix = new char[10][10]; //Wie groß darf sie werden ? //int durch char getauscht, um mehr möglichkeiten zu haben, wie Nutzung von X
+    private char[][] enemyMatrix = new char[10][10];
 
 
     //verschiedene Schiffsklassen und deren Anzahl 
@@ -33,11 +33,12 @@ public class DataModel {
     
 
     public DataModel() {
-        // -> Intiale Matrix erstellen // also einmal beim Initialisierendes Objektes
-        // Groeße des Feldes nach klassischen Spielregeln 10 x 10 
-        this.playerMatrix = new char [10][10];
-        this.enemyMatrix = new char[10][10];
 
+
+    } 
+
+    // -> Intiale Matrix erstellen // also einmal beim Initialisierendes Objektes
+    public void createInitialMatrix() {
         //playerMatrix und enemyMatrix zuerst Grundstatus Wasser geben
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -45,23 +46,26 @@ public class DataModel {
                 enemyMatrix[i][j] = 'w';
             }
         }
-        //////
+    }
+
+    public void displayMatrix() {
+                //////
         
-            System.out.println("[DATAMODEL]");
-            //Erzeugen eines 10 x 10 Feldes gefüllt mit Wasser zum testen des Arrays
-            for(int i = 0; i < playerMatrix.length; i++){
-                for(int j = 0; j < playerMatrix[i].length; j++){
-                	playerMatrix[i][j] = 'w';
-                    enemyMatrix[i][j] = 'w';
+        System.out.println("[DATAMODEL]");
+        //Erzeugen eines 10 x 10 Feldes gefüllt mit Wasser zum testen des Arrays
+        for(int i = 0; i < playerMatrix.length; i++){
+            for(int j = 0; j < playerMatrix[i].length; j++){
+                playerMatrix[i][j] = 'w';
+                enemyMatrix[i][j] = 'w';
         
-                    System.out.print(playerMatrix[i][j] + " "); 
-                }
-                System.out.println();           //geht eine Zeile nach unten
+                System.out.print(playerMatrix[i][j] + " "); 
             }
+            System.out.println();           //geht eine Zeile nach unten
+        }
             
      
-           //vorher char[][] Datentyp: return this.playgroundMatrix;
-    } 
+        //vorher char[][] Datentyp: return this.playgroundMatrix;
+    }
 
     
     //Methode um zu prüfen, ob alle Spieler Schiffe gesetzt wurden
