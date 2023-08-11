@@ -102,8 +102,9 @@ public class Controller {
         for(Entry<Integer, int[]> item : data.entrySet()) {
             this.roundToken = item.getValue();
             this.firePosition = item.getKey();
+            this.testIfValid(data.getKey());
         }
-        this.testIfValid(data.getKey()); //bedingung if/else
+         //bedingung if/else
         //Spielfeld auslesen -> bei den schusswerten character setzen in gamestate einfügen
         char[][] newGameField = this.evaluateImpact(data);  //Prüft wie effektiv der gesetzte Schuss war
         return null;
