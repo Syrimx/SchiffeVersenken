@@ -32,7 +32,7 @@ public class DataModel {
     private List<int[]> hits = new ArrayList<>();
     
 
-    public void DataModel() {
+    public DataModel() {
         // -> Intiale Matrix erstellen // also einmal beim Initialisierendes Objektes
         // Groeße des Feldes nach klassischen Spielregeln 10 x 10 
         this.playerMatrix = new char [10][10];

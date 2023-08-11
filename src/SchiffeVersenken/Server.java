@@ -22,12 +22,12 @@ public class Server {
             //Get Data from Server
             while(true) {
                 //Abbruchbedingung erfüllt
-                /*if(controller.gameState == 2) {
+                if(controller.gameState == 2) {
                     serverSocket.close();
                     socket.close();
                     System.out.println("[SERVER] Shutdown Server...");
                     break;
-                }*/
+                }
                 socket = serverSocket.accept();
                 System.out.println("[SERVER] " + socket.getInetAddress() + " has connected to Port 7777...");
 
