@@ -47,6 +47,7 @@ public class DataModel {
         }
         //////
         
+            System.out.println("[DATAMODEL]");
             //Erzeugen eines 10 x 10 Feldes gefüllt mit Wasser zum testen des Arrays
             for(int i = 0; i < playerMatrix.length; i++){
                 for(int j = 0; j < playerMatrix[i].length; j++){

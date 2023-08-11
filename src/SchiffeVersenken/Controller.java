@@ -27,6 +27,7 @@ public class Controller {
     private int[] firePosition = null;
     private Integer identifyToken = null;
     private int counter = 0; //Anzahl der Schiffe ?
+    private char[][] robotMatrix = new char[10][10];
     Random random = new Random();
     
     public Controller() {
@@ -116,9 +117,23 @@ public class Controller {
 
     //setze initiale schiffe für den roboter
     public void setShipsRobot() {
-        char[][] robotMatrix = new Array<char[][]>();
+        //initialize robotMatrix
+        for(int i; i < this.robotMatrix.length; i++) {
+            for(int j; j < this.robotMatrix.length; j++) {
+                this.robotMatrix[i][j] = 'w';
+            }
+        }
+
+    }
 
 
+    //print the robot map
+    public void printRobotMap() {
+        for(int i; i < robotMatrix.length; i++) {
+            for(int j; j < robotMatrix.length; j++) {
+                System.out.println(this.robotMatrix);
+            }
+        }
     }
 }
 

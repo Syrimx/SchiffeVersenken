@@ -17,8 +17,6 @@ public class Spieler {
     public Spieler(String name) {
         this.name = name;
         this.roundToken = random.nextInt(100);
-        //this.gui = new GUI();
-        //this.datamodel = new DataModel();
     }
 
     //Constructs payload which is transmitted over with the client
@@ -28,7 +26,6 @@ public class Spieler {
     public HashMap<Integer, int[]> buildPayload(int[] currentPosition) {
         HashMap<Integer, int[]> payload = new HashMap<Integer, int[]>();
         payload.put(this.roundToken, currentPosition); //Which datatype is returned by GUI ?
-
         return payload;
     } 
 
