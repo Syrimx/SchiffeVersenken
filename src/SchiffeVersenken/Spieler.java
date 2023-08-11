@@ -25,7 +25,7 @@ public class Spieler {
     //it receives the coordinates triggered with playground.getCurrentPosition() 
     //and returns this objekt ->
     //-> this objekt will be send via the client to the server to fullfill a legit action during the respective turn
-    public HashMap<Integer, int[]> buildPayload(Object currentPosition) {
+    public HashMap<Integer, int[]> buildPayload(int[] currentPosition) {
         HashMap<Integer, int[]> payload = new HashMap<Integer, int[]>();
         this.currentPosition = currentPosition;   //Speichert die, vom gui objekt bezogene Click Position
         payload.put(this.roundToken, this.currentPosition); //Which datatype is returned by GUI ?
