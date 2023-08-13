@@ -34,7 +34,7 @@ public class Client {
 
             //data returned from the server
             this.input = new ObjectInputStream(this.clientSocket.getInputStream());
-            serverData =(HashMap<Integer, char[][]>) this.input.readObject();    //ggf deserialzing von Object zu char[][]
+            serverData = (HashMap<Integer, char[][]>) this.input.readObject();    //ggf deserialzing von Object zu char[][]
 
             System.out.println(serverData.toString());
             System.out.println("[CLIENT] Connection closed...");
