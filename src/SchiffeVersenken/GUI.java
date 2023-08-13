@@ -251,11 +251,9 @@ public class GUI extends JFrame
             xAxisLabelPanel.add(xAxisLabelForeground);
         }
     }
-    
-   /// 
+
  
     
-    //Buttons beschränken, nicht unendlich oft klicken können 
     private void setupShipSelectionButtons() {
         String[] shipTypes = model.getShipTypes();
         int[] shipCounts = model.getShipCounts();
@@ -266,7 +264,7 @@ public class GUI extends JFrame
         instructionshipLabel.add(shipSelectionPanel);
 
         shipTypeButtons = new JButton[shipTypes.length];
-        shipCountLabels = new JLabel[shipTypes.length]; // Initialize the shipCountLabels array
+        shipCountLabels = new JLabel[shipTypes.length]; 
 
         for (int i = 0; i < shipTypes.length; i++) {
             final int shipIndex = i;
@@ -275,7 +273,7 @@ public class GUI extends JFrame
             shipSelectionPanel.add(shipTypeButtons[i]);
             shipTypeButtons[i].addActionListener(e -> onShipTypeButtonClicked(shipTypes[shipIndex]));
             
-            shipCountLabels[i] = new JLabel("Anzahl: " + shipCounts[i]); // Store the shipCountLabel in the array
+            shipCountLabels[i] = new JLabel("Anzahl: " + shipCounts[i]); 
             shipSelectionPanel.add(shipCountLabels[i]);
         }
     }
@@ -311,6 +309,15 @@ public class GUI extends JFrame
     }
     
     
+    private void SelectionButtonsEnabled() {
+    	int[] shipCounts = model.getShipCounts();
+    	for(int i = 0; i < 4; i++) {
+    		if(shipCounts[i]== 0) {
+    			shipTypeButtons[i].setEnabled(false);
+    		}
+    	}
+    }
+    
   ///Aktionen   
 //Aktionen in der Schiffe setzen Phase, Spieler darf nur eigenes Feld manipulieren
     private void onPlayerButtonClicked(int row, int col) {
@@ -322,7 +329,7 @@ public class GUI extends JFrame
             	instructionshipLabel.setText("Auf diesem Feld steht bereits ein Schiff! Wähle ein anderes aus!");	
         	} else if (startRow == -1 && startCol == -1 || tmpshipLength != shipLength) {
                 // Speichern der Startposition
-//            	refreshMap(); Problem !!!
+            	refreshMap(); 
                 startRow = row;
                 startCol = col; 
                 tmpshipLength = shipLength; //temporär gespeichert, zuständig zur Möglichkeit 
@@ -337,7 +344,7 @@ public class GUI extends JFrame
                 endRow = row;
                 endCol = col;
                 // Schiffplatzierung 
-//                model.placeShips(startRow, startCol, endRow, endCol); //Problem!!!
+                model.placeShips(startRow, startCol, endRow, endCol); 
                 // Start- und Endpositionen zurücksetzen
                 startRow = -1;
                 startCol = -1; 
@@ -348,7 +355,16 @@ public class GUI extends JFrame
                 //Anzeige der Anzahl Schiffe Aktualisieren
                 updateShipCountLabels();
                 //Aktualisierung Status, holt Status von DataModel
-//                refreshMap(); //Problem mit DataModel !!!
+                refreshMap(); 
+                
+                instructionshipLabel.setText("");
+                SelectionButtonsEnabled();
+   
+                //Wechsel zur Phase 2
+                if(model.alleSpielerSchiffePlatziert()) {
+                	model.setPhase(2);
+                	instructionLabel.setText("Schießen Sie auf das gegnerische Feld!");
+                }
             }
         }
     }
