@@ -171,8 +171,7 @@ public class GUI extends JFrame
 
   
     //Buttonfelder und x-und y-Achsen Beschriftung erstellen
-    public void drawMap() {   
-    	    
+    public void drawMap() {    
     	// Erstelle panels für das player Feld, x-achse labels, and y-achse labels
     	JPanel playerXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
     	JPanel playerYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
@@ -187,6 +186,37 @@ public class GUI extends JFrame
         addLabeledPanelToMainPanel(labeledPlayerPanel, 1, 0);
         
         // Erstelle player/enemy buttons und labels
+        addButtonstoPanel();
+
+	    addAxisLabels(playerYAxisLabelPanel, playerXAxisLabelPanel, Color.BLACK);
+	    addAxisLabels(enemyYAxisLabelPanel, enemyXAxisLabelPanel, Color.WHITE);
+    }
+    
+    //Hilfsfunktionen für drawMap:
+    private void addLabeledPanelToMainPanel(JPanel labeledPanel, int gridX, int gridY) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.gridx = gridX;
+        gbc.gridy = gridY;
+        gbc.insets = new Insets(30, 30, 30, 30);
+        mainPanel.add(labeledPanel, gbc);
+    }
+
+    private JPanel createLabeledPanel(JPanel panel, JPanel xAxisLabelPanel, JPanel yAxisLabelPanel, Color background) {
+        JPanel labeledPanel = new JPanel(new BorderLayout());
+        labeledPanel.add(xAxisLabelPanel, BorderLayout.NORTH);
+        labeledPanel.add(yAxisLabelPanel, BorderLayout.WEST);
+        labeledPanel.add(panel, BorderLayout.CENTER);
+
+        xAxisLabelPanel.setBackground(background);
+        yAxisLabelPanel.setBackground(background);
+        return labeledPanel;
+    }
+    
+    private void addButtonstoPanel() {
+    	// Erstelle player/enemy buttons und labels
         playerButtons = new JButton[10][10];
         enemyButtons = new JButton[10][10];
 
@@ -214,31 +244,6 @@ public class GUI extends JFrame
                 enemyPanel.add(enemyButtons[row][col]);
             }
         }
-	       addAxisLabels(playerYAxisLabelPanel, playerXAxisLabelPanel, Color.BLACK);
-	       addAxisLabels(enemyYAxisLabelPanel, enemyXAxisLabelPanel, Color.WHITE);
-    }
-    
-    //Hilfsfunktionen für drawMap:
-    private void addLabeledPanelToMainPanel(JPanel labeledPanel, int gridX, int gridY) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.gridx = gridX;
-        gbc.gridy = gridY;
-        gbc.insets = new Insets(30, 30, 30, 30);
-        mainPanel.add(labeledPanel, gbc);
-    }
-
-    private JPanel createLabeledPanel(JPanel panel, JPanel xAxisLabelPanel, JPanel yAxisLabelPanel, Color background) {
-        JPanel labeledPanel = new JPanel(new BorderLayout());
-        labeledPanel.add(xAxisLabelPanel, BorderLayout.NORTH);
-        labeledPanel.add(yAxisLabelPanel, BorderLayout.WEST);
-        labeledPanel.add(panel, BorderLayout.CENTER);
-
-        xAxisLabelPanel.setBackground(background);
-        yAxisLabelPanel.setBackground(background);
-        return labeledPanel;
     }
     
     private void addAxisLabels(JPanel yAxisLabelPanel, JPanel xAxisLabelPanel, Color foreground) {
