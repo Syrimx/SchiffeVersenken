@@ -369,67 +369,34 @@ public class GUI extends JFrame
         }
     }
     
-    
-  //Markierung der möglichen Endpositionen
-    private void markPossibleEndPositions(int row, int col) {
-        System.out.println(shipLength);
+    //Markierung der möglichen Endpositionen
+    private void markPossibleEndPositions(int startRow, int startCol) {
         if (shipLength != 0) {
-            switch (shipLength) {
-                case 1: // Note: Use integers here, not characters
-                    markPossiblePosition(row, col);
-                    break;
-                case 2:
-                	//Überprüfe das die Schiffe sich nicht überlappen
-                	if(!model.checkCollision(row, col, row + 1, col)) {
-                		markPossiblePosition(row + 1, col);
-                	}if(!model.checkCollision(row, col, row -1, col)) {
-                    markPossiblePosition(row - 1, col);
-                	}if(!model.checkCollision(row, col, row, col+1)) {
-                    markPossiblePosition(row, col + 1);
-                	}if(!model.checkCollision(row, col, row, col-1)) {
-                    markPossiblePosition(row, col - 1);
-                	}
-                    break;
-                case 3:
-                	if(!model.checkCollision(row, col, row + 2, col)) {
-                    markPossiblePosition(row + 2, col);
-                	}if(!model.checkCollision(row, col, row - 2, col)) {
-                    markPossiblePosition(row - 2, col);
-                	}if(!model.checkCollision(row, col, row, col+2)) {
-                    markPossiblePosition(row, col + 2);
-                	}if(!model.checkCollision(row, col, row, col-2)) {
-                    markPossiblePosition(row, col - 2); 
-                	}
-                    break;
-                case 4:
-                	if(!model.checkCollision(row, col, row +3, col)) {
-                    markPossiblePosition(row + 3, col);
-                	}if(!model.checkCollision(row, col, row - 3, col)) {
-                    markPossiblePosition(row - 3, col);
-                	}if(!model.checkCollision(row, col, row, col+3)) {
-                    markPossiblePosition(row, col + 3);
-                	}if(!model.checkCollision(row, col, row, col-3)) {
-                    markPossiblePosition(row, col - 3);
-                	}
-                    break;
-                default:
-                    break;
+            int[][] offsets = {
+                {1, 0}, {-1, 0}, {0, 1}, {0, -1}
+            };
+
+            for (int[] offset : offsets) {
+                int endRow = startRow + offset[0] * (shipLength - 1); //Zeilenverschiebung
+                int endCol = startCol + offset[1] * (shipLength - 1); //Spaltenverschiebung
+                if (isValidPosition(endRow, endCol) && !model.checkCollision(startRow, startCol, endRow, endCol)) {
+                    markPossiblePosition(endRow, endCol);
+                }
             }
         } else {
             instructionshipLabel.setText("Wähle zuerst ein Schiffstyp aus!");
         }
     }
-    
-    //nur markieren wenn auch im Feld vorhanden und nicht bereits besetzt
+
+    private boolean isValidPosition(int row, int col) {
+        return row >= 0 && row < 10 && col >= 0 && col < 10;
+    }
+
     private void markPossiblePosition(int row, int col) {
-        if (row >= 0 && row < 10 && col >= 0 && col < 10) {
-        	if (playerButtons[row][col].isEnabled()) {
-        		
-        		playerButtons[row][col].setBackground(Color.GREEN);
-        	}
-        }
-    } 
-    
+        playerButtons[row][col].setBackground(Color.GREEN);
+    }
+
+
     
     ///////
     //Aktionen in der Schießen Phase, Spieler darf nur Gegner Feld manipulieren
