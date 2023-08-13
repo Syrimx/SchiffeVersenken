@@ -60,19 +60,11 @@ import javax.swing.SwingConstants;
 public class GUI extends JFrame
 {
 	private DataModel model;
-	
     private MenuWindow menuWindow;
+    
     private JPanel instructionPanel;
-    private JPanel playerLabelPanel;
-    private JPanel enemyLabelPanel;
     private JPanel enemyPanel;
     private JPanel playerPanel;
-    private JPanel labeledPlayerPanel;
-    private JPanel labeledEnemyPanel;
-//    private JPanel playerXAxisLabelPanel;
-//    private JPanel enemyXAxisLabelPanel; 
-//    private JPanel playerYAxisLabelPanel;
-//    private JPanel enemyYAxisLabelPanel;
     private JLabel instructionLabel;
     private JLabel instructionshipLabel;
     private JLabel playerTitelLabel;
@@ -84,8 +76,6 @@ public class GUI extends JFrame
     private JButton[][] playerButtons;
     private JButton[][] enemyButtons;
     private JButton[] shipTypeButtons; //Länge auswählen
-    private JLabel xAxisLabeling;
-    private JLabel yAxisLabeling;
     private JPanel shipSelectionPanel;
     private JLabel[] shipCountLabels;
     //
