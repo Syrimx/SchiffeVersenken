@@ -136,30 +136,49 @@ public class DataModel {
     //Status beim Schiffe setzen aktualisieren
     public void setShipStatus(int startX, int startY, int endX, int endY) {
     	// Den angegebenen Bereich auf "s" setzen
-        for (int i = startX; i <= endX; i++) {
-            for (int j = startY; j <= endY; j++) {
-                playerMatrix[i][j] = 's';
-            }
-        }
+    	if (startX <= endX && startY <= endY) {
+    		for (int i = startX; i <= endX; i++) {
+                for (int j = startY; j <= endY; j++) {
+                    playerMatrix[i][j] = 's';
+                }
+    		}
+        } else if (startX >= endX && startY >= endY) {
+        	for (int i = startX; i >= endX; i--) {
+                for (int j = startY; j >= endY; j--) {
+                    playerMatrix[i][j] = 's';
+                }
+    		}
+        }	
     }
     
-    //Kollisionen überprüfen, damit Schiffe nicht überlappen, für GUI
+    
+  //Kollisionen überprüfen, damit Schiffe nicht überlappen, für GUI
 	  public boolean checkCollision(int startX, int startY, int endX, int endY) {
 	  	// Prüfen, ob eine Position im angegebenen Bereich bereits "s" enthält
-	      for (int i = startX; i <= endX; i++) {
-	          for (int j = startY; j <= endY; j++) {
-	              if (playerMatrix[i][j] == 's') {
-	              	System.out.println("Kollision!");
-	                  return true;  // Kollision
-	              }
-	          }
-	      }
+		  if (startX <= endX && startY <= endY) {
+		        for (int i = startX; i <= endX; i++) {
+		            for (int j = startY; j <= endY; j++) {
+		                if (playerMatrix[i][j] == 's') {
+		                    System.out.println("Kollision!");
+		                    return true;  // Kollision
+		                }
+		            }
+		        }
+		        
+		    } else if (startX >= endX && startY >= endY) {
+		        for (int i = startX; i >= endX; i--) {
+		            for (int j = startY; j >= endY; j--) {
+		                if (playerMatrix[i][j] == 's') {
+		                    System.out.println("Kollision!");
+		                    return true;  // Kollision
+		                }
+		            }
+		        }
+		    }
 	  	System.out.println("Keine Kollision!");
 	      return false;  // keine Kollision
 	  }
-   
-
-	  
+	    
     
     // Methode zum Schießen auf gegnerisches Feld in Phase 2
     public void shootEnemyField(int row, int col) {
