@@ -226,7 +226,7 @@ public class GUI extends JFrame
         gbc.weighty = 1.0;
         gbc.gridx = gridX;
         gbc.gridy = gridY;
-        gbc.insets = new Insets(40, 40, 40, 40);
+        gbc.insets = new Insets(30, 30, 30, 30);
         mainPanel.add(labeledPanel, gbc);
     }
 
