@@ -67,8 +67,16 @@ public class GUI extends JFrame
     private JPanel enemyLabelPanel;
     private JPanel enemyPanel;
     private JPanel playerPanel;
+    private JPanel labeledPlayerPanel;
+    private JPanel labeledEnemyPanel;
+//    private JPanel playerXAxisLabelPanel;
+//    private JPanel enemyXAxisLabelPanel; 
+//    private JPanel playerYAxisLabelPanel;
+//    private JPanel enemyYAxisLabelPanel;
     private JLabel instructionLabel;
     private JLabel instructionshipLabel;
+    private JLabel playerTitelLabel;
+    private JLabel enemyTitelLabel;
     private JPanel mainPanel;
     private JMenuBar menubar;
     private JMenu menuGame;
@@ -122,52 +130,8 @@ public class GUI extends JFrame
 		playerPanel = new JPanel(new GridLayout(10,10));
 		playerPanel.setBackground(Color.WHITE);
 		
-		playerLabelPanel = new JPanel(new GridLayout(11,1));
-		playerLabelPanel.setBackground(Color.white);
-		
 		enemyPanel = new JPanel(new GridLayout(10,10));
-		enemyPanel.setBackground(Color.DARK_GRAY);
-		
-		enemyLabelPanel = new JPanel(new GridLayout(11,1));
-		enemyLabelPanel.setBackground(Color.black);
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-	    //Komponenten werden horizontal &vertikal gestreckt und nehmen den verfügbaren Paltz ein
-	    gbc.fill = GridBagConstraints.BOTH;
-	    //Gewicht der Komponenten in vertikaler und horizontaler Richtung,nehmen gleich stark Platz ein
-	    gbc.weightx = 1.0;
-	    gbc.weighty = 1.0;
-
-	    //Festlegung der Position
-	    gbc.gridx = 0;
-	    gbc.gridy = 0;
-	    
-	    //Abstand um die Panels
-	    gbc.insets = new Insets(40, 40, 40, 40); // Lücke um die Panels herum
-	    mainPanel.add(enemyPanel, gbc);
-
-	    gbc.gridx = 1;
-	    mainPanel.add(playerPanel, gbc);
-		
-	    ////////!!!!
-		
-		//Beschriftung für x-Achse im playerPanel und enemyPanel
-		for(int col = 0; col < 10; col++) {
-			String xlabel = String.valueOf(col +1);
-			xAxisLabeling = new JLabel(xlabel, SwingConstants.CENTER);
-			playerLabelPanel.add(xAxisLabeling);
-			enemyLabelPanel.add(xAxisLabeling);
-		}
-		
-		//Beschriftung für y-Achse im playerPanel und enemyPanel
-		for(int row = 0; row < 10; row++) {
-			char ylabel = (char)('A' + row);
-			yAxisLabeling = new JLabel(String.valueOf(ylabel), SwingConstants.CENTER);
-			playerLabelPanel.add(yAxisLabeling);
-			enemyLabelPanel.add(yAxisLabeling);
-		}
-		
-		///////!!!!
+		enemyPanel.setBackground(Color.BLACK);
 		
 		//Felder erstellen für playerPanel und enemyPanel
 		drawMap();
@@ -186,56 +150,117 @@ public class GUI extends JFrame
 		instructionLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		instructionLabel.setVerticalAlignment(SwingConstants.CENTER);
 		instructionPanel.add(instructionLabel);
-		//if case 1 (Schiffe setzen) Phase oder 2 (Angriff)
-		
 		
 		instructionshipLabel = new JLabel();
-		///
-		instructionshipLabel.setLayout(new GridBagLayout()); // Verwende ein GridBagLayout
-		///
+		instructionshipLabel.setLayout(new GridBagLayout()); 
+		
 		instructionshipLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		instructionshipLabel.setVerticalAlignment(SwingConstants.TOP);
 		instructionPanel.add(instructionshipLabel);
+		
+		 playerTitelLabel = new JLabel("Player Spielfeld", SwingConstants.CENTER);
+    	 enemyTitelLabel = new JLabel("Enemy Spielfeld", SwingConstants.CENTER);
+	  	 instructionLabel.add(playerTitelLabel, BorderLayout.EAST);
+		 instructionLabel.add(enemyTitelLabel, BorderLayout.WEST);
+		
 		//Auswahl Buttons für Schiffart
 		setupShipSelectionButtons();
     	
     	setVisible(true);
     }
 
-    
-    //Button Array Feld zeichnen
-    public void drawMap() 
-    {
-		//Felder erstellen für playerPanel und enemyPanel
-		playerButtons = new JButton[10][10];
-		enemyButtons = new JButton[10][10];
-		
-		for(int row = 0; row < 10; row++) {
-			for(int col = 0; col < 10; col++) {
-				playerButtons[row][col] = new JButton();
-				playerButtons[row][col].setPreferredSize(new Dimension(40,40)); //Größe festlegen
-				playerButtons[row][col].setBackground(Color.BLUE);
-				
-				final int finalRow = row; // temporäre final Variablen 
-	            final int finalCol = col;
-	            
-				//Aktion Button
-				playerButtons[row][col].addActionListener(e -> onPlayerButtonClicked(finalRow, finalCol));
-				
-				playerPanel.add(playerButtons[row][col]);
-				
-				enemyButtons[row][col] = new JButton();
-				enemyButtons[row][col].setPreferredSize(new Dimension(40,40)); //Größe festlegen
-				enemyButtons[row][col].setBackground(Color.BLUE);
-				//Aktion Button
-				enemyButtons[row][col].addActionListener(e -> onEnemyButtonClicked(finalRow, finalCol));
+  
+    //Buttonfelder und x-und y-Achsen Beschriftung erstellen
+    public void drawMap() {   
+    	    
+    	// Erstelle panels für das player Feld, x-achse labels, and y-achse labels
+    	JPanel playerXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
+    	JPanel playerYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
+    	JPanel labeledPlayerPanel = createLabeledPanel(playerPanel, playerXAxisLabelPanel, playerYAxisLabelPanel, Color.WHITE);
 
-				enemyPanel.add(enemyButtons[row][col]);
-			}
-		}
+    	// Erstelle panels für das enemy Feld, x-Achse labels, and y-Achse labels
+    	JPanel enemyXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
+    	JPanel enemyYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
+    	JPanel labeledEnemyPanel = createLabeledPanel(enemyPanel, enemyXAxisLabelPanel, enemyYAxisLabelPanel, Color.BLACK);
+    	
+        addLabeledPanelToMainPanel(labeledEnemyPanel, 0, 0);
+        addLabeledPanelToMainPanel(labeledPlayerPanel, 1, 0);
+        
+        // Erstelle player/enemy buttons und labels
+        playerButtons = new JButton[10][10];
+        enemyButtons = new JButton[10][10];
+
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+                playerButtons[row][col] = new JButton();
+                playerButtons[row][col].setPreferredSize(new Dimension(40, 40)); // Größe festlegen
+                playerButtons[row][col].setBackground(Color.BLUE);
+
+                final int finalRow = row; // temporäre final Variablen
+                final int finalCol = col;
+
+                // Aktion playerButton
+                playerButtons[row][col].addActionListener(e -> onPlayerButtonClicked(finalRow, finalCol));
+
+                playerPanel.add(playerButtons[row][col]);
+                
+                enemyButtons[row][col] = new JButton();
+                enemyButtons[row][col].setPreferredSize(new Dimension(40, 40)); // Größe festlegen
+                enemyButtons[row][col].setBackground(Color.BLUE);
+
+                // Aktion enemyButton
+                enemyButtons[row][col].addActionListener(e -> onEnemyButtonClicked(finalRow, finalCol));
+
+                enemyPanel.add(enemyButtons[row][col]);
+            }
+        }
+	       addAxisLabels(playerYAxisLabelPanel, playerXAxisLabelPanel, Color.BLACK);
+	       addAxisLabels(enemyYAxisLabelPanel, enemyXAxisLabelPanel, Color.WHITE);
     }
     
+    //Hilfsfunktionen für drawMap:
+    private void addLabeledPanelToMainPanel(JPanel labeledPanel, int gridX, int gridY) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.gridx = gridX;
+        gbc.gridy = gridY;
+        gbc.insets = new Insets(40, 40, 40, 40);
+        mainPanel.add(labeledPanel, gbc);
+    }
+
+    private JPanel createLabeledPanel(JPanel panel, JPanel xAxisLabelPanel, JPanel yAxisLabelPanel, Color background) {
+        JPanel labeledPanel = new JPanel(new BorderLayout());
+        labeledPanel.add(xAxisLabelPanel, BorderLayout.NORTH);
+        labeledPanel.add(yAxisLabelPanel, BorderLayout.WEST);
+        labeledPanel.add(panel, BorderLayout.CENTER);
+
+        xAxisLabelPanel.setBackground(background);
+        yAxisLabelPanel.setBackground(background);
+        return labeledPanel;
+    }
+    
+    private void addAxisLabels(JPanel yAxisLabelPanel, JPanel xAxisLabelPanel, Color foreground) {
+        for (int i = 0; i < 10; i++) {
+            char yLabel = (char) ('A' + i);
+          
+            JLabel yAxisLabelForeground = new JLabel(String.valueOf(yLabel), SwingConstants.CENTER);
+            yAxisLabelForeground.setForeground(foreground); 
+            yAxisLabelPanel.add(yAxisLabelForeground);
+            
+            String xLabel = String.valueOf(i + 1);
+          
+            JLabel xAxisLabelForeground = new JLabel(String.valueOf(xLabel), SwingConstants.CENTER);
+            xAxisLabelForeground.setForeground(foreground); 
+            xAxisLabelPanel.add(xAxisLabelForeground);
+        }
+    }
+    
+   /// 
  
+    
+    //Buttons beschränken, nicht unendlich oft klicken können 
     private void setupShipSelectionButtons() {
         String[] shipTypes = model.getShipTypes();
         int[] shipCounts = model.getShipCounts();
