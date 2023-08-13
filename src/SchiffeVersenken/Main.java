@@ -13,15 +13,6 @@ public class Main {
 		Controller controller 	= new Controller();
 		//DataModel datamodel	= new DataModel();
 		//Client client 		= new Client();
-		
-		//Test one shot
-		System.out.println("this is the first shot");
-		/*
-		HashMap<Integer, char[][]> response = client.writeServerData(spieler.buildPayload(menuWindow.getCurrentPosition()));
-		for(Entry<Integer, char[][]> element : response.entrySet()) {
-			System.out.println(element.getKey().toString());
-			System.out.println(element.getValue().toString());
-		}*/
 
 		/* 
 		//GameLoop

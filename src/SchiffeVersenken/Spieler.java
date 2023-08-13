@@ -34,14 +34,4 @@ public class Spieler {
         return payload;
     }
 
-
-    //Basis for setting the action client side -> datamodel utilizes this method to fill the datamodel with initial ships
-    public int[] setShip() {
-        return this.gui.getCurrentPosition();
-    }
-
-    /* Helper Methoden */
-    public String getName() {
-        return this.name;
-    }
 }

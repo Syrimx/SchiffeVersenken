@@ -2,7 +2,6 @@ package SchiffeVersenken;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Arrays;
 import java.util.Random;
 
 
@@ -25,8 +24,8 @@ public class Controller {
     public static int gamePhase = 1; //-> 0 Preparation Phase; 1 Main Phase; 2 Endgame Phase
     private Integer[] roundToken = null;
     private int[] firePosition = null;
+    private int counter = 0;
     private Integer identifyToken = null;
-    private int counter = 0; //Anzahl der Schiffe ?
     private char[][] robotMatrix = new char[10][10];
     Random random = new Random();
     
@@ -58,8 +57,8 @@ public class Controller {
 
     //Teste ob der Spieler (erkennbar am roundToken welcher mit dem Schuss mitgesendet wird)
     //befähigt ist einen zug zu machen
-    public boolean testIfValid() {
-        if(this.roundToken[0] == this.identifyToken) {
+    public boolean testIfValid(Integer identifyToken) {
+        if(this.roundToken[0] == identifyToken) {
             this.swapRoundToken();
             return true;
         } 
@@ -105,9 +104,10 @@ public class Controller {
     public HashMap<Integer, char[][]> manipulateData(HashMap<Integer, int[]> data) {
         //Testen ob RoundToken valide ist -> wer ist aktuell dran ?
         for(Entry<Integer, int[]> item : data.entrySet()) {
-            this.roundToken = item.getValue();
-            this.firePosition = item.getKey();
-            this.testIfValid(data.getKey());
+            System.out.println(item.getKey() + item.getValue()[0]);
+            //this.tempRoundToken = item.getKey();
+            this.firePosition = item.getValue();
+            this.testIfValid(item.getKey());
         }
          //bedingung if/else
         //Spielfeld auslesen -> bei den schusswerten character setzen in gamestate einfügen
@@ -141,7 +141,7 @@ public class Controller {
             //check right
             for(int j = 1; i <= shipLength; j++) {
                 //check if coordinate still within the field
-                if(row + j > 10) {
+                if(row + j > 9) {
                     break;
                 }
                 //check if fields to the left of given coordinate is valid
@@ -180,7 +180,7 @@ public class Controller {
                 //check up
                 for(int j = 1; i <= shipLength; j++) {
                     //check if coordinate still within the field
-                    if(column + j > 10) {
+                    if(column + j > 9) {
                         break;
                     }
                     //check if fields to the left of given coordinate is valid
@@ -223,21 +223,27 @@ public class Controller {
         return validPosition; // -> new positions must be validated while setting
     }
 
+    //set Ships -> unimplemented 
+    public void setShips(int[][] data) {
+
+    }
+
     //setze initiale schiffe für den roboter
     //10 schiffe: [4mal 1x1, 3mal 2x2, 2mal 3x3, 1mal 4x4]
-    public void setShipsRobot() {
+    public void setMatrixRobot() {
         int[] ships = {4,3,3,2,2,2,1,1,1,1};
         //initialize robotMatrix
-        for(int i; i < this.robotMatrix.length; i++) {
-            for(int j; j < this.robotMatrix.length; j++) {
+        for(int i = 0; i < this.robotMatrix.length; i++) {
+            for(int j = 0; j < this.robotMatrix.length; j++) {
                 this.robotMatrix[i][j] = 'w';
             }
         }
 
-        //set ships -> ungetested
+        //check ships -> ungetested
+        //check if position is valid                                        left/ right        up/down
+        int[][] validPosition   = {{-1,-1}, {0,0}}; //-> {row and column}, {stepsHorizontal, stepsVertical}
         for(int ship : ships) {
-            //check if position is valid                                     let/ right        up/down
-            int[][] validPosition   = {{-1,-1}, {0,0}}; //-> {row and column}, {stepsHorizontal, stepsVertical}
+
             int row                 = 0;
             int column              = 0;
             do{
@@ -248,15 +254,17 @@ public class Controller {
 
         }
         
+        //setships -> ungetested
+        this.setShips(validPosition);
 
     }
 
 
     //print the robot map
     public void printRobotMap() {
-        for(int i; i < robotMatrix.length; i++) {
-            for(int j; j < robotMatrix.length; j++) {
-                System.out.println(this.robotMatrix);
+        for(int i = 0; i < robotMatrix.length; i++) {
+            for(int j = 0; j < robotMatrix.length; j++) {
+                System.out.println(this.robotMatrix[i][j]);
             }
         }
     }
