@@ -20,43 +20,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-/* View
-	1)
- * Action Listener für Buttons Implementieren
- * -> Rückgabe position auf dem Feld -> Datentyp ? 
- * -> Datamodel datentyp char[][]
- * 
- * [		Zeilen
- *  [x,!,x] A[0][0-2] ! = int[0,1]
- *  [x,x,?] A[1][0-2] ? = int[1][2]
- *  [x,*,x] A[2][0-2] * = int[2][1]
- *
- * ]
- * 
- * Spalten	 0
- * A[0-2][0] x
- * 			 x
- * 			 x
- * 
- * 			  1
- * A[0-2][1]  x
- * 			  x
- * 			  x
- * 
- * 			   2
- * A[0-2][2]   x
- * 			   x
- * 			   x
- * 
- * 2)
- * Einbindung des akuallisierten Feldes -> resresh(DataModel.playgroundMatrix)
- *  
- * 
- * Hello Ronja
- */
-
-//Anzeige Phasen, Schiffe setze Phase: wie viele Schiffe noch vorhanden?, Schieße Phase und Pause Phase
-//GameWindow
 public class GUI extends JFrame
 {
 	private DataModel model;
@@ -161,7 +124,7 @@ public class GUI extends JFrame
 
   
     //Buttonfelder und x-und y-Achsen Beschriftung erstellen
-    public void drawMap() {    
+    	public void drawMap() {    
     	// Erstelle panels für das player Feld, x-achse labels, and y-achse labels
     	JPanel playerXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
     	JPanel playerYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
