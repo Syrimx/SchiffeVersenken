@@ -22,7 +22,7 @@ import javax.swing.SwingConstants;
 
 public class GUI extends JFrame
 {
-	private DataModel model;
+	private DataModel datamodel;
     private MenuWindow menuWindow;
     
     private JPanel instructionPanel;
@@ -64,10 +64,10 @@ public class GUI extends JFrame
     private boolean GameBotOrFriend;
     ///
     
-    public GUI() {
+    public GUI(DataModel datamodel) {
     	//this.menuWindow = menuWindow;
     	//Datenmodel in View eingebunden, sodass Daten einfacher aufrufbar sind
-        this.model = new DataModel();
+        this.datamodel = new DataModel();
         
     }
     
@@ -109,6 +109,7 @@ public class GUI extends JFrame
     }
     
     public void resetGUI(){
+    	setVisible(false);
     	this.getContentPane().removeAll();
     }
   /////
@@ -263,8 +264,8 @@ public class GUI extends JFrame
  
     //Phase 1
     private void setupShipSelectionButtons() {
-        String[] shipTypes = model.getShipTypes();
-        int[] shipCounts = model.getShipCounts();
+        String[] shipTypes = datamodel.getShipTypes();
+        int[] shipCounts = datamodel.getShipCounts();
         
         instructionshipLabel.setText("Wähle ein Schiffstyp aus!");
         
@@ -287,7 +288,7 @@ public class GUI extends JFrame
     }
    
     private void SelectionButtonsEnabled() {
-    	int[] shipCounts = model.getShipCounts();
+    	int[] shipCounts = datamodel.getShipCounts();
     	for(int i = 0; i < 4; i++) {
     		if(shipCounts[i]== 0) {
     			shipTypeButtons[i].setEnabled(false);
@@ -295,15 +296,15 @@ public class GUI extends JFrame
     	}
     }
     
-    
-    
-    private void updateShipCountLabels(){
-    	String[] shipTypes = model.getShipTypes();
-        int[] shipCounts = model.getShipCounts();
-    	for (int i = 0; i < shipTypes.length; i++) {
-    		shipCountLabels[i] = new JLabel("Anzahl: " + shipCounts[i]);
-    	}
+    //Aktualisiere die Anzeige Anzahl Schiffe
+    private void updateShipCountLabels() {
+        String[] shipTypes = datamodel.getShipTypes();
+        int[] shipCounts = datamodel.getShipCounts();
+        for (int i = 0; i < shipTypes.length; i++) {
+            shipCountLabels[i].setText("Anzahl: " + shipCounts[i]);  // Aktualisiere den Text des Labels
+        }
     }
+
     
     
     //Aktion: Auswahl Schiff, speicher die Länge
@@ -332,7 +333,7 @@ public class GUI extends JFrame
   ///Aktionen   
 //Aktionen in der Schiffe setzen Phase, Spieler darf nur eigenes Feld manipulieren
     private void onPlayerButtonClicked(int row, int col) {
-    	if(model.isPhaseOne() && !model.alleSpielerSchiffePlatziert()) 
+    	if(datamodel.isPhaseOne() && !datamodel.alleSpielerSchiffePlatziert()) 
         	{
     		if (shipLength == 0) {
                 instructionshipLabel.setText("Wähle einen Schiffstyp aus!");
@@ -355,7 +356,7 @@ public class GUI extends JFrame
                 endRow = row;
                 endCol = col;
                 // Schiffplatzierung 
-                model.placeShips(startRow, startCol, endRow, endCol); 
+                datamodel.placeShips(startRow, startCol, endRow, endCol); 
                 // Start- und Endpositionen zurücksetzen
                 startRow = -1;
                 startCol = -1; 
@@ -373,8 +374,8 @@ public class GUI extends JFrame
                 SelectionButtonsEnabled();
                
                 //Wechsel zur Phase 2
-                if(model.alleSpielerSchiffePlatziert()) {
-                	model.setPhase(2);
+                if(datamodel.alleSpielerSchiffePlatziert()) {
+                	datamodel.setPhase(2);
                 	Controller.gamePhase=2;
                 	instructionLabel.setText("Schießen Sie auf das gegnerische Feld!");
                 }
@@ -383,6 +384,7 @@ public class GUI extends JFrame
     }
     
     
+//in DataModel verschieben??
     //Markierung der möglichen Endpositionen
     private void markPossibleEndPositions(int startRow, int startCol) {
         if (shipLength != 0) {
@@ -393,7 +395,7 @@ public class GUI extends JFrame
             for (int[] offset : offsets) {
                 int endRow = startRow + offset[0] * (shipLength - 1); //Zeilenverschiebung
                 int endCol = startCol + offset[1] * (shipLength - 1); //Spaltenverschiebung
-                if (isValidPosition(endRow, endCol) && !model.checkCollision(startRow, startCol, endRow, endCol)) {
+                if (isValidPosition(endRow, endCol) && !datamodel.checkCollision(startRow, startCol, endRow, endCol)) {
                     markPossiblePosition(endRow, endCol);
                 }
             }
@@ -402,6 +404,7 @@ public class GUI extends JFrame
         }
     }
 
+    //in DataModel verschieben??
     private boolean isValidPosition(int row, int col) {
         return row >= 0 && row < 10 && col >= 0 && col < 10;
     }
@@ -426,7 +429,7 @@ public class GUI extends JFrame
     	
     	//Schießen Phase, Phase 2
     	if(Controller.gamePhase == 2) {
-    	char enemyStatus = model.getEnemyCellStatus(row, col);
+    	char enemyStatus = datamodel.getEnemyCellStatus(row, col);
     	switch (enemyStatus) {
         case 'w': // schieße auf Wasser 
                     enemyButtons[row][col].setBackground(Color.LIGHT_GRAY);
@@ -459,8 +462,8 @@ public class GUI extends JFrame
     {
     	for(int row = 0; row < 10; row++) {
 			for(int col = 0; col < 10; col++) {
-				char playerStatus = model.getPlaygroundCellStatus(row, col); //hole Status von Datamodel
-		        char enemyStatus = model.getEnemyCellStatus(row, col);
+				char playerStatus = datamodel.getPlaygroundCellStatus(row, col); //hole Status von Datamodel
+		        char enemyStatus = datamodel.getEnemyCellStatus(row, col);
 		        
 				setButtonStatus(playerButtons[row][col],playerStatus);
 				setButtonStatus(enemyButtons[row][col],enemyStatus);
@@ -496,7 +499,7 @@ public class GUI extends JFrame
         }
     }
 
- 
+ //eventuel unnötig, Status soll im DataModel gespeichert sein
     //Hilfsfunktion für Getter getEnemyMatrix und getPlayerMatrix
     //JButtons[][] in char[][] konvertieren, Übertragung zu DataModel
     private char[][] convertButtonsToCharArray(JButton[][] buttons) {
@@ -530,26 +533,29 @@ public class GUI extends JFrame
         return currentposition;      
     }
     
-    //Enemy Matrix übergeben
-    public char[][] getEnemyMatrix(){
-    	enemyMatrix = convertButtonsToCharArray(enemyButtons);
-		return enemyMatrix;
-    	
-    }
-    
-    //Player Matrix übergeben
-    public char[][] getPlayerMatrix(){
-    	playerMatrix = convertButtonsToCharArray(playerButtons);
-		return playerMatrix;
-    	
-    }
-    
     //Anweisung für Spieler setzen
     public void setInstruction(String text) {
     	instructionLabel.setText(text); //Phase 1: "Platziere die Schiffe!"
     									//Phase 2: "Schieße auf das gegenerische Feld!"
     }
     
+//    //unnötige Funktion
+//    //Enemy Matrix übergeben
+//    public char[][] getEnemyMatrix(){
+//    	enemyMatrix = convertButtonsToCharArray(enemyButtons);
+//		return enemyMatrix;
+//    	
+//    }
+//    
+//    
+//    //Player Matrix übergeben
+//    public char[][] getPlayerMatrix(){
+//    	playerMatrix = convertButtonsToCharArray(playerButtons);
+//		return playerMatrix;
+//    	
+//    }
+    
+    //
     public boolean getGameBotOrFriend() {
     	return GameBotOrFriend;
     }

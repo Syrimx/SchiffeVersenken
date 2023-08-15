@@ -11,12 +11,13 @@ public class Main {
 		//-> GUI?
 		Spieler spieler 		= new Spieler();
 		Controller controller 	= new Controller();
-		//DataModel datamodel	= new DataModel();
+		DataModel datamodel	= new DataModel();
 		//Client client 		= new Client();
 		
 
-		GUI gameWindow = new GUI();
+		GUI gameWindow = new GUI(datamodel);
 		gameWindow.drawMenu();
+		
 		//noch nicht ideal ausgelagert aus GUI 
 //		if(gameWindow.getGameBotOrFriend()) {
 //			
