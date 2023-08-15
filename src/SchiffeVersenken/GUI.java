@@ -383,19 +383,17 @@ public class GUI extends JFrame
         }
     }
     
-    
-//in DataModel verschieben??
+ 
     //Markierung der möglichen Endpositionen
     private void markPossibleEndPositions(int startRow, int startCol) {
         if (shipLength != 0) {
-            int[][] offsets = {
-                {1, 0}, {-1, 0}, {0, 1}, {0, -1}
-            };
+            int[][] possibleEndPositions = datamodel.calculatePossibleEndPositions(startRow, startCol, shipLength);
 
-            for (int[] offset : offsets) {
-                int endRow = startRow + offset[0] * (shipLength - 1); //Zeilenverschiebung
-                int endCol = startCol + offset[1] * (shipLength - 1); //Spaltenverschiebung
-                if (isValidPosition(endRow, endCol) && !datamodel.checkCollision(startRow, startCol, endRow, endCol)) {
+            for (int i = 0; i < 4; i++) {
+                int endRow = possibleEndPositions[i][0];
+                int endCol = possibleEndPositions[i][1];
+
+                if (datamodel.isValidPosition(endRow, endCol) && !datamodel.checkCollision(startRow, startCol, endRow, endCol)) {
                     markPossiblePosition(endRow, endCol);
                 }
             }
@@ -404,11 +402,7 @@ public class GUI extends JFrame
         }
     }
 
-    //in DataModel verschieben??
-    private boolean isValidPosition(int row, int col) {
-        return row >= 0 && row < 10 && col >= 0 && col < 10;
-    }
-
+    //Hilfsfunktion für das Markieren der Endpositionen
     private void markPossiblePosition(int row, int col) {
         playerButtons[row][col].setBackground(Color.GREEN);
     }

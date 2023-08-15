@@ -178,6 +178,31 @@ public class DataModel {
 	  	System.out.println("Keine Kollision!");
 	      return false;  // keine Kollision
 	  }
+	  
+	  //Prüft ob die angegebene Position im Feld ist
+	  public boolean isValidPosition(int row, int col) {
+	        return row >= 0 && row < 10 && col >= 0 && col < 10; //Position im Feld?
+	    }
+	  
+	  //Berechne die möglichen Endpositionen
+	  public int[][] calculatePossibleEndPositions(int startRow, int startCol, int shipLength) {
+		  
+	        int[][] offsets = {
+	            {1, 0}, {-1, 0}, {0, 1}, {0, -1} //möglichen Richtungen
+	        };
+	        
+	        int[][] possiblePositions = new int[offsets.length][2];
+
+	        for (int i = 0; i < offsets.length; i++) {
+	            int endRow = startRow + offsets[i][0] * (shipLength - 1);
+	            int endCol = startCol + offsets[i][1] * (shipLength - 1);
+	            possiblePositions[i][0] = endRow;
+	            possiblePositions[i][1] = endCol;
+	        }
+
+	        return possiblePositions;
+	    }
+
 	    
     
     // Methode zum Schießen auf gegnerisches Feld in Phase 2
