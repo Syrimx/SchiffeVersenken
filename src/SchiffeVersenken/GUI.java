@@ -57,95 +57,140 @@ public class GUI extends JFrame
     private int endRow = -1;
     private int endCol = -1;
     ////
+    //Menu
+    private JButton playButtonBot;
+    private JButton playButtonFriend;
+    private JButton exitButton;
+    private boolean GameBotOrFriend;
+    ///
     
-    public GUI(MenuWindow menuWindow) {
-    	this.menuWindow = menuWindow;
+    public GUI() {
+    	//this.menuWindow = menuWindow;
     	//Datenmodel in View eingebunden, sodass Daten einfacher aufrufbar sind
         this.model = new DataModel();
-    	
-    	this.setLayout(new BorderLayout());
-    	this.setTitle("Schiffe versenken");
-		this.getContentPane().setBackground(Color.LIGHT_GRAY);
-		this.setLocation(200, 200);
-		this.setSize(900, 700); 
-		
-		mainPanel = new JPanel(new GridBagLayout());
-		mainPanel.setBackground(Color.LIGHT_GRAY);
-		add(mainPanel,BorderLayout.CENTER); 
-		
-		instructionPanel = new JPanel();
-		instructionPanel.setPreferredSize(new Dimension(900,200));
-		instructionPanel.setBackground(Color.LIGHT_GRAY);
-		instructionPanel.setLayout(new GridLayout(2, 1));
-		add(instructionPanel,BorderLayout.NORTH);
-		
-		
-		playerPanel = new JPanel(new GridLayout(10,10));
-		playerPanel.setBackground(Color.WHITE);
-		
-		enemyPanel = new JPanel(new GridLayout(10,10));
-		enemyPanel.setBackground(Color.BLACK);
-		
-		//Felder erstellen für playerPanel und enemyPanel
-		drawMap();
-		
-		menubar = new JMenuBar();
-		menuGame = new JMenu("Menü");
-		backtoMenu = new JMenuItem("Spiel beenden");
-		menubar.add(menuGame);
-		menuGame.add(backtoMenu);
-		this.setJMenuBar(menubar);
-		backtoMenu.addActionListener(e -> menuWindow.backToMenu());
-		 
-		
-		instructionLabel = new JLabel();
-		instructionLabel.setText("Platziere die Schiffe!");
-		instructionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		instructionLabel.setVerticalAlignment(SwingConstants.CENTER);
-		instructionPanel.add(instructionLabel);
-		
-		instructionshipLabel = new JLabel();
-		instructionshipLabel.setLayout(new GridBagLayout()); 
-		
-		instructionshipLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		instructionshipLabel.setVerticalAlignment(SwingConstants.TOP);
-		instructionPanel.add(instructionshipLabel);
-		
-		 playerTitelLabel = new JLabel("Player Spielfeld", SwingConstants.CENTER);
-    	 enemyTitelLabel = new JLabel("Enemy Spielfeld", SwingConstants.CENTER);
-	  	 instructionLabel.add(playerTitelLabel, BorderLayout.EAST);
-		 instructionLabel.add(enemyTitelLabel, BorderLayout.WEST);
-		
-		//Auswahl Buttons für Schiffart
-		setupShipSelectionButtons();
-    	
-    	setVisible(true);
-    }
-
-  
-    //Buttonfelder und x-und y-Achsen Beschriftung erstellen
-    	public void drawMap() {    
-    	// Erstelle panels für das player Feld, x-achse labels, and y-achse labels
-    	JPanel playerXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
-    	JPanel playerYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
-    	JPanel labeledPlayerPanel = createLabeledPanel(playerPanel, playerXAxisLabelPanel, playerYAxisLabelPanel, Color.WHITE);
-
-    	// Erstelle panels für das enemy Feld, x-Achse labels, and y-Achse labels
-    	JPanel enemyXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
-    	JPanel enemyYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
-    	JPanel labeledEnemyPanel = createLabeledPanel(enemyPanel, enemyXAxisLabelPanel, enemyYAxisLabelPanel, Color.BLACK);
-    	
-        addLabeledPanelToMainPanel(labeledEnemyPanel, 0, 0);
-        addLabeledPanelToMainPanel(labeledPlayerPanel, 1, 0);
         
-        // Erstelle player/enemy buttons und labels
-        addButtonstoPanel();
-
-	    addAxisLabels(playerYAxisLabelPanel, playerXAxisLabelPanel, Color.BLACK);
-	    addAxisLabels(enemyYAxisLabelPanel, enemyXAxisLabelPanel, Color.WHITE);
     }
     
+    //Menu
+    public void drawMenu(){
+    	this.setLayout(null);
+		this.setTitle("Menue Schiffe versenken");
+		this.getContentPane().setBackground(Color.DARK_GRAY);
+		this.setLocation(400, 400);
+		this.setSize(500, 400);
+
+        playButtonBot = new JButton("Spiel gegen Bot");
+        playButtonBot.setBounds(60, 230, 160, 40);
+        this.add(playButtonBot);
+        playButtonBot.addActionListener(e-> openGameWindowBot());
+        
+        playButtonFriend = new JButton("Spiel gegen Freund");
+        playButtonFriend.setBounds(280, 230, 160,40);
+        this.add(playButtonFriend);
+        playButtonFriend.addActionListener(e -> openGameWindowFriend());
+        
+        exitButton = new JButton("Beenden");
+        exitButton.setBounds(175,300,150,40);
+        this.add(exitButton);
+        exitButton.addActionListener(e ->{System.exit(0);});
+        setVisible(true);
+    }
+    
+    private void openGameWindowBot(){
+    	GameBotOrFriend = true;
+    	resetGUI();
+		drawMap();
+    }
+    
+    private void openGameWindowFriend() {
+    	GameBotOrFriend = true;
+    	resetGUI();
+		drawMap();
+    }
+    
+    public void resetGUI(){
+    	this.getContentPane().removeAll();
+    }
+  /////
+    
+    
+    //Buttonfelder und x-und y-Achsen Beschriftung erstellen, 
+    	public void drawMap() {    
+    		this.setLayout(new BorderLayout());
+        	this.setTitle("Schiffe versenken");
+    		this.getContentPane().setBackground(Color.LIGHT_GRAY);
+    		this.setLocation(200, 200);
+    		this.setSize(900, 700); 
+    		
+    		mainPanel = new JPanel(new GridBagLayout());
+    		mainPanel.setBackground(Color.LIGHT_GRAY);
+    		add(mainPanel,BorderLayout.CENTER); 
+    		
+    		instructionPanel = new JPanel();
+    		instructionPanel.setPreferredSize(new Dimension(900,200));
+    		instructionPanel.setBackground(Color.LIGHT_GRAY);
+    		instructionPanel.setLayout(new GridLayout(2, 1));
+    		add(instructionPanel,BorderLayout.NORTH);
+    		
+    		playerPanel = createGridPanel(Color.WHITE);
+    		enemyPanel = createGridPanel(Color.BLACK);
+    		
+	    	// Erstelle panels für das player Feld, x-achse labels, and y-achse labels
+	    	JPanel playerXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
+	    	JPanel playerYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
+	    	JPanel labeledPlayerPanel = createLabeledPanel(playerPanel, playerXAxisLabelPanel, playerYAxisLabelPanel, Color.WHITE);
+	
+	    	// Erstelle panels für das enemy Feld, x-Achse labels, and y-Achse labels
+	    	JPanel enemyXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
+	    	JPanel enemyYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
+	    	JPanel labeledEnemyPanel = createLabeledPanel(enemyPanel, enemyXAxisLabelPanel, enemyYAxisLabelPanel, Color.BLACK);
+	    	
+	        addLabeledPanelToMainPanel(labeledEnemyPanel, 0, 0);
+	        addLabeledPanelToMainPanel(labeledPlayerPanel, 1, 0);
+	        
+	        // Erstelle player/enemy buttons und labels
+	        addButtonstoPanel();
+	
+		    addAxisLabels(playerYAxisLabelPanel, playerXAxisLabelPanel, Color.BLACK);
+		    addAxisLabels(enemyYAxisLabelPanel, enemyXAxisLabelPanel, Color.WHITE);
+	
+		    menubar = new JMenuBar();
+			menuGame = new JMenu("Menü");
+			backtoMenu = new JMenuItem("Spiel beenden");
+			menubar.add(menuGame);
+			menuGame.add(backtoMenu);
+			this.setJMenuBar(menubar);
+			backtoMenu.addActionListener(e ->{System.exit(0);});
+			 
+			instructionLabel = createInstructionLabel(SwingConstants.CENTER, SwingConstants.CENTER);
+			instructionLabel.setText("Platziere die Schiffe!");
+			instructionPanel.add(instructionLabel);
+			
+			instructionshipLabel =createInstructionLabel(SwingConstants.CENTER,SwingConstants.TOP);
+			instructionshipLabel.setLayout(new GridBagLayout());
+			instructionPanel.add(instructionshipLabel);
+		
+			//Auswahl Buttons für Schifftyp
+			setupShipSelectionButtons();
+	    	
+	    	setVisible(true);
+    }
+    
+    	
     //Hilfsfunktionen für drawMap:
+    private JLabel createInstructionLabel(int horizontalAlignment, int verticalAlignment) {
+    	JLabel label = new JLabel();
+    	label.setHorizontalAlignment(horizontalAlignment);
+    	label.setVerticalAlignment(verticalAlignment);
+    	return label;
+    	}	
+    	
+    private JPanel createGridPanel(Color background) {
+    	JPanel panel = new JPanel(new GridLayout(10, 10));
+    	panel.setBackground(background);
+    	return panel;
+    }	
+    	
     private void addLabeledPanelToMainPanel(JPanel labeledPanel, int gridX, int gridY) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
@@ -216,7 +261,7 @@ public class GUI extends JFrame
     }
 
  
-    
+    //Phase 1
     private void setupShipSelectionButtons() {
         String[] shipTypes = model.getShipTypes();
         int[] shipCounts = model.getShipCounts();
@@ -241,6 +286,17 @@ public class GUI extends JFrame
         }
     }
    
+    private void SelectionButtonsEnabled() {
+    	int[] shipCounts = model.getShipCounts();
+    	for(int i = 0; i < 4; i++) {
+    		if(shipCounts[i]== 0) {
+    			shipTypeButtons[i].setEnabled(false);
+    		}
+    	}
+    }
+    
+    
+    
     private void updateShipCountLabels(){
     	String[] shipTypes = model.getShipTypes();
         int[] shipCounts = model.getShipCounts();
@@ -272,15 +328,7 @@ public class GUI extends JFrame
     }
     
     
-    private void SelectionButtonsEnabled() {
-    	int[] shipCounts = model.getShipCounts();
-    	for(int i = 0; i < 4; i++) {
-    		if(shipCounts[i]== 0) {
-    			shipTypeButtons[i].setEnabled(false);
-    		}
-    	}
-    }
-    
+
   ///Aktionen   
 //Aktionen in der Schiffe setzen Phase, Spieler darf nur eigenes Feld manipulieren
     private void onPlayerButtonClicked(int row, int col) {
@@ -317,20 +365,23 @@ public class GUI extends JFrame
                 shipLength = 0;
                 //Anzeige der Anzahl Schiffe Aktualisieren
                 updateShipCountLabels();
+                
                 //Aktualisierung Status, holt Status von DataModel
                 refreshMap(); 
                 
                 instructionshipLabel.setText("");
                 SelectionButtonsEnabled();
-   
+               
                 //Wechsel zur Phase 2
                 if(model.alleSpielerSchiffePlatziert()) {
                 	model.setPhase(2);
+                	Controller.gamePhase=2;
                 	instructionLabel.setText("Schießen Sie auf das gegnerische Feld!");
                 }
             }
         }
     }
+    
     
     //Markierung der möglichen Endpositionen
     private void markPossibleEndPositions(int startRow, int startCol) {
@@ -364,19 +415,30 @@ public class GUI extends JFrame
     ///////
     //Aktionen in der Schießen Phase, Spieler darf nur Gegner Feld manipulieren
     private void onEnemyButtonClicked(int row, int col) {
+    	//Aktuelle Position speichern im currentposition Array
+    	currentposition[0]= row;
+    	currentposition[1]= col;
+    	
+    	//currentposition wird übermittelt an Spieler 2
+    	//Spieler 2 übermittelt Status der Zelle an DataModel
+    	//GUI holt Satus von DataModel und ändert
+    	//Neuer Status wird an Spieler 2 übermittelt und dort Map aktualisiert
+    	
     	//Schießen Phase, Phase 2
-    	if(model.isPhaseOne()== false) {
+    	if(Controller.gamePhase == 2) {
     	char enemyStatus = model.getEnemyCellStatus(row, col);
     	switch (enemyStatus) {
         case 'w': // schieße auf Wasser 
                     enemyButtons[row][col].setBackground(Color.LIGHT_GRAY);
                     enemyButtons[row][col].setText("o");
+                    //Sende Status an DataModel
+                    //Enabled(false)
             break;
         case 's': // schieße auf Schiff
         			enemyButtons[row][col].setBackground(Color.RED);
         			enemyButtons[row][col].setText("x");  
             break;
-        case 'x': // Scieße auf totes Schiff
+        case 'x': // Schieße auf totes Schiff
                     //Passiert nichts
             break;
         case 'b': // schieße auf bekanntes Wasser Feld
@@ -386,16 +448,27 @@ public class GUI extends JFrame
                     enemyButtons[row][col].setText("???");
             break;
     	}   
-        //Aktuelle Position speichern im currentposition Array
-    	currentposition[0]= row;
-    	currentposition[1]= col;
-    	}else {
+       
+    	}else if(Controller.gamePhase ==1) {
     		//Phase 1 vorhanden
     	}
     }
     
     
-//Aktualisierung
+    public void refreshMap() 
+    {
+    	for(int row = 0; row < 10; row++) {
+			for(int col = 0; col < 10; col++) {
+				char playerStatus = model.getPlaygroundCellStatus(row, col); //hole Status von Datamodel
+		        char enemyStatus = model.getEnemyCellStatus(row, col);
+		        
+				setButtonStatus(playerButtons[row][col],playerStatus);
+				setButtonStatus(enemyButtons[row][col],enemyStatus);
+			}
+		}
+    }
+    
+    //Hilfsfunktion für refreshMap:
     //Aktuallisierung des Status der enemy Map
     //Aktuallisierung des Status der player Map
     private void setButtonStatus(JButton Button, char status) {
@@ -423,22 +496,10 @@ public class GUI extends JFrame
         }
     }
 
-    
-    public void refreshMap() 
-    {
-    	for(int row = 0; row < 10; row++) {
-			for(int col = 0; col < 10; col++) {
-				char playerStatus = model.getPlaygroundCellStatus(row, col); //hole Status von Datamodel
-		        char enemyStatus = model.getEnemyCellStatus(row, col);
-		        
-				setButtonStatus(playerButtons[row][col],playerStatus);
-				setButtonStatus(enemyButtons[row][col],enemyStatus);
-			}
-		}
-    }
-
-    //JButtons[][] in char[][] konvertieren
-    public char[][] convertButtonsToCharArray(JButton[][] buttons) {
+ 
+    //Hilfsfunktion für Getter getEnemyMatrix und getPlayerMatrix
+    //JButtons[][] in char[][] konvertieren, Übertragung zu DataModel
+    private char[][] convertButtonsToCharArray(JButton[][] buttons) {
         char[][] charArray = new char[10][10];
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
@@ -483,5 +544,14 @@ public class GUI extends JFrame
     	
     }
     
+    //Anweisung für Spieler setzen
+    public void setInstruction(String text) {
+    	instructionLabel.setText(text); //Phase 1: "Platziere die Schiffe!"
+    									//Phase 2: "Schieße auf das gegenerische Feld!"
+    }
+    
+    public boolean getGameBotOrFriend() {
+    	return GameBotOrFriend;
+    }
     
 }

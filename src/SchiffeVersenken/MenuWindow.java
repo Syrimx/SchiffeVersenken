@@ -12,6 +12,8 @@ public class MenuWindow extends JFrame
     private JButton playButtonBot;
     private JButton playButtonFriend;
     private JButton exitButton;
+    private boolean Gamestart;
+    
     public MenuWindow(){
         //
         //this.data = d;
@@ -39,26 +41,50 @@ public class MenuWindow extends JFrame
     }
 
     private void openGameWindowBot(){
+    	Gamestart = true;
         this.dispose(); //Schliesse das Menu Fenster
         gameWindow = new GUI(this);
+
+        
     }
     
     private void openGameWindowFriend() {
+    	Gamestart = true;
     	this.dispose(); //Schliesse das Menu Fenster
         gameWindow = new GUI(this);
         //Verbindung mit Freund
+
+        
     }
 
     public void backToMenu(){
         gameWindow.dispose(); //Schliesse das Spiel Fenster
         setVisible(true); //Zeige das Menu Fenster 
     }
-
+    
+    //Aufruf der gesamten GUI Funktionen möglich
+    public GUI getGameWindow() {
+        return gameWindow;
+    }
+    
     public int[] getCurrentPosition() {
         return this.gameWindow.getCurrentPosition();
+    }
+    
+    public void drawMap() {
+    	this.gameWindow.drawMap();
     }
     
     public void refreshMaps() {
     	this.gameWindow.refreshMap();
     }
+    public void testsetzeText(String text) {
+    	gameWindow.setInstruction(text);
+    }
+    //wahrheitswert
+    public boolean getstartGame() {
+    	return Gamestart;
+    }
+    
+    
 }
