@@ -49,7 +49,7 @@ public class Client {
     }
 
     //Test Methode
-    public String writeServerDataTest(HashMap<String, String> data) {
+    public String writeServerDataTest() {
         String serverData = null;
         try {
             //Connect Client to Server
@@ -59,7 +59,7 @@ public class Client {
             this.output = new ObjectOutputStream(this.clientSocket.getOutputStream());
             //this.output.writeObject(this.datamodel.getPlaygroundMatrix());
             //test Object
-            this.output.writeObject(Client.test);
+            this.output.writeObject(this.test);
 
             //data returend from the server
             this.input = new ObjectInputStream(this.clientSocket.getInputStream());
@@ -79,6 +79,6 @@ public class Client {
     public static void main(String[] args) {
         //initializiere den client
         Client client = new Client();
-        client.writeServerDataTest(Client.test);
+        client.writeServerDataTest();
     }
 }
