@@ -1,18 +1,6 @@
 package SchiffeVersenken;
 import java.util.*;
 
-/* Model -> Client
- * |-> Spieler sendet Daten an das Model
- * 
- * Methoden:
-    public int[][] getData() 
-    public void setData(int[][] data) 
-
-//getter Schiffe für GUI
- *
-
- * 
-*/
 
 public class DataModel {
     private char[][] playerMatrix = new char[10][10]; //Wie groß darf sie werden ? //int durch char getauscht, um mehr möglichkeiten zu haben, wie Nutzung von X
@@ -31,6 +19,89 @@ public class DataModel {
     // Liste, um getroffene Felder zu speichern
     private List<int[]> hits = new ArrayList<>();
     
+    //NEU:
+    private int shipLength =0;
+    private int tmpshipLength = 0;
+    private int startX = -1;
+    private int startY = -1;
+    private int endX = -1;
+    private int endY = -1;
+    private boolean PickStartPosition = false;
+    private boolean PickEndPosition = false;
+    private int gameModi; // Bot: 0, Friend: 1
+    
+    
+    
+    public int getGameModi() {
+		return gameModi;
+	}
+
+	public void setGameModi(int gameModi) {
+		this.gameModi = gameModi;
+	}
+
+	public boolean isPickEndPosition() {
+		return PickEndPosition;
+	}
+
+	public void setPickEndPosition(boolean pickEndPosition) {
+		PickEndPosition = pickEndPosition;
+	}
+
+	public boolean isPickStartPosition() {
+		return PickStartPosition;
+	}
+
+	public void setPickStartPosition(boolean pickStartPosition) {
+		PickStartPosition = pickStartPosition;
+	}
+
+	public int getShipLength() {
+		return shipLength;
+	}
+
+    //zum Schiffe setzen
+	public void setShipLength(int shipLength) {
+		this.shipLength = shipLength;
+	}
+
+	public void setStartCell(int row, int col) {
+        startX = row;
+        startY = col;
+    }
+
+    public int getStartRow() {
+        return startX;
+    }
+
+    public int getStartCol() {
+        return startY;
+    }
+    
+    public void setEndCell(int row, int col) {
+        endX = row;
+        endY = col;
+    }
+
+    public int getEndRow() {
+        return endX;
+    }
+
+    public int getEndCol() {
+        return endY;
+    }
+    
+    
+	public int getTmpshipLength() {
+		return tmpshipLength;
+	}
+
+	public void setTmpshipLength(int tmpshipLength) {
+		this.tmpshipLength = tmpshipLength;
+	}
+	//
+	
+    
 
     public DataModel() {
     	createInitialMatrix();
@@ -48,8 +119,6 @@ public class DataModel {
     }
 
     public void displayMatrix() {
-                //////
-        
         System.out.println("[DATAMODEL]");
         //Erzeugen eines 10 x 10 Feldes gefüllt mit Wasser zum testen des Arrays
         for(int i = 0; i < playerMatrix.length; i++){
@@ -87,7 +156,7 @@ public class DataModel {
     
     
  // Methode zum Setzen von Schiffen in Phase 1
-    public void placeShips(int startX, int startY, int endX, int endY) {
+    public void placeShips() {
         int shipLengthX = Math.abs(endX - startX) + 1;
         int shipLengthY = Math.abs(endY - startY) + 1;
         int shipLength = Math.max(shipLengthX, shipLengthY);
@@ -185,7 +254,7 @@ public class DataModel {
 	    }
 	  
 	  //Berechne die möglichen Endpositionen
-	  public int[][] calculatePossibleEndPositions(int startRow, int startCol, int shipLength) {
+	  public int[][] calculatePossibleEndPositions(int startRow, int startCol) {
 		  
 	        int[][] offsets = {
 	            {1, 0}, {-1, 0}, {0, 1}, {0, -1} //möglichen Richtungen
@@ -272,19 +341,3 @@ public class DataModel {
         return hits;
     }
 }
-
-    
-
-//    //setzt das neue datenFeld -> wird von spieler aufgerufen
-//    public void setData(char[][] data) {
-//        this.playgroundMatrix = data;
-//    }
-
-
-    /*
-     * TO-DO
-     * Mouse-Listener, um Array auswählen zu können oder doch lieber Tastatur Eingabe oder sollte das eher ins GUI
-     * Kollisionsabfrage mit anderen Schiffen aber auch dem Spielfeldrand
-     * tatsächlich schiff setzen
-     * Frage: muss überprüft werden, ob Koordinaten innerhalb des Feldes liegen, oder wird das im GUI gemacht
-     */

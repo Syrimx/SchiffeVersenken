@@ -29,10 +29,94 @@ public class Controller {
     private char[][] robotMatrix = new char[10][10];
     Random random = new Random();
     
-    public Controller() {
+    ////NEU:
+    private DataModel datamodel;
+    private Client client;
+    private Spieler spieler;
+    ////
+    
+    public Controller(DataModel datamodel) {
         gameState = new HashMap<Integer, char[][]>();
+        
+        ////NEU:
+        this.datamodel = datamodel;
+        ////
     }
 
+
+    
+    ////NEU:
+    //Auswahl Schiffstyp
+    public void onShipTypeButtonClicked(String shipType) {
+        int shipLength;
+        switch(shipType) {
+            case "Submarine":
+                shipLength = 1;
+                break;
+            case "Frigate":
+                shipLength = 2;
+                break;
+            case "Cruiser":
+                shipLength = 3;
+                break;
+            case "Battleship":
+                shipLength = 4;
+                break;
+            default:
+                shipLength = 0;
+                break;
+        }
+        datamodel.setShipLength(shipLength);
+    }
+
+    //Schiffe setzen
+    public void onPlayerButtonClicked(int row, int col) {
+    	if(gamePhase == 1 && !datamodel.alleSpielerSchiffePlatziert()) {
+    		if (datamodel.getStartRow() == -1 && datamodel.getStartCol() == -1 || datamodel.getTmpshipLength() != datamodel.getShipLength()) {
+	              // Speichern der Startposition
+	    			datamodel.setStartCell(row, col);
+	    			datamodel.setTmpshipLength(datamodel.getShipLength()); 
+	    			datamodel.setPickStartPosition(true);
+	    			datamodel.setPickEndPosition(false);
+	    		}else if(datamodel.getEndRow()== -1 && datamodel.getEndCol() == -1 && datamodel.isPickStartPosition() && !datamodel.isPickEndPosition()) {
+	    			datamodel.setEndCell(row, col);
+	    			datamodel.placeShips();
+	    			datamodel.setStartCell(-1, -1);
+	    			datamodel.setEndCell(-1, -1);
+	    			datamodel.setTmpshipLength(0);
+	    			datamodel.setPickStartPosition(false);
+	    			datamodel.setPickEndPosition(true);
+	    		}
+    	}if(datamodel.alleSpielerSchiffePlatziert()) {
+//    		 datamodel.setPhase(2);
+//        	 Controller.gamePhase=2;
+        	 
+        	 //Error?
+        	 System.out.println("Done");
+             System.out.println(this.datamodel.getPlaygroundMatrix().toString());
+             HashMap<Integer, char[][]> response = this.client.writeServerData(this.spieler.initialPayload(this.datamodel.getPlaygroundMatrix()));
+         	 System.out.println(response.toString());
+             datamodel.setPhase(2);
+             //
+        }
+    }
+    
+    //Spielmodus setzen
+    public void openGameWindowBot(){
+    	datamodel.setGameModi(0);
+    }
+    public void openGameWindowFriend() {
+    	datamodel.setGameModi(1);
+    }
+    
+    
+    //Schießen Funktion, Datamodel manipulieren
+    public void onEnemyButtonClicked(int row, int col) {
+    	
+    }
+    
+    ////
+    
     public Integer[] getRoundToken() {
         return this.roundToken;
     }

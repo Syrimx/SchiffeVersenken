@@ -4,7 +4,8 @@ import java.util.HashMap;
 
 public class Testing {
     public static void main(String[] args) {
-        Controller controller = new Controller();
+    	DataModel datamodel = new DataModel();
+        Controller controller = new Controller(datamodel);
 
         /*** Test 1 ***/
         //test the robot

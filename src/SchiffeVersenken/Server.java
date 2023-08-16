@@ -9,7 +9,8 @@ import java.io.*;
 
 public class Server {
     public static void main(String[] args) {
-        Controller controller = new Controller();
+    	DataModel datamodel = new DataModel();
+        Controller controller = new Controller(datamodel);
         HashMap<String, String> test = new HashMap<String, String>();
         test.put("Test", "Hello Client");   //Initialize Test Object
 

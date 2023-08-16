@@ -25,9 +25,8 @@ import javax.swing.SwingConstants;
 public class GUI extends JFrame
 {
 	private DataModel datamodel;
+	private Controller controller;
     private MenuWindow menuWindow;
-    private Client client;
-    private Spieler spieler;
     
     private JPanel instructionPanel;
     private JPanel enemyPanel;
@@ -48,30 +47,18 @@ public class GUI extends JFrame
     //
     //für Übergabe an Controller
     private int[] currentposition = new int[2];
-    private char[][] enemyMatrix;
-    private char[][] playerMatrix;
-  
-    ////
-    //Schiffe setzen 
-    
-    private int shipLength = 0;
-    private int tmpshipLength = 0;
-    private int startRow = -1;
-    private int startCol = -1;
-    private int endRow = -1;
-    private int endCol = -1;
     ////
     //Menu
     private JButton playButtonBot;
     private JButton playButtonFriend;
     private JButton exitButton;
-    private boolean GameBotOrFriend;
     ///
     
-    public GUI(DataModel datamodel) {
+    public GUI() {
     	//this.menuWindow = menuWindow;
     	//Datenmodel in View eingebunden, sodass Daten einfacher aufrufbar sind
         this.datamodel = new DataModel();
+        this.controller = new Controller(datamodel);
         
     }
     
@@ -100,18 +87,20 @@ public class GUI extends JFrame
         setVisible(true);
     }
     
+    //Auswahl Spiel-Modus:
     private void openGameWindowBot(){
-    	GameBotOrFriend = true;
+    	controller.openGameWindowBot();
     	resetGUI();
 		drawMap();
     }
     
     private void openGameWindowFriend() {
-    	GameBotOrFriend = true;
+    	controller.openGameWindowFriend();
     	resetGUI();
 		drawMap();
     }
     
+    //GUI reseten
     public void resetGUI(){
     	setVisible(false);
     	this.getContentPane().removeAll();
@@ -266,7 +255,6 @@ public class GUI extends JFrame
     }
 
  
-    //Phase 1
     private void setupShipSelectionButtons() {
         String[] shipTypes = datamodel.getShipTypes();
         int[] shipCounts = datamodel.getShipCounts();
@@ -309,105 +297,39 @@ public class GUI extends JFrame
         }
     }
 
-    
-    
     //Aktion: Auswahl Schiff, speicher die Länge
     private void onShipTypeButtonClicked(String shipType) {
-    	switch(shipType) {
-    	case "Submarine":
-    		shipLength= 1;
-    		break;
-    	case "Frigate":
-    		shipLength=2;
-    		break;
-    	case "Cruiser":
-    		shipLength=3;
-    		break;
-    	case "Battleship":
-    		shipLength=4;
-    		break;
-    	default:
-    		shipLength=0;
-    	break;
+    	controller.onShipTypeButtonClicked(shipType);
+    }
+    
+    //Schiffe setzen
+    private void onPlayerButtonClicked(int row, int col) {
+    	if(datamodel.getShipLength()== 0) {
+    		instructionshipLabel.setText("Wähle einen Schiffstyp aus!");
+    	}else if (datamodel.getPlaygroundCellStatus(row, col)== 's') {
+        	instructionshipLabel.setText("Auf diesem Feld steht bereits ein Schiff! Wähle ein anderes aus!");	
+    	}
+    	else {
+    		controller.onPlayerButtonClicked(row, col);	
+    		
+    		if(datamodel.isPickStartPosition() && !datamodel.isPickEndPosition()) {
+    			refreshMap(); 
+    			playerButtons[datamodel.getStartRow()][datamodel.getStartCol()].setBackground(Color.CYAN); //Startposition markieren
+    			markPossibleEndPositions(datamodel.getStartRow(),datamodel.getStartCol());
+    			instructionshipLabel.setText("Wähle die Endposition aus!");
+    		}else if( !datamodel.isPickStartPosition() && datamodel.isPickEndPosition()&& playerButtons[row][col].getBackground() == Color.GREEN){
+    			 updateShipCountLabels();
+    			 refreshMap(); 
+    			 instructionshipLabel.setText("");
+    			 SelectionButtonsEnabled();
+    		}
     	}
     }
-    
-    
-
-  ///Aktionen   
-//Aktionen in der Schiffe setzen Phase, Spieler darf nur eigenes Feld manipulieren
-    private void onPlayerButtonClicked(int row, int col) {
-    	if(datamodel.isPhaseOne() && !datamodel.alleSpielerSchiffePlatziert()) 
-        	{
-    		if (shipLength == 0) {
-                instructionshipLabel.setText("Wähle einen Schiffstyp aus!");
-            } if(playerButtons[row][col].getBackground() == Color.YELLOW) {
-            	instructionshipLabel.setText("Auf diesem Feld steht bereits ein Schiff! Wähle ein anderes aus!");	
-        	} else if (startRow == -1 && startCol == -1 || tmpshipLength != shipLength) {
-                // Speichern der Startposition
-            	refreshMap(); 
-                startRow = row;
-                startCol = col; 
-                tmpshipLength = shipLength; //temporär gespeichert, zuständig zur Möglichkeit 
-                //rumzuklicken bis man was wirklich setzen will
-                playerButtons[startRow][startCol].setBackground(Color.CYAN); //Startposition markieren
-           
-                instructionshipLabel.setText("Wähle die Endposition aus!");
-                //Markierung der möglichen Endpositionen
-                markPossibleEndPositions(startRow, startCol);
-            } else if (endRow == -1 && endCol == -1 && playerButtons[row][col].getBackground() == Color.GREEN) {
-                // Speichern der Endposition
-                endRow = row;
-                endCol = col;
-                // Schiffplatzierung 
-                datamodel.placeShips(startRow, startCol, endRow, endCol); 
-                // Start- und Endpositionen zurücksetzen
-                startRow = -1;
-                startCol = -1; 
-                endRow = -1;
-                endCol = -1;
-                //Schiffslänge zurücksetzen
-                shipLength = 0;
-                //Anzeige der Anzahl Schiffe Aktualisieren
-                updateShipCountLabels();
-                
-                //Aktualisierung Status, holt Status von DataModel
-                refreshMap(); 
-                
-                instructionshipLabel.setText("");
-                SelectionButtonsEnabled();
-               
-                //Wechsel zur Phase 2
-                if(datamodel.alleSpielerSchiffePlatziert()) {
-<<<<<<< HEAD
-                    char[][] matrix = this.datamodel.getPlaygroundMatrix();
-                    //matrix ausgeben
-                    for(int i = 0; i < matrix.length; i++) {
-                        System.out.print("\n");
-                        for(int j = 0; j < matrix.length; j++) {
-                            System.out.print(matrix[i][j] + "  ");
-                        }
-                    }
-                    HashMap<Integer, char[][]> obj = new HashMap<Integer, char[][]>();
-                    char[][] m = this.datamodel.getPlaygroundMatrix();
-                    this.spieler.initialPayload(m);
-=======
-                    System.out.println(this.datamodel.getPlaygroundMatrix().toString());
-                    this.spieler.initialPayload(this.datamodel.getPlaygroundMatrix());
-                    this.client.writeServerDataTest();
->>>>>>> integration
-                    datamodel.setPhase(2);
-                	instructionLabel.setText("Schießen Sie auf das gegnerische Feld!");
-                }
-            }
-        }
-    }
-    
+   
  
     //Markierung der möglichen Endpositionen
     private void markPossibleEndPositions(int startRow, int startCol) {
-        if (shipLength != 0) {
-            int[][] possibleEndPositions = datamodel.calculatePossibleEndPositions(startRow, startCol, shipLength);
+            int[][] possibleEndPositions = datamodel.calculatePossibleEndPositions(startRow, startCol);
 
             for (int i = 0; i < 4; i++) {
                 int endRow = possibleEndPositions[i][0];
@@ -417,9 +339,6 @@ public class GUI extends JFrame
                     markPossiblePosition(endRow, endCol);
                 }
             }
-        } else {
-            instructionshipLabel.setText("Wähle zuerst ein Schiffstyp aus!");
-        }
     }
 
     //Hilfsfunktion für das Markieren der Endpositionen
@@ -428,10 +347,14 @@ public class GUI extends JFrame
     }
 
 
-    
+    //In die Controller Klasse??
     ///////
     //Aktionen in der Schießen Phase, Spieler darf nur Gegner Feld manipulieren
     private void onEnemyButtonClicked(int row, int col) {
+    	
+    	//Schießen Funtion
+    	controller.onEnemyButtonClicked(row,col);
+    	
     	//Aktuelle Position speichern im currentposition Array
     	currentposition[0]= row;
     	currentposition[1]= col;
@@ -513,65 +436,10 @@ public class GUI extends JFrame
         }
     }
 
- //eventuel unnötig, Status soll im DataModel gespeichert sein
-    //Hilfsfunktion für Getter getEnemyMatrix und getPlayerMatrix
-    //JButtons[][] in char[][] konvertieren, Übertragung zu DataModel
-    private char[][] convertButtonsToCharArray(JButton[][] buttons) {
-        char[][] charArray = new char[10][10];
-        for (int row = 0; row < 10; row++) {
-            for (int col = 0; col < 10; col++) {
-                JButton button = buttons[row][col];
-                // Status = Wasser
-                if (button.getBackground() == Color.BLUE) {
-                    charArray[row][col] = 'w'; 
-                // Status = Schiff
-                } else if (button.getBackground() == Color.YELLOW) {
-                    charArray[row][col] = 's'; 
-                // Status = Schiff getroffen
-                } else if (button.getBackground() == Color.RED && button.getText().equals("x")) {
-                    charArray[row][col] = 'x'; 
-                // Status = Wasser getroffen, bekanntes Feld
-                } else if (button.getBackground() == Color.LIGHT_GRAY && button.getText().equals("o")) {
-                    charArray[row][col] = 'b'; 
-                // Unbekannter Status oder leeres Feld
-                } else {
-                    charArray[row][col] = ' '; 
-                }
-            }
-        }
-        return charArray;
-    }
    
     //aktuell geklickter Button übergeben 
     public int[] getCurrentPosition() {
         return currentposition;      
-    }
-    
-    //Anweisung für Spieler setzen
-    public void setInstruction(String text) {
-    	instructionLabel.setText(text); //Phase 1: "Platziere die Schiffe!"
-    									//Phase 2: "Schieße auf das gegenerische Feld!"
-    }
-    
-//    //unnötige Funktion
-//    //Enemy Matrix übergeben
-//    public char[][] getEnemyMatrix(){
-//    	enemyMatrix = convertButtonsToCharArray(enemyButtons);
-//		return enemyMatrix;
-//    	
-//    }
-//    
-//    
-//    //Player Matrix übergeben
-//    public char[][] getPlayerMatrix(){
-//    	playerMatrix = convertButtonsToCharArray(playerButtons);
-//		return playerMatrix;
-//    	
-//    }
-    
-    //
-    public boolean getGameBotOrFriend() {
-    	return GameBotOrFriend;
     }
     
 }

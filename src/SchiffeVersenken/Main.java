@@ -10,12 +10,12 @@ public class Main {
 		//MenuWindow menuWindow 	= new MenuWindow();
 		//-> GUI?
 		Spieler spieler 		= new Spieler();
-		Controller controller 	= new Controller();
 		DataModel datamodel	= new DataModel();
+		Controller controller 	= new Controller(datamodel);
 		//Client client 		= new Client();
 		
 
-		GUI gameWindow = new GUI(datamodel);
+		GUI gameWindow = new GUI();
 		gameWindow.drawMenu();
 		
 		//noch nicht ideal ausgelagert aus GUI 
