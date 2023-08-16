@@ -2,6 +2,7 @@ package SchiffeVersenken;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Map.Entry;
 
 public class Spieler {
 
@@ -15,6 +16,7 @@ public class Spieler {
     //insbesondere receiveCoordinates()
     public Spieler() {
         this.roundToken = random.nextInt(100);
+        System.out.println(this.roundToken);
     }
 
     //Constructs payload which is transmitted over with the client
@@ -29,9 +31,17 @@ public class Spieler {
 
     //Sendet den initialenToken und das initiale Spielfeld an den Server
     public HashMap<Integer, char[][]> initialPayload(char[][] matrix) {
-        HashMap<Integer, char[][]> payload = new HashMap<Integer, char[][]>();
-        payload.put(this.roundToken, matrix);
-        return payload;
+        System.out.println("Hallo");
+        //HashMap<Integer, char[][]> payload = new HashMap<Integer, char[][]>();
+        //payload.put(this.roundToken, matrix);
+        return null;
     }
 
+    //printHashMap
+    public void printHashMap(HashMap<Integer, char[][]> matrix) {
+        System.out.println("printTheMap");
+        for(Entry<Integer, char[][]> entry : matrix.entrySet()) {
+            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+        }
+    }   
 }

@@ -379,10 +379,17 @@ public class GUI extends JFrame
                
                 //Wechsel zur Phase 2
                 if(datamodel.alleSpielerSchiffePlatziert()) {
-                    System.out.println("Done");
-                    System.out.println(this.datamodel.getPlaygroundMatrix().toString());
-                    HashMap<Integer, char[][]> response = this.client.writeServerData(this.spieler.initialPayload(this.datamodel.getPlaygroundMatrix()));
-                	System.out.println(response.toString());
+                    char[][] matrix = this.datamodel.getPlaygroundMatrix();
+                    //matrix ausgeben
+                    for(int i = 0; i < matrix.length; i++) {
+                        System.out.print("\n");
+                        for(int j = 0; j < matrix.length; j++) {
+                            System.out.print(matrix[i][j] + "  ");
+                        }
+                    }
+                    HashMap<Integer, char[][]> obj = new HashMap<Integer, char[][]>();
+                    char[][] m = this.datamodel.getPlaygroundMatrix();
+                    this.spieler.initialPayload(m);
                     datamodel.setPhase(2);
                 	instructionLabel.setText("Schießen Sie auf das gegnerische Feld!");
                 }

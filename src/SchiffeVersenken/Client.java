@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.io.*;
 
 public class Client {
-    private static HashMap<String, String> test = new HashMap<String, String>();
+    private HashMap<String, String> test = new HashMap<String, String>();
     //private DataModel datamodel = new DataModel();
     private Socket clientSocket = null;
     //Send Server Data
@@ -16,7 +16,7 @@ public class Client {
     private ObjectInputStream input = null;
 
     public Client() {
-        Client.test.put("Test", "Hello Server");   //Initialize Test Object
+        this.test.put("Test", "Hello Server");   //Initialize Test Object
     }
 
     //Write Server Data -> ungetested
@@ -49,7 +49,7 @@ public class Client {
     }
 
     //Test Methode
-    public String writeServerDataTest(HashMap<String, String> data) {
+    public String writeServerDataTest() {
         String serverData = null;
         try {
             //Connect Client to Server
@@ -59,7 +59,7 @@ public class Client {
             this.output = new ObjectOutputStream(this.clientSocket.getOutputStream());
             //this.output.writeObject(this.datamodel.getPlaygroundMatrix());
             //test Object
-            this.output.writeObject(Client.test);
+            this.output.writeObject(this.test);
 
             //data returend from the server
             this.input = new ObjectInputStream(this.clientSocket.getInputStream());
@@ -73,12 +73,13 @@ public class Client {
         } catch(Exception e) {
             e.printStackTrace();
         }
-        return null; // später return server data
+        return serverData.toString(); // später return server data
     }
+
 
     public static void main(String[] args) {
         //initializiere den client
         Client client = new Client();
-        client.writeServerDataTest(Client.test);
+        client.writeServerDataTest();
     }
 }
