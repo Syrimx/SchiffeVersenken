@@ -1,5 +1,7 @@
 package SchiffeVersenken;
 
+import java.util.HashMap;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,6 +26,8 @@ public class GUI extends JFrame
 {
 	private DataModel datamodel;
     private MenuWindow menuWindow;
+    private Client client;
+    private Spieler spieler;
     
     private JPanel instructionPanel;
     private JPanel enemyPanel;
@@ -375,8 +379,11 @@ public class GUI extends JFrame
                
                 //Wechsel zur Phase 2
                 if(datamodel.alleSpielerSchiffePlatziert()) {
-                	datamodel.setPhase(2);
-                	Controller.gamePhase=2;
+                    System.out.println("Done");
+                    System.out.println(this.datamodel.getPlaygroundMatrix().toString());
+                    HashMap<Integer, char[][]> response = this.client.writeServerData(this.spieler.initialPayload(this.datamodel.getPlaygroundMatrix()));
+                	System.out.println(response.toString());
+                    datamodel.setPhase(2);
                 	instructionLabel.setText("Schießen Sie auf das gegnerische Feld!");
                 }
             }

@@ -28,9 +28,9 @@ public class Spieler {
     } 
 
     //Sendet den initialenToken und das initiale Spielfeld an den Server
-    public HashMap<Integer, char[][]> initialPayload() {
+    public HashMap<Integer, char[][]> initialPayload(char[][] matrix) {
         HashMap<Integer, char[][]> payload = new HashMap<Integer, char[][]>();
-        payload.put(this.roundToken, datamodel.getPlaygroundMatrix());
+        payload.put(this.roundToken, matrix);
         return payload;
     }
 
