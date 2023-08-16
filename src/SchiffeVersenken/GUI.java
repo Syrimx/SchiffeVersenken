@@ -44,18 +44,16 @@ public class GUI extends JFrame
     private JButton[] shipTypeButtons; //Länge auswählen
     private JPanel shipSelectionPanel;
     private JLabel[] shipCountLabels;
-    //
+ 
     //für Übergabe an Controller
     private int[] currentposition = new int[2];
-    ////
+
     //Menu
     private JButton playButtonBot;
     private JButton playButtonFriend;
     private JButton exitButton;
-    ///
     
     public GUI() {
-    	//this.menuWindow = menuWindow;
     	//Datenmodel in View eingebunden, sodass Daten einfacher aufrufbar sind
         this.datamodel = new DataModel();
         this.controller = new Controller(datamodel);
@@ -105,7 +103,6 @@ public class GUI extends JFrame
     	setVisible(false);
     	this.getContentPane().removeAll();
     }
-  /////
     
     
     //Buttonfelder und x-und y-Achsen Beschriftung erstellen, 
@@ -323,6 +320,9 @@ public class GUI extends JFrame
     			 instructionshipLabel.setText("");
     			 SelectionButtonsEnabled();
     		}
+    	}
+    	if(datamodel.alleSpielerSchiffePlatziert()) {
+    		instructionLabel.setText("Schießen Sie auf das gegnerische Feld!");
     	}
     }
    

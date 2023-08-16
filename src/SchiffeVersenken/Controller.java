@@ -37,15 +37,10 @@ public class Controller {
     
     public Controller(DataModel datamodel) {
         gameState = new HashMap<Integer, char[][]>();
-        
-        ////NEU:
         this.datamodel = datamodel;
-        ////
     }
 
 
-    
-    ////NEU:
     //Auswahl Schiffstyp
     public void onShipTypeButtonClicked(String shipType) {
         int shipLength;
@@ -87,19 +82,30 @@ public class Controller {
 	    			datamodel.setPickStartPosition(false);
 	    			datamodel.setPickEndPosition(true);
 	    		}
-    	}if(datamodel.alleSpielerSchiffePlatziert()) {
-//    		 datamodel.setPhase(2);
-//        	 Controller.gamePhase=2;
-        	 
-        	 //Error?
-        	 System.out.println("Done");
-             System.out.println(this.datamodel.getPlaygroundMatrix().toString());
-             HashMap<Integer, char[][]> response = this.client.writeServerData(this.spieler.initialPayload(this.datamodel.getPlaygroundMatrix()));
-         	 System.out.println(response.toString());
-             datamodel.setPhase(2);
-             //
+    	}  //Wechsel zur Phase 2
+        if(datamodel.alleSpielerSchiffePlatziert()) {
+//<<<<<<< HEAD
+            char[][] matrix = this.datamodel.getPlaygroundMatrix();
+            //matrix ausgeben
+            for(int i = 0; i < matrix.length; i++) {
+                System.out.print("\n");
+                for(int j = 0; j < matrix.length; j++) {
+                    System.out.print(matrix[i][j] + "  ");
+                }
+            }
+            HashMap<Integer, char[][]> obj = new HashMap<Integer, char[][]>();
+            char[][] m = this.datamodel.getPlaygroundMatrix();
+            this.spieler.initialPayload(m);
+//=======
+            System.out.println(this.datamodel.getPlaygroundMatrix().toString());
+            this.spieler.initialPayload(this.datamodel.getPlaygroundMatrix());
+            this.client.writeServerDataTest();
+//>>>>>>>integration
+            datamodel.setPhase(2);
+        	
         }
     }
+
     
     //Spielmodus setzen
     public void openGameWindowBot(){
@@ -115,7 +121,6 @@ public class Controller {
     	
     }
     
-    ////
     
     public Integer[] getRoundToken() {
         return this.roundToken;

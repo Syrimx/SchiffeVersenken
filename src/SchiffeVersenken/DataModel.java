@@ -19,7 +19,7 @@ public class DataModel {
     // Liste, um getroffene Felder zu speichern
     private List<int[]> hits = new ArrayList<>();
     
-    //NEU:
+    //Schiffe setzen
     private int shipLength =0;
     private int tmpshipLength = 0;
     private int startX = -1;
@@ -28,80 +28,8 @@ public class DataModel {
     private int endY = -1;
     private boolean PickStartPosition = false;
     private boolean PickEndPosition = false;
+    //Spielmodus
     private int gameModi; // Bot: 0, Friend: 1
-    
-    
-    
-    public int getGameModi() {
-		return gameModi;
-	}
-
-	public void setGameModi(int gameModi) {
-		this.gameModi = gameModi;
-	}
-
-	public boolean isPickEndPosition() {
-		return PickEndPosition;
-	}
-
-	public void setPickEndPosition(boolean pickEndPosition) {
-		PickEndPosition = pickEndPosition;
-	}
-
-	public boolean isPickStartPosition() {
-		return PickStartPosition;
-	}
-
-	public void setPickStartPosition(boolean pickStartPosition) {
-		PickStartPosition = pickStartPosition;
-	}
-
-	public int getShipLength() {
-		return shipLength;
-	}
-
-    //zum Schiffe setzen
-	public void setShipLength(int shipLength) {
-		this.shipLength = shipLength;
-	}
-
-	public void setStartCell(int row, int col) {
-        startX = row;
-        startY = col;
-    }
-
-    public int getStartRow() {
-        return startX;
-    }
-
-    public int getStartCol() {
-        return startY;
-    }
-    
-    public void setEndCell(int row, int col) {
-        endX = row;
-        endY = col;
-    }
-
-    public int getEndRow() {
-        return endX;
-    }
-
-    public int getEndCol() {
-        return endY;
-    }
-    
-    
-	public int getTmpshipLength() {
-		return tmpshipLength;
-	}
-
-	public void setTmpshipLength(int tmpshipLength) {
-		this.tmpshipLength = tmpshipLength;
-	}
-	//
-	
-    
 
     public DataModel() {
     	createInitialMatrix();
@@ -291,8 +219,76 @@ public class DataModel {
     }
 }
 
+    //Getter und Setter
+    public int getGameModi() {
+		return gameModi;
+	}
 
-//Uebergeben von Werten an GUI
+	public void setGameModi(int gameModi) {
+		this.gameModi = gameModi;
+	}
+
+	public boolean isPickEndPosition() {
+		return PickEndPosition;
+	}
+
+	public void setPickEndPosition(boolean pickEndPosition) {
+		PickEndPosition = pickEndPosition;
+	}
+
+	public boolean isPickStartPosition() {
+		return PickStartPosition;
+	}
+
+	public void setPickStartPosition(boolean pickStartPosition) {
+		PickStartPosition = pickStartPosition;
+	}
+
+	public int getShipLength() {
+		return shipLength;
+	}
+
+    //zum Schiffe setzen
+	public void setShipLength(int shipLength) {
+		this.shipLength = shipLength;
+	}
+
+	public void setStartCell(int row, int col) {
+        startX = row;
+        startY = col;
+    }
+
+    public int getStartRow() {
+        return startX;
+    }
+
+    public int getStartCol() {
+        return startY;
+    }
+    
+    public void setEndCell(int row, int col) {
+        endX = row;
+        endY = col;
+    }
+    
+    public int getEndRow() {
+        return endX;
+    }
+
+    public int getEndCol() {
+        return endY;
+    }
+    
+    //temporäre Variable
+	public int getTmpshipLength() {
+		return tmpshipLength;
+	}
+
+	public void setTmpshipLength(int tmpshipLength) {
+		this.tmpshipLength = tmpshipLength;
+	}
+	
+
     //setzt das neue datenFeld -> wird von spieler aufgerufen
     public void setData(char[][] data) {
         this.playerMatrix = data;
