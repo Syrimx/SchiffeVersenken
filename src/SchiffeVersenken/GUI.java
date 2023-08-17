@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -120,7 +121,7 @@ public class GUI extends JFrame
     		
     		playerPanel = createGridPanel(Color.WHITE);
     		enemyPanel = createGridPanel(Color.BLACK);
-    		
+
 	    	// Erstelle panels für das player Feld, x-achse labels, and y-achse labels
 	    	JPanel playerXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
 	    	JPanel playerYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
@@ -159,10 +160,11 @@ public class GUI extends JFrame
 			//Auswahl Buttons für Schifftyp
 			setupShipSelectionButtons();
 	    	
+		
 	    	setVisible(true);
     }
     
-    	
+    
     //Hilfsfunktionen für drawMap:
     private JLabel createInstructionLabel(int horizontalAlignment, int verticalAlignment) {
     	JLabel label = new JLabel();
@@ -190,7 +192,7 @@ public class GUI extends JFrame
 
     private JPanel createLabeledPanel(JPanel panel, JPanel xAxisLabelPanel, JPanel yAxisLabelPanel, Color background) {
         JPanel labeledPanel = new JPanel(new BorderLayout());
-        labeledPanel.add(xAxisLabelPanel, BorderLayout.NORTH);
+        labeledPanel.add(xAxisLabelPanel, BorderLayout.NORTH); 
         labeledPanel.add(yAxisLabelPanel, BorderLayout.WEST);
         labeledPanel.add(panel, BorderLayout.CENTER);
 
@@ -300,6 +302,8 @@ public class GUI extends JFrame
     		instructionshipLabel.setText("Wähle einen Schiffstyp aus!");
     	}else if (datamodel.getPlaygroundCellStatus(row, col)== 's') {
         	instructionshipLabel.setText("Auf diesem Feld steht bereits ein Schiff! Wähle ein anderes aus!");	
+    	}else if(datamodel.checkCollisionCurrentPosition(row, col)) {
+    		instructionshipLabel.setText("Die Schiffe dürfen sich nicht berühren! Wähle ein anderes Feld aus.");
     	}
     	else {
     		controller.onPlayerButtonClicked(row, col);	

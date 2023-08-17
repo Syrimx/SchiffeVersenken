@@ -155,7 +155,7 @@ public class DataModel {
 		  if (startX <= endX && startY <= endY) {
 		        for (int i = startX; i <= endX; i++) {
 		            for (int j = startY; j <= endY; j++) {
-		                if (playerMatrix[i][j] == 's') {
+		                if (playerMatrix[i][j] == 's' || checkCollisionCurrentPosition(i,j)) {
 		                    System.out.println("Kollision!");
 		                    return true;  // Kollision
 		                }
@@ -165,7 +165,7 @@ public class DataModel {
 		    } else if (startX >= endX && startY >= endY) {
 		        for (int i = startX; i >= endX; i--) {
 		            for (int j = startY; j >= endY; j--) {
-		                if (playerMatrix[i][j] == 's') {
+		                if (playerMatrix[i][j] == 's' || checkCollisionCurrentPosition(i,j)) {
 		                    System.out.println("Kollision!");
 		                    return true;  // Kollision
 		                }
@@ -176,6 +176,23 @@ public class DataModel {
 	      return false;  // keine Kollision
 	  }
 	  
+	  //Schaut ob um der Startposition ein Schiff anliegt
+	  public boolean checkCollisionCurrentPosition(int row, int col) {
+		  int[][] surrounding = {{1, 1},{1, 0},{1, -1},{-1, 0},{-1, 1},{0, 1},{0, -1},{-1, -1}}; //alle Richtungen
+		  boolean checkCollision = false;
+		  for (int i = 0; i < surrounding.length; i++) {
+	            int checkRow = row + surrounding[i][0];
+	            int checkCol = col + surrounding[i][1];
+	            if(isValidPosition(checkRow,checkCol)) {
+	            	 if(getPlaygroundCellStatus(checkRow, checkCol)=='s') {
+	 	            	checkCollision = true;
+	 	            }
+	            } 
+	        }
+		  
+		return checkCollision;
+	  }
+	  
 	  //Prüft ob die angegebene Position im Feld ist
 	  public boolean isValidPosition(int row, int col) {
 	        return row >= 0 && row < 10 && col >= 0 && col < 10; //Position im Feld?
@@ -183,23 +200,18 @@ public class DataModel {
 	  
 	  //Berechne die möglichen Endpositionen
 	  public int[][] calculatePossibleEndPositions(int startRow, int startCol) {
-		  
-	        int[][] offsets = {
-	            {1, 0}, {-1, 0}, {0, 1}, {0, -1} //möglichen Richtungen
-	        };
-	        
-	        int[][] possiblePositions = new int[offsets.length][2];
+		    int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}; //alle 4 Richtungen
+	        int[][] possiblePositions = new int[directions.length][2];
 
-	        for (int i = 0; i < offsets.length; i++) {
-	            int endRow = startRow + offsets[i][0] * (shipLength - 1);
-	            int endCol = startCol + offsets[i][1] * (shipLength - 1);
+	        for (int i = 0; i < directions.length; i++) {
+	            int endRow = startRow + directions[i][0] * (shipLength - 1);
+	            int endCol = startCol + directions[i][1] * (shipLength - 1);
 	            possiblePositions[i][0] = endRow;
 	            possiblePositions[i][1] = endCol;
 	        }
 
 	        return possiblePositions;
 	    }
-
 	    
     
     // Methode zum Schießen auf gegnerisches Feld in Phase 2
