@@ -1,7 +1,5 @@
 package SchiffeVersenken;
 
-import java.util.HashMap;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,8 +8,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.security.KeyPair;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -26,7 +22,6 @@ public class GUI extends JFrame
 {
 	private DataModel datamodel;
 	private Controller controller;
-    private MenuWindow menuWindow;
     
     private JPanel instructionPanel;
     private JPanel enemyPanel;
@@ -347,55 +342,20 @@ public class GUI extends JFrame
     }
 
 
-    //In die Controller Klasse??
-    ///////
     //Aktionen in der Schießen Phase, Spieler darf nur Gegner Feld manipulieren
     private void onEnemyButtonClicked(int row, int col) {
-    	
     	//Schießen Funtion
     	controller.onEnemyButtonClicked(row,col);
     	
-    	//Aktuelle Position speichern im currentposition Array
-    	currentposition[0]= row;
-    	currentposition[1]= col;
-    	
-    	//currentposition wird übermittelt an Spieler 2
-    	//Spieler 2 übermittelt Status der Zelle an DataModel
-    	//GUI holt Satus von DataModel und ändert
-    	//Neuer Status wird an Spieler 2 übermittelt und dort Map aktualisiert
-    	
-    	//Schießen Phase, Phase 2
-    	if(Controller.gamePhase == 2) {
-    	char enemyStatus = datamodel.getEnemyCellStatus(row, col);
-    	switch (enemyStatus) {
-        case 'w': // schieße auf Wasser 
-                    enemyButtons[row][col].setBackground(Color.LIGHT_GRAY);
-                    enemyButtons[row][col].setText("o");
-                    //Sende Status an DataModel
-                    //Enabled(false)
-            break;
-        case 's': // schieße auf Schiff
-        			enemyButtons[row][col].setBackground(Color.RED);
-        			enemyButtons[row][col].setText("x");  
-            break;
-        case 'x': // Schieße auf totes Schiff
-                    //Passiert nichts
-            break;
-        case 'b': // schieße auf bekanntes Wasser Feld
-	                //Passiert nichts
-            break;
-        default: // unbekannter Status
-                    enemyButtons[row][col].setText("???");
-            break;
-    	}   
-       
-    	}else if(Controller.gamePhase ==1) {
-    		//Phase 1 vorhanden
-    	}
     }
     
+    //Aktualisierung der angegriffenen Zelle
+    private void refreshCell(int row,int col) {
+    	char enemyStatus = datamodel.getEnemyCellStatus(row, col);
+    	setButtonStatus(enemyButtons[row][col],enemyStatus);
+    }
     
-    public void refreshMap() 
+    private void refreshMap() 
     {
     	for(int row = 0; row < 10; row++) {
 			for(int col = 0; col < 10; col++) {
