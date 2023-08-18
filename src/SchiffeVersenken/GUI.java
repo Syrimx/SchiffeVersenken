@@ -29,6 +29,7 @@ public class GUI extends JFrame
     private JPanel playerPanel;
     private JLabel instructionLabel;
     private JLabel instructionshipLabel;
+    private JLabel titelmenu;
     private JLabel playerTitelLabel;
     private JLabel enemyTitelLabel;
     private JPanel mainPanel;
@@ -57,27 +58,40 @@ public class GUI extends JFrame
     }
     
     //Menu
-    public void drawMenu(){
-    	this.setLayout(null);
-		this.setTitle("Menue Schiffe versenken");
-		this.getContentPane().setBackground(Color.DARK_GRAY);
-		this.setLocation(400, 400);
-		this.setSize(500, 400);
+    public void drawMenu() {
+        this.setLayout(null);
+        this.setTitle("Menue Schiffe versenken");
+        this.getContentPane().setBackground(new Color(70, 95, 180));
+        this.setLocation(400, 400);
+        this.setSize(500, 400);
+
+        Font titelFont = new Font("Arial", Font.BOLD, 30);
+        titelmenu = new JLabel("Schiffe versenken");
+        titelmenu.setBounds(125, 50, 350, 60);
+        titelmenu.setFont(titelFont);
+        titelmenu.setForeground(Color.WHITE);
+        this.add(titelmenu);
+
+        Font buttonFont = new Font("Arial", Font.BOLD, 13);
 
         playButtonBot = new JButton("Spiel gegen Bot");
-        playButtonBot.setBounds(60, 230, 160, 40);
+        playButtonBot.setBounds(60, 150, 160, 40);
+        playButtonBot.setFont(buttonFont);
         this.add(playButtonBot);
-        playButtonBot.addActionListener(e-> openGameWindowBot());
-        
+        playButtonBot.addActionListener(e -> openGameWindowBot());
+
         playButtonFriend = new JButton("Spiel gegen Freund");
-        playButtonFriend.setBounds(280, 230, 160,40);
+        playButtonFriend.setBounds(280, 150, 160, 40);
+        playButtonFriend.setFont(buttonFont);
         this.add(playButtonFriend);
         playButtonFriend.addActionListener(e -> openGameWindowFriend());
-        
+
         exitButton = new JButton("Beenden");
-        exitButton.setBounds(175,300,150,40);
+        exitButton.setBounds(175, 220, 160, 40);
+        exitButton.setFont(buttonFont);
         this.add(exitButton);
-        exitButton.addActionListener(e ->{System.exit(0);});
+        exitButton.addActionListener(e -> { System.exit(0); });
+
         setVisible(true);
     }
     
