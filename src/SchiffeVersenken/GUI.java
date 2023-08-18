@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -30,7 +31,7 @@ public class GUI extends JFrame
     private JLabel instructionLabel;
     private JLabel instructionshipLabel;
     private JLabel titelmenu;
-    private JLabel playerTitelLabel;
+    private JLabel playerTitelLabel; //muss noch hinzugefügt werden
     private JLabel enemyTitelLabel;
     private JPanel mainPanel;
     private JMenuBar menubar;
@@ -41,9 +42,6 @@ public class GUI extends JFrame
     private JButton[] shipTypeButtons; //Länge auswählen
     private JPanel shipSelectionPanel;
     private JLabel[] shipCountLabels;
- 
-    //für Übergabe an Controller
-    private int[] currentposition = new int[2];
 
     //Menu
     private JButton playButtonBot;
@@ -120,8 +118,8 @@ public class GUI extends JFrame
     		this.setLayout(new BorderLayout());
         	this.setTitle("Schiffe versenken");
     		this.getContentPane().setBackground(Color.LIGHT_GRAY);
-    		this.setLocation(200, 200);
     		this.setSize(900, 700); 
+    		this.setLocation(300, 100);
     		
     		mainPanel = new JPanel(new GridBagLayout());
     		mainPanel.setBackground(Color.LIGHT_GRAY);
@@ -312,30 +310,32 @@ public class GUI extends JFrame
     
     //Schiffe setzen
     private void onPlayerButtonClicked(int row, int col) {
-    	if(datamodel.getShipLength()== 0) {
-    		instructionshipLabel.setText("Wähle einen Schiffstyp aus!");
-    	}else if (datamodel.getPlaygroundCellStatus(row, col)== 's') {
-        	instructionshipLabel.setText("Auf diesem Feld steht bereits ein Schiff! Wähle ein anderes aus!");	
-    	}else if(datamodel.checkCollisionCurrentPosition(row, col)) {
-    		instructionshipLabel.setText("Die Schiffe dürfen sich nicht berühren! Wähle ein anderes Feld aus.");
-    	}
-    	else {
-    		controller.onPlayerButtonClicked(row, col);	
-    		
-    		if(datamodel.isPickStartPosition() && !datamodel.isPickEndPosition()) {
-    			refreshMap(); 
-    			playerButtons[datamodel.getStartRow()][datamodel.getStartCol()].setBackground(Color.CYAN); //Startposition markieren
-    			markPossibleEndPositions(datamodel.getStartRow(),datamodel.getStartCol());
-    			instructionshipLabel.setText("Wähle die Endposition aus!");
-    		}else if( !datamodel.isPickStartPosition() && datamodel.isPickEndPosition()&& playerButtons[row][col].getBackground() == Color.GREEN){
-    			 updateShipCountLabels();
-    			 refreshMap(); 
-    			 instructionshipLabel.setText("");
-    			 SelectionButtonsEnabled();
-    		}
-    	}
-    	if(datamodel.alleSpielerSchiffePlatziert()) {
-    		instructionLabel.setText("Schießen Sie auf das gegnerische Feld!");
+    	if(datamodel.isPhaseOne()) {
+    		if(datamodel.getShipLength()== 0) {
+        		instructionshipLabel.setText("Wähle einen Schiffstyp aus!");
+        	}else if (datamodel.getPlayerCellStatus(row, col)== 's') {
+            	instructionshipLabel.setText("Auf diesem Feld steht bereits ein Schiff! Wähle ein anderes aus!");	
+        	}else if(datamodel.checkCollisionCurrentPosition(row, col)) {
+        		instructionshipLabel.setText("Die Schiffe dürfen sich nicht berühren! Wähle ein anderes Feld aus.");
+        	}
+        	else {
+        		controller.onPlayerButtonClicked(row, col);	
+        		
+        		if(datamodel.isPickStartPosition() && !datamodel.isPickEndPosition()) {
+        			refreshPlayerMap(); 
+        			playerButtons[datamodel.getStartRow()][datamodel.getStartCol()].setBackground(Color.CYAN); //Startposition markieren
+        			markPossibleEndPositions(datamodel.getStartRow(),datamodel.getStartCol());
+        			instructionshipLabel.setText("Wähle die Endposition aus!");
+        		}else if( !datamodel.isPickStartPosition() && datamodel.isPickEndPosition()&& playerButtons[row][col].getBackground() == Color.GREEN){
+        			 updateShipCountLabels();
+        			 refreshPlayerMap(); 
+        			 instructionshipLabel.setText("");
+        			 SelectionButtonsEnabled();
+        		}
+        	}
+        	if(datamodel.alleSpielerSchiffePlatziert()) {
+        		instructionLabel.setText("Schießen Sie auf das gegnerische Feld!");
+        	}
     	}
     }
    
@@ -362,30 +362,56 @@ public class GUI extends JFrame
 
     //Aktionen in der Schießen Phase, Spieler darf nur Gegner Feld manipulieren
     private void onEnemyButtonClicked(int row, int col) {
-    	//Schießen Funtion
-    	controller.onEnemyButtonClicked(row,col);
-    	
+    	if(Controller.gamePhase==2) {
+        	if(datamodel.getEnemyCellStatus(row, col)=='w') {
+        		instructionshipLabel.setText("Du bist dran!");
+        		controller.onEnemyButtonClicked(row,col);
+        		refreshEnemyCell(row,col);
+        		//Delay einbauen
+        		 try {
+                     Thread.sleep(100);
+                 } catch (InterruptedException e) {
+                     e.printStackTrace();
+                 }
+        		 
+        		instructionshipLabel.setText("Dein Gegner ist am Zug!");
+        		refreshPlayerMap();
+        		if(datamodel.enemyWon) {
+            		instructionLabel.setText("Der Bot hat gewonnen!!");
+            		instructionshipLabel.setText("Das Spiel ist zu Ende!");
+            	}
+        	}else if(datamodel.getEnemyCellStatus(row, col)=='s') {
+        		controller.onEnemyButtonClicked(row,col);
+        		refreshEnemyCell(row,col);
+        		instructionshipLabel.setText("Sie dürfen erneut schießen!");
+        		if(datamodel.playerWon) {
+            		instructionLabel.setText("Du hast gewonnen!!");
+            		instructionshipLabel.setText("Das Spiel ist zu Ende!");
+            	}
+        	}else if(datamodel.getEnemyCellStatus(row, col)=='b' || datamodel.getEnemyCellStatus(row, col)=='x') {
+        		instructionshipLabel.setText("Dieses Feld haben Sie schon getroffen! Wähle ein anderes aus.");
+        	}
+    	}else if(Controller.gamePhase ==1) {
+    		instructionshipLabel.setText("Hier können Sie kein Schiff platzieren! Das ist das gegnerische Feld.");
+    	}
     }
-    
+
     //Aktualisierung der angegriffenen Zelle
-    private void refreshCell(int row,int col) {
+    private void refreshEnemyCell(int row,int col) {
     	char enemyStatus = datamodel.getEnemyCellStatus(row, col);
     	setButtonStatus(enemyButtons[row][col],enemyStatus);
     }
     
-    private void refreshMap() 
+    private void refreshPlayerMap() 
     {
     	for(int row = 0; row < 10; row++) {
 			for(int col = 0; col < 10; col++) {
-				char playerStatus = datamodel.getPlaygroundCellStatus(row, col); //hole Status von Datamodel
-		        char enemyStatus = datamodel.getEnemyCellStatus(row, col);
-		        
+				char playerStatus = datamodel.getPlayerCellStatus(row, col); //hole Status von Datamodel
 				setButtonStatus(playerButtons[row][col],playerStatus);
-				setButtonStatus(enemyButtons[row][col],enemyStatus);
 			}
 		}
     }
-    
+
     //Hilfsfunktion für refreshMap:
     //Aktuallisierung des Status der enemy Map
     //Aktuallisierung des Status der player Map
@@ -393,31 +419,20 @@ public class GUI extends JFrame
         switch (status) {
             case 'w': // Wasser
                         Button.setBackground(Color.BLUE);
-                        Button.setText("");
                 break;
             case 's': // Schiff
                         Button.setBackground(Color.YELLOW);
-                        Button.setText("");
                 break;
             case 'x': // Schiff getroffen
                         Button.setBackground(Color.RED);
-                        Button.setText("x");
                 break;
             case 'b': // Wasser getroffen, jetzt bekannt
 		                Button.setBackground(Color.LIGHT_GRAY);
-		                Button.setText("o");
                 break;
             default: // unbekannter Status
                         Button.setBackground(Color.WHITE);
-                        Button.setText("");
                 break;
         }
     }
 
-   
-    //aktuell geklickter Button übergeben 
-    public int[] getCurrentPosition() {
-        return currentposition;      
-    }
-    
 }

@@ -87,7 +87,7 @@ public class Controller {
         	//Spiel gegen Freund
         	if(datamodel.getGameModi()==1) {
         		//<<<<<<< HEAD
-                char[][] matrix = this.datamodel.getPlaygroundMatrix();
+                char[][] matrix = this.datamodel.getPlayerMatrix();
                 //matrix ausgeben
                 for(int i = 0; i < matrix.length; i++) {
                     System.out.print("\n");
@@ -96,11 +96,11 @@ public class Controller {
                     }
                 }
                 HashMap<Integer, char[][]> obj = new HashMap<Integer, char[][]>();
-                char[][] m = this.datamodel.getPlaygroundMatrix();
+                char[][] m = this.datamodel.getPlayerMatrix();
                 this.spieler.initialPayload(m);
     //=======
-                System.out.println(this.datamodel.getPlaygroundMatrix().toString());
-                this.spieler.initialPayload(this.datamodel.getPlaygroundMatrix());
+                System.out.println(this.datamodel.getPlayerMatrix().toString());
+                this.spieler.initialPayload(this.datamodel.getPlayerMatrix());
                 this.client.writeServerDataTest();
     //>>>>>>>integration
                 datamodel.setPhase(2);
@@ -125,9 +125,31 @@ public class Controller {
     }
     
     
-    //Schießen Funktion, Datamodel manipulieren
+    //Schießen Funktion, Phase 2
     public void onEnemyButtonClicked(int row, int col) {
-    	
+	    //Schießen Phase BOT
+    	if (gamePhase == 2) {
+    		if(datamodel.getGameModi()== 0) {
+    			datamodel.shootEnemyField(row, col);
+    			char enemyCellStatus = datamodel.getEnemyCellStatus(row, col);
+
+    			if (enemyCellStatus == 'x') {
+    			    // Ein Schiff wurde getroffen, der Spieler darf weiter schießen
+    			    if(datamodel.playerWon) {
+    			    	gamePhase = 4; //Ende
+    			    }
+    			} else if (enemyCellStatus == 'b') {
+    			    // Kein Treffer, der Bot ist an der Reihe
+    			    gamePhase = 3;
+    			    datamodel.BOTShoot(); // Der Bot darf schießen
+    			    if(datamodel.enemyWon) {
+    			    	gamePhase=4; //Ende
+    			    }
+    			}
+    		 }	
+    	}else if(datamodel.getGameModi()==1) {
+    		//Schießen gegen Freund
+    	}
     }
     
     
@@ -212,6 +234,7 @@ public class Controller {
         HashMap<Integer, char[][]> newGameField = this.evaluateImpact(data);  //Prüft wie effektiv der gesetzte Schuss war
         return null;
     }
+
 
     /*** Robot Section ***/
     /*check if field is set*/
@@ -366,5 +389,6 @@ public class Controller {
             }
         }
     }
+
 }
 

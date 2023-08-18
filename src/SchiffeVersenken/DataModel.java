@@ -1,4 +1,5 @@
 package SchiffeVersenken;
+import java.awt.Color;
 import java.util.*;
 
 
@@ -28,11 +29,24 @@ public class DataModel {
     private int endY = -1;
     private boolean PickStartPosition = false;
     private boolean PickEndPosition = false;
+
     //Spielmodus
     private int gameModi; // Bot: 0, Friend: 1
-
+    
+    //Bot Gamemodus: Gewonnen/Verloren
+    public boolean playerWon = false;
+    public boolean enemyWon = false;
+    
+    //Bot schießen
+    public int randomRow;
+    public int randomCol;
+    
+    
     public DataModel() {
     	createInitialMatrix();
+    	if(gameModi==0) {
+    		initBotMatrixRandomly();
+    	}
     } 
 
     // -> Intiale Matrix erstellen // also einmal beim Initialisierendes Objektes
@@ -45,18 +59,6 @@ public class DataModel {
             }
         }
     }
-
-    public void displayMatrix() {
-        System.out.println("[DATAMODEL]");
-        //Erzeugen eines 10 x 10 Feldes gefüllt mit Wasser zum testen des Arrays
-        for(int i = 0; i < playerMatrix.length; i++){
-            for(int j = 0; j < playerMatrix[i].length; j++){
-                System.out.print(playerMatrix[i][j] + " "); 
-            }
-            System.out.println();           
-        }
-    }
-
     
     //Methode um zu prüfen, ob alle Spieler Schiffe gesetzt wurden
     public boolean alleSpielerSchiffePlatziert() {
@@ -84,152 +86,293 @@ public class DataModel {
     
     
  // Methode zum Setzen von Schiffen in Phase 1
+
     public void placeShips() {
         int shipLengthX = Math.abs(endX - startX) + 1;
         int shipLengthY = Math.abs(endY - startY) + 1;
         int shipLength = Math.max(shipLengthX, shipLengthY);
-        
+
+        //Schiffsanzahl abziehen
         if (shipLength == 2 && frigate > 0) {
             frigate--;
-   
-            setShipStatus(startX, startY, endX, endY);
-            if (frigate <= 0) {
-                System.out.print("Du hast keine Frigatten mehr");
-            } else {
-                
-            }
         } else if (shipLength == 3 && cruiser > 0) {
             cruiser--;
-            
-            setShipStatus(startX, startY, endX, endY);
-            if (cruiser <= 0) {
-                System.out.print("Du hast keine Kreuzer mehr");
-            } else {
-                
-            }
         } else if (shipLength == 4 && battleship > 0) {
             battleship--;
-  
-            setShipStatus(startX, startY, endX, endY);
-            if (battleship <= 0) {
-                System.out.print("Du hast keine Schlachtschiffe mehr");
-            } else {
-                
-            }
         } else if (shipLength == 1 && submarine > 0) {
-
             submarine--;
-            setShipStatus(startX, startY, endX, endY);
-            if (submarine <= 0) {
-                System.out.print("Du hast keine U-Boote mehr");
-            } else {
-               
-            }
         } else {
             System.out.println("Kein zulaessiger Schiffstyp");
+            return;
+        }
+        
+        //Status der Felder anpassen
+        setShipStatus(startX, startY, endX, endY);
+
+        //Kommentare
+        if (frigate <= 0) {
+            System.out.print("Du hast keine Frigatten mehr");
+        } else if (cruiser <= 0) {
+            System.out.print("Du hast keine Kreuzer mehr");
+        } else if (battleship <= 0) {
+            System.out.print("Du hast keine Schlachtschiffe mehr");
+        } else if (submarine <= 0) {
+            System.out.print("Du hast keine U-Boote mehr");
         }
     }
+
     
     //Status beim Schiffe setzen aktualisieren
     public void setShipStatus(int startX, int startY, int endX, int endY) {
-    	// Den angegebenen Bereich auf "s" setzen
-    	if (startX <= endX && startY <= endY) {
-    		for (int i = startX; i <= endX; i++) {
-                for (int j = startY; j <= endY; j++) {
-                    playerMatrix[i][j] = 's';
-                }
-    		}
-        } else if (startX >= endX && startY >= endY) {
-        	for (int i = startX; i >= endX; i--) {
-                for (int j = startY; j >= endY; j--) {
-                    playerMatrix[i][j] = 's';
-                }
-    		}
-        }	
+        int minX = Math.min(startX, endX); //Sucht von beiden Werten das kleinere aus
+        int maxX = Math.max(startX, endX); //Sucht von beiden Werten das größere aus
+        int minY = Math.min(startY, endY);
+        int maxY = Math.max(startY, endY);
+
+        for (int i = minX; i <= maxX; i++) {
+            for (int j = minY; j <= maxY; j++) {
+                playerMatrix[i][j] = 's';
+            }
+        }
     }
+
+    //Auf Kollisionen überprüfen
+    public boolean checkCollision(int startX, int startY, int endX, int endY) {
+        int minX = Math.min(startX, endX); //Sucht von beiden Werten das kleinere aus
+        int maxX = Math.max(startX, endX); //Sucht von beiden Werten das größere aus
+        int minY = Math.min(startY, endY);
+        int maxY = Math.max(startY, endY);
+
+        for (int i = minX; i <= maxX; i++) {
+            for (int j = minY; j <= maxY; j++) {
+                if (playerMatrix[i][j] == 's' || checkCollisionCurrentPosition(i, j)) {
+                    System.out.println("Kollision!");
+                    return true;
+                }
+            }
+        }
+
+        System.out.println("Keine Kollision!");
+        return false;
+    }
+
+	  
+	//Schaut ob um die Position ein Schiff liegt, in diagonalen und geraden Richtungen
+    public boolean checkCollisionCurrentPosition(int row, int col) {
+    	int[][] surrounding = {
+    	        {1, 0}, {-1, 0}, {0, 1}, {0, -1},  // Gerade Richtungen
+    	        {1, 1}, {-1, 1}, {1, -1}, {-1, -1} // Diagonale Richtungen
+    	    };
+    	
+        for (int[] direction : surrounding) {
+            int checkRow = row + direction[0];
+            int checkCol = col + direction[1];
+            
+            if (isValidPosition(checkRow, checkCol) && getPlayerCellStatus(checkRow, checkCol) == 's') {
+                return true;
+            }
+        }
+        return false;
+    }
+
     
-    
-  //Kollisionen überprüfen, damit Schiffe nicht überlappen, für GUI
-	  public boolean checkCollision(int startX, int startY, int endX, int endY) {
-	  	// Prüfen, ob eine Position im angegebenen Bereich bereits "s" enthält
-		  if (startX <= endX && startY <= endY) {
-		        for (int i = startX; i <= endX; i++) {
-		            for (int j = startY; j <= endY; j++) {
-		                if (playerMatrix[i][j] == 's' || checkCollisionCurrentPosition(i,j)) {
-		                    System.out.println("Kollision!");
-		                    return true;  // Kollision
-		                }
+    //Prüft ob die angegebene Position im Feld liegt
+	public boolean isValidPosition(int row, int col) {
+		return row >= 0 && row < 10 && col >= 0 && col < 10; //Position im Feld?
+	}
+	
+	//Berechne die möglichen Endpositionen
+	public int[][] calculatePossibleEndPositions(int startRow, int startCol) {
+	    int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}; // alle 4 Richtungen
+	    int[][] possiblePositions = new int[directions.length][2];
+
+	    for (int i = 0; i < directions.length; i++) {
+	        possiblePositions[i][0] = startRow + directions[i][0] * (shipLength - 1);
+	        possiblePositions[i][1] = startCol + directions[i][1] * (shipLength - 1);
+	    }
+	    return possiblePositions;
+	}
+
+
+	// BOT SCHIFFE SETZEN
+	// Methode für das Platzieren von Schiffen für den Bot
+	private void initBotMatrixRandomly() {
+	    Random random = new Random();
+
+	    // Platziere 4 Schiffe der Größe 1 zufällig
+	    for (int i = 0; i < 4; i++) {
+	        placeRandomShip(1, random);
+	    }
+
+	    // Platziere 3 Boote der Größe 2 zufällig
+	    for (int i = 0; i < 3; i++) {
+	        placeRandomShip(2, random);
+	    }
+
+	    // Platziere 2 Boote der Größe 3 zufällig
+	    for (int i = 0; i < 2; i++) {
+	        placeRandomShip(3, random);
+	    }
+
+	    // Platziere 1 Boot der Größe 4 zufällig
+	    placeRandomShip(4, random);
+	}
+
+	 
+	//Überprüft Kollisionen der Schiffe
+	  private boolean checkCollisionEnemy(int startX, int startY, int endX, int endY) {
+	        for (int i = Math.max(0, Math.min(startX, endX) - 1); i <= Math.min(9, Math.max(startX, endX) + 1); i++) {
+	            for (int j = Math.max(0, Math.min(startY, endY) - 1); j <= Math.min(9, Math.max(startY, endY) + 1); j++) {
+	                if (enemyMatrix[i][j] == 's') {
+	                    return true;
+	                }
+	            }
+	        }
+	        return false;
+	  }
+
+	  //Platziert random ein Schiff horizontal oder vertikal
+	  private void placeRandomShip(int size, Random random) {
+		    int row, col;
+		    boolean isHorizontal = random.nextBoolean(); // Zufällig wählen, ob horizontal oder vertikal
+
+		    do {
+		        row = random.nextInt(10);
+		        col = random.nextInt(10);
+		    } while (!isValidPosition(row, col, size, isHorizontal));
+
+		    if (isHorizontal) {
+		        for (int i = 0; i < size; i++) {
+		            enemyMatrix[row][col + i] = 's';
+		        }
+		    } else {
+		        for (int i = 0; i < size; i++) {
+		            enemyMatrix[row + i][col] = 's';
+		        }
+		    }
+		}
+
+	  //Überprüft ob die mögliche Positionen für die Schiffe Kollisionen machen könnten
+	  private boolean isValidPosition(int row, int col, int size, boolean isHorizontal) {
+		    if (isHorizontal) {
+		        if (col + size > 10) {
+		            return false;
+		        }
+
+		        for (int i = 0; i < size; i++) {
+		            if (enemyMatrix[row][col + i] == 's' || checkCollisionEnemy(row, col + i, row, col + i)) {
+		                return false;
 		            }
 		        }
-		        
-		    } else if (startX >= endX && startY >= endY) {
-		        for (int i = startX; i >= endX; i--) {
-		            for (int j = startY; j >= endY; j--) {
-		                if (playerMatrix[i][j] == 's' || checkCollisionCurrentPosition(i,j)) {
-		                    System.out.println("Kollision!");
-		                    return true;  // Kollision
-		                }
+		    } else {
+		        if (row + size > 10) {
+		            return false;
+		        }
+
+		        for (int i = 0; i < size; i++) {
+		            if (enemyMatrix[row + i][col] == 's' || checkCollisionEnemy(row + i, col, row + i, col)) {
+		                return false;
 		            }
 		        }
 		    }
-	  	System.out.println("Keine Kollision!");
-	      return false;  // keine Kollision
-	  }
-	  
-	  //Schaut ob um der Startposition ein Schiff anliegt
-	  public boolean checkCollisionCurrentPosition(int row, int col) {
-		  int[][] surrounding = {{1, 1},{1, 0},{1, -1},{-1, 0},{-1, 1},{0, 1},{0, -1},{-1, -1}}; //alle Richtungen
-		  boolean checkCollision = false;
-		  for (int i = 0; i < surrounding.length; i++) {
-	            int checkRow = row + surrounding[i][0];
-	            int checkCol = col + surrounding[i][1];
-	            if(isValidPosition(checkRow,checkCol)) {
-	            	 if(getPlaygroundCellStatus(checkRow, checkCol)=='s') {
-	 	            	checkCollision = true;
-	 	            }
-	            } 
-	        }
-		  
-		return checkCollision;
-	  }
-	  
-	  //Prüft ob die angegebene Position im Feld ist
-	  public boolean isValidPosition(int row, int col) {
-	        return row >= 0 && row < 10 && col >= 0 && col < 10; //Position im Feld?
-	    }
-	  
-	  //Berechne die möglichen Endpositionen
-	  public int[][] calculatePossibleEndPositions(int startRow, int startCol) {
-		    int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}; //alle 4 Richtungen
-	        int[][] possiblePositions = new int[directions.length][2];
 
-	        for (int i = 0; i < directions.length; i++) {
-	            int endRow = startRow + directions[i][0] * (shipLength - 1);
-	            int endCol = startCol + directions[i][1] * (shipLength - 1);
-	            possiblePositions[i][0] = endRow;
-	            possiblePositions[i][1] = endCol;
-	        }
+		    return true;
+		}
 
-	        return possiblePositions;
+
+	  // BOT SCHIESSEN
+	  public void BOTShoot() {
+	        Random random = new Random();
+
+	        int row, col;
+
+	        do {
+	            row = random.nextInt(10);
+	            col = random.nextInt(10);
+	        } while (playerMatrix[row][col] == 'b' || playerMatrix[row][col] == 'x');
+
+	        BOTshootPlayerField(row, col);
 	    }
-	    
-    
-    // Methode zum Schießen auf gegnerisches Feld in Phase 2
-    public void shootEnemyField(int row, int col) {
-        if (phaseOne) {
-            System.out.println("Du kannst in dieser Phase nicht auf gegnerische Schiffe schießen.");
-            return;
-        }
-    //schiessen auf schiffe
-    char status = enemyMatrix[row][col];
-    if (status == 'w') { //w für Wasser
-        enemyMatrix[row][col] = 'b'; // Feld verfehlt, bekanntes Feld
-    } else if (status == 's') {
-        enemyMatrix[row][col] = 'x'; // Schiff getroffen
-        // Koordinaten des getroffenen Feldes zur Liste hinzufügen
-        hits.add(new int[]{row, col});
-    }
-}
+
+	    private void BOTshootPlayerField(int row, int col) {
+	        char playerCellStatus = getPlayerCellStatus(row, col);
+
+	        switch (playerCellStatus) {
+	            case 'w':
+	                playerMatrix[row][col] = 'b';
+	                Controller.gamePhase=2;
+	                break;
+	            case 's':
+	                playerMatrix[row][col] = 'x'; // Markiere das getroffene Schiff
+
+	                // Überprüfe den Gewinnstatus nach dem Treffer
+	                updatePlayerCellStatus(row, col);
+	                // Bot darf erneut schießen
+	                BOTShoot();
+	                break;
+	        }
+	    }
+
+	  // GEWONNEN STATUS ÜBERPRÜFEN
+	  public void updatePlayerCellStatus(int row, int col) {
+	      int status = playerMatrix[row][col];
+	      if (status == 'x' && checkWin(playerMatrix)) {
+	          enemyWon = true;
+	          System.out.println("Der Gegner hat gewonnen!!");
+	      }
+	  }
+
+	  public void updateEnemyCellStatus(int row, int col) {
+	      int status = enemyMatrix[row][col];
+	      if (status == 'x' && checkWin(enemyMatrix)) {
+	          playerWon = true;
+	          System.out.println("Der Spieler hat gewonnen!!");
+	      }
+	  }
+
+	  private boolean checkWin(char[][] matrix) {
+	      int xCount = 0;
+	      for (int i = 0; i < matrix.length; i++) {
+	          for (int j = 0; j < matrix[i].length; j++) {
+	              if (matrix[i][j] == 'x') {
+	                  xCount++;
+	              }
+	          }
+	      }
+	      return xCount >= 20; // true -> gleich oder mehr als 20 'x' in der Matrix -> verloren
+	  }
+
+
+	    // Methode zum Schießen auf gegnerisches Feld in Phase 2
+	    public void shootEnemyField(int row, int col) {
+	        if (phaseOne) {
+	            System.out.println("Du kannst in dieser Phase nicht auf gegnerische Schiffe schießen.");
+	            return;
+	        }else {
+	        char enemyStatus = getEnemyCellStatus(row, col);
+	        switch (enemyStatus) {
+	            case 'w': //wasser getroffen
+	                enemyMatrix[row][col]='b'; // Feld verfehlt, bekanntes Feld
+	                updateEnemyCellStatus(row, col); 
+	                break;
+	            case 's': // Shoot on ship
+	                enemyMatrix[row][col]='x'; // Schiff getroffen
+	                updateEnemyCellStatus(row, col);
+	                // Koordinaten des getroffenen Feldes zur Liste hinzufügen
+	                hits.add(new int[]{row, col});
+	                break;
+	            case 'x': //schon ein Schiff getroffen
+	                // Nichts passiert
+	                break;
+	            case 'b': // Wasser getroffen
+	            	// Nichts passiert
+	                break;
+	            default:
+	                break;
+	        	}
+	        }
+	        updateEnemyCellStatus(row,col);
+	}
 
     //Getter und Setter
     public int getGameModi() {
@@ -239,7 +382,7 @@ public class DataModel {
 	public void setGameModi(int gameModi) {
 		this.gameModi = gameModi;
 	}
-
+	
 	public boolean isPickEndPosition() {
 		return PickEndPosition;
 	}
@@ -307,11 +450,11 @@ public class DataModel {
     }
 
     // Getter and setter fuer playgroundMatrix
-    public char[][] getPlaygroundMatrix() {
+    public char[][] getPlayerMatrix() {
         return playerMatrix;
     }
 
-    public void setPlaygroundMatrix(char[][] matrix) {
+    public void setPlayerMatrix(char[][] matrix) {
         this.playerMatrix = matrix;
     }
 
@@ -335,7 +478,7 @@ public class DataModel {
     }
 
     // Getter fuer Zellen Status in playgroundMatrix
-    public char getPlaygroundCellStatus(int row, int col) {
+    public char getPlayerCellStatus(int row, int col) {
         return playerMatrix[row][col];
     }
 
