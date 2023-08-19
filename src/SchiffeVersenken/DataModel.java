@@ -1,5 +1,4 @@
 package SchiffeVersenken;
-import java.awt.Color;
 import java.util.*;
 
 
@@ -87,7 +86,6 @@ public class DataModel {
     
     
  // Methode zum Setzen von Schiffen in Phase 1
-
     public void placeShips() {
         int shipLengthX = Math.abs(endX - startX) + 1;
         int shipLengthY = Math.abs(endY - startY) + 1;
@@ -220,38 +218,43 @@ public class DataModel {
 	}
 
 	 
-	//Überprüft Kollisionen der Schiffe
-	  private boolean checkCollisionEnemy(int startX, int startY, int endX, int endY) {
-	        for (int i = Math.max(0, Math.min(startX, endX) - 1); i <= Math.min(9, Math.max(startX, endX) + 1); i++) {
-	            for (int j = Math.max(0, Math.min(startY, endY) - 1); j <= Math.min(9, Math.max(startY, endY) + 1); j++) {
-	                if (enemyMatrix[i][j] == 's') {
-	                    return true;
-	                }
+	// Diese Funktion überprüft, ob es Kollisionen zwischen Schiffen in der Gegnermatrix gibt,
+	// basierend auf den angegebenen Start- und Endkoordinaten eines Schiffs.
+
+	private boolean checkCollisionEnemy(int startX, int startY, int endX, int endY) {
+	    // Schleife über Zeilen in einem Bereich um das Schiff herum
+	    for (int i = Math.max(0, Math.min(startX, endX) - 1); i <= Math.min(9, Math.max(startX, endX) + 1); i++) {
+	        // Schleife über Spalten in einem Bereich um das Schiff herum
+	        for (int j = Math.max(0, Math.min(startY, endY) - 1); j <= Math.min(9, Math.max(startY, endY) + 1); j++) {
+	            // Überprüfe, ob das aktuelle Feld in der Gegnermatrix ein Schiff enthält
+	            if (enemyMatrix[i][j] == 's') {
+	                return true; // Kollision gefunden
 	            }
 	        }
-	        return false;
-	  }
+	    }
+	    return false; // Keine Kollision gefunden
+	}
 
-	  //Platziert random ein Schiff horizontal oder vertikal
-	  private void placeRandomShip(int size, Random random) {
-		    int row, col;
-		    boolean isHorizontal = random.nextBoolean(); // Zufällig wählen, ob horizontal oder vertikal
+	//Platziert random ein Schiff horizontal oder vertikal
+	private void placeRandomShip(int size, Random random) {
+		int row, col;
+		boolean isHorizontal = random.nextBoolean(); // Zufällig wählen, ob horizontal oder vertikal
 
-		    do {
-		        row = random.nextInt(10);
-		        col = random.nextInt(10);
-		    } while (!isValidPosition(row, col, size, isHorizontal));
+		do {
+			row = random.nextInt(10);
+			col = random.nextInt(10);
+		} while (!isValidPosition(row, col, size, isHorizontal));
 
-		    if (isHorizontal) {
-		        for (int i = 0; i < size; i++) {
-		            enemyMatrix[row][col + i] = 's';
-		        }
+		if (isHorizontal) {
+			for (int i = 0; i < size; i++) {
+				enemyMatrix[row][col + i] = 's';
+			}
 		    } else {
-		        for (int i = 0; i < size; i++) {
+		    	for (int i = 0; i < size; i++) {
 		            enemyMatrix[row + i][col] = 's';
-		        }
+		    	}
 		    }
-		}
+	}
 
 	  //Überprüft ob die mögliche Positionen für die Schiffe Kollisionen machen könnten
 	  private boolean isValidPosition(int row, int col, int size, boolean isHorizontal) {
@@ -284,7 +287,6 @@ public class DataModel {
 	  // BOT SCHIESSEN
 	  public void BOTShoot() {
 	        Random random = new Random();
-
 	        int row, col;
 
 	        do {
@@ -309,6 +311,12 @@ public class DataModel {
 	                // Überprüfe den Gewinnstatus nach dem Treffer
 	                updatePlayerCellStatus(row, col);
 	                // Bot darf erneut schießen
+	                //Delay
+	                try {
+	                     Thread.sleep(500);
+	                 } catch (InterruptedException e) {
+	                     e.printStackTrace();
+	                 }
 	                BOTShoot();
 	                break;
 	        }
@@ -354,11 +362,10 @@ public class DataModel {
 	        switch (enemyStatus) {
 	            case 'w': //wasser getroffen
 	                enemyMatrix[row][col]='b'; // Feld verfehlt, bekanntes Feld
-	                updateEnemyCellStatus(row, col); 
 	                break;
 	            case 's': // Shoot on ship
 	                enemyMatrix[row][col]='x'; // Schiff getroffen
-	                updateEnemyCellStatus(row, col);
+	                updateEnemyCellStatus(row,col);
 	                // Koordinaten des getroffenen Feldes zur Liste hinzufügen
 	                hits.add(new int[]{row, col});
 	                break;
@@ -372,7 +379,6 @@ public class DataModel {
 	                break;
 	        	}
 	        }
-	        updateEnemyCellStatus(row,col);
 	}
 
     //Getter und Setter

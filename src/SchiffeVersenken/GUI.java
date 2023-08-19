@@ -364,12 +364,11 @@ public class GUI extends JFrame
     private void onEnemyButtonClicked(int row, int col) {
     	if(Controller.gamePhase==2) {
         	if(datamodel.getEnemyCellStatus(row, col)=='w') {
-        		instructionshipLabel.setText("Du bist dran!");
         		controller.onEnemyButtonClicked(row,col);
         		refreshEnemyCell(row,col);
         		//Delay einbauen
         		 try {
-                     Thread.sleep(100);
+                     Thread.sleep(200);
                  } catch (InterruptedException e) {
                      e.printStackTrace();
                  }
