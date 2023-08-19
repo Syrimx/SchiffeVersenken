@@ -47,15 +47,19 @@ public class Controller {
         switch(shipType) {
             case "Submarine":
                 shipLength = 1;
+                datamodel.setCurrentShipType(0);
                 break;
             case "Frigate":
                 shipLength = 2;
+                datamodel.setCurrentShipType(1);
                 break;
             case "Cruiser":
                 shipLength = 3;
+                datamodel.setCurrentShipType(2);
                 break;
             case "Battleship":
                 shipLength = 4;
+                datamodel.setCurrentShipType(3);
                 break;
             default:
                 shipLength = 0;
@@ -81,6 +85,11 @@ public class Controller {
 	    			datamodel.setTmpshipLength(0);
 	    			datamodel.setPickStartPosition(false);
 	    			datamodel.setPickEndPosition(true);
+	    			int[] shipCounter = datamodel.getShipCounts();
+	    			 // Prüfen ob die Anzahl für den gewählten Schiffstyp auf 0 ist und ggf. shipLength zurücksetzen
+	    		    if (shipCounter[datamodel.getCurrentShipType()]==0) {
+	    		        datamodel.setShipLength(0); // shipLength zurücksetzen
+	    		    }
 	    		}
     	}  //Wechsel zur Phase 2
         if(datamodel.alleSpielerSchiffePlatziert()) {

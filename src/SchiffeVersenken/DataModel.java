@@ -23,6 +23,7 @@ public class DataModel {
     //Schiffe setzen
     private int shipLength =0;
     private int tmpshipLength = 0;
+    private int currentShipType;
     private int startX = -1;
     private int startY = -1;
     private int endX = -1;
@@ -383,6 +384,15 @@ public class DataModel {
 		this.gameModi = gameModi;
 	}
 	
+	
+	public int getCurrentShipType() {
+		return currentShipType;
+	}
+
+	public void setCurrentShipType(int currentShipType) {
+		this.currentShipType = currentShipType;
+	}
+
 	public boolean isPickEndPosition() {
 		return PickEndPosition;
 	}

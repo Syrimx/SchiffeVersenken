@@ -373,9 +373,8 @@ public class GUI extends JFrame
                  } catch (InterruptedException e) {
                      e.printStackTrace();
                  }
-        		 
-        		instructionshipLabel.setText("Dein Gegner ist am Zug!");
         		refreshPlayerMap();
+        		instructionshipLabel.setText("Der Bot hat geschossen. Du bist dran!");
         		if(datamodel.enemyWon) {
             		instructionLabel.setText("Der Bot hat gewonnen!!");
             		instructionshipLabel.setText("Das Spiel ist zu Ende!");
