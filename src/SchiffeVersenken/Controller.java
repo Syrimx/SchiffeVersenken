@@ -93,8 +93,14 @@ public class Controller {
 	    		}
     	}  //Wechsel zur Phase 2
         if(datamodel.alleSpielerSchiffePlatziert()) {
-        	//Spiel gegen Freund
-        	if(datamodel.getGameModi()==1) {
+        	//Spiel gegen Bot
+        	if(datamodel.getGameModi()==0) {
+        		//Bot generiert eigene Map
+        		datamodel.setPhase(2);
+        		gamePhase=2;
+        		
+             //Spiel gegen Freund
+        	}else if(datamodel.getGameModi()==1) {
         		//<<<<<<< HEAD
                 char[][] matrix = this.datamodel.getPlayerMatrix();
                 //matrix ausgeben
@@ -113,12 +119,7 @@ public class Controller {
                 this.client.writeServerDataTest();
     //>>>>>>>integration
                 datamodel.setPhase(2);
-                
-             //Spiel gegen Bot
-        	}else if(datamodel.getGameModi()==0) {
-        		//Bot generiert eigene Map
-        		datamodel.setPhase(2);
-        		gamePhase=2;
+                gamePhase = 2;
         	}
 
         }
