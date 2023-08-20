@@ -1,7 +1,12 @@
 package SchiffeVersenken;
 import java.util.*;
 
-
+/**
+ * Die DataModel Klasse verwaltet die Spielinformationen für das Spiel Schiffe versenken.
+ * Sie speichert den Zustand, die Spieler- und Gegner-Matrizen,den jeweiligen Status der Felder 
+ * und den Siegstatus.
+ * Methoden ermöglichen Datenänderungen, Platzierung und Schüsse von Spielern und Bots.
+ */
 public class DataModel {
     private char[][] playerMatrix = new char[10][10]; 
     private char[][] enemyMatrix = new char[10][10];
