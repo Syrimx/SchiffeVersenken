@@ -54,7 +54,7 @@ public class GUI extends JFrame
    
     /**
      * Konstruktor der GUI Klasse.
-     * Initialisiert das Datenmodell und den Controller für die Benutzeroberfläche.
+     * Initialisiert das Datamodel und den Controller für die Benutzeroberfläche.
      */
     public GUI() {
         this.datamodel = new DataModel();
@@ -188,7 +188,7 @@ public class GUI extends JFrame
         instructionLabel.setText("Platziere die Schiffe!");
         instructionPanel.add(instructionLabel);
 
-        // Unteresanweisungslabel für genauere Informationen erstellen und hinzufügen
+        // Weiteres Anweisungslabel für genauere Informationen erstellen und hinzufügen
         instructionshipLabel =createInstructionLabel(SwingConstants.CENTER,SwingConstants.TOP);
         instructionshipLabel.setLayout(new GridBagLayout());
         instructionPanel.add(instructionshipLabel);
@@ -204,7 +204,7 @@ public class GUI extends JFrame
      * 
      * @param horizontalAlignment Die horizontale Ausrichtung des Labels
      * @param verticalAlignment Die vertikale Ausrichtung des Labels
-     * @return Das erstellte JLabel für Anweisungen
+     * @return label Das erstellte JLabel für Anweisungen
      */
     private JLabel createInstructionLabel(int horizontalAlignment, int verticalAlignment) {
         JLabel label = new JLabel(); 
@@ -217,7 +217,7 @@ public class GUI extends JFrame
      * Erstellt ein Panel mit einem Rasterlayout (10x10) und der angegebenen Hintergrundfarbe.
      * 
      * @param background Die Hintergrundfarbe des Panels
-     * @return Das erstellte Panel mit Rasterlayout
+     * @return panel Das erstellte Panel mit Rasterlayout
      */
     private JPanel createGridPanel(Color background) {
         JPanel panel = new JPanel(new GridLayout(10, 10));
@@ -233,7 +233,6 @@ public class GUI extends JFrame
      * @param gridY Die vertikale Gitterposition, an der das Panel platziert werden soll
      */
     private void addLabeledPanelToMainPanel(JPanel labeledPanel, int gridX, int gridY) {
-        // Konfigurierung der Platzierung und Ausdehnung des Panels innerhalb des Hauptpanels
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH; // Panel füllt verfügbaren Platz
         gbc.weightx = 1.0; // Horizontale Ausdehnung
@@ -389,7 +388,7 @@ public class GUI extends JFrame
     }
 
     /**
-     * Reaktion auf das Klicken eines Schiffstyp-Auswahlbuttons.
+     * Reaktion auf das Klicken eines Schiffstyp Auswahlbuttons.
      * Sendet den ausgewählten Schiffstyp an den Controller weiter.
      * 
      * @param shipType Der ausgewählte Schiffstyp
@@ -399,117 +398,122 @@ public class GUI extends JFrame
     }
 
 
-
-    
-    
-    
-    
-    
-    //Schiffe setzen
+ // Schiffe platzieren
     /**
+     * Reaktion auf das Klicken eines Buttons im Spielerfeld.
      * 
-     * @param row
-     * @param col
+     * @param row Die Zeilenposition des geklickten Buttons
+     * @param col Die Spaltenposition des geklickten Buttons
      */
     private void onPlayerButtonClicked(int row, int col) {
-    	if(datamodel.isPhaseOne()) {
-    		if(datamodel.getShipLength()== 0) {
-        		instructionshipLabel.setText("Wähle einen Schiffstyp aus!");
-        	}else if (datamodel.getPlayerCellStatus(row, col)== 's') {
-            	instructionshipLabel.setText("Auf diesem Feld steht bereits ein Schiff! Wähle ein anderes aus!");	
-        	}else if(datamodel.checkCollisionCurrentPosition(row, col)) {
-        		instructionshipLabel.setText("Die Schiffe dürfen sich nicht berühren! Wähle ein anderes Feld aus.");
-        	}
-        	else {
-        		controller.onPlayerButtonClicked(row, col);	
-        		
-        		if(datamodel.isPickStartPosition() && !datamodel.isPickEndPosition()) {
-        			refreshPlayerMap(); 
-        			playerButtons[datamodel.getStartRow()][datamodel.getStartCol()].setBackground(Color.CYAN); //Startposition markieren
-        			markPossibleEndPositions(datamodel.getStartRow(),datamodel.getStartCol());
-        			instructionshipLabel.setText("Wähle die Endposition aus!");
-        		}else if( !datamodel.isPickStartPosition() && datamodel.isPickEndPosition()&& playerButtons[row][col].getBackground() == Color.GREEN){
-        			 updateShipCountLabels();
-        			 refreshPlayerMap(); 
-        			 instructionshipLabel.setText("");
-        			 SelectionButtonsEnabled();
-        		}
-        	}
-        	if(datamodel.alleSpielerSchiffePlatziert()) {
-        		instructionLabel.setText("Schießen Sie auf das gegnerische Feld!");
-        	}
-    	}
-    }
-   
- 
-    /**
-     * 
-     * @param startRow
-     * @param startCol
-     */
-    //Markierung der möglichen Endpositionen
-    private void markPossibleEndPositions(int startRow, int startCol) {
-            int[][] possibleEndPositions = datamodel.calculatePossibleEndPositions(startRow, startCol);
+        if (datamodel.isPhaseOne()) { // Prüfe, ob sich das Spiel in Phase 1 befindet
+            if (datamodel.getShipLength() == 0) { // Wenn noch kein Schiffstyp ausgewählt wurde
+                instructionshipLabel.setText("Wähle einen Schiffstyp aus!");
+            } else if (datamodel.getPlayerCellStatus(row, col) == 's') { // Wenn auf dem Feld bereits ein Schiff steht
+                instructionshipLabel.setText("Auf diesem Feld steht bereits ein Schiff! Wähle ein anderes aus!");
+            } else if (datamodel.checkCollisionCurrentPosition(row, col)) { // Wenn Kollision mit anderen Schiffen auftritt
+                instructionshipLabel.setText("Die Schiffe dürfen sich nicht berühren! Wähle ein anderes Feld aus.");
+            } else {
+                controller.onPlayerButtonClicked(row, col); // Leitet die Klickposition an Controller (dort kommt es zur Manipulation des Datamodels)
 
-            for (int i = 0; i < 4; i++) {
-                int endRow = possibleEndPositions[i][0];
-                int endCol = possibleEndPositions[i][1];
-
-                if (datamodel.isValidPosition(endRow, endCol) && !datamodel.checkCollision(startRow, startCol, endRow, endCol)) {
-                    markPossiblePosition(endRow, endCol);
+                if (datamodel.isPickStartPosition() && !datamodel.isPickEndPosition()) { // Wenn Startposition ausgewählt
+                    refreshPlayerMap();
+                    playerButtons[datamodel.getStartRow()][datamodel.getStartCol()].setBackground(Color.CYAN); // Markiere Startposition
+                    markPossibleEndPositions(datamodel.getStartRow(), datamodel.getStartCol());
+                    instructionshipLabel.setText("Wähle die Endposition aus!");
+                } else if (!datamodel.isPickStartPosition() && datamodel.isPickEndPosition() && playerButtons[row][col].getBackground() == Color.GREEN) { //Wenn Endposition ausgewählt
+                    updateShipCountLabels();
+                    refreshPlayerMap();
+                    instructionshipLabel.setText("");
+                    SelectionButtonsEnabled(); 
                 }
             }
+            
+            if (datamodel.alleSpielerSchiffePlatziert()) { // Wenn alle Spieler-Schiffe platziert wurden
+                instructionLabel.setText("Schieße auf das gegnerische Feld!");
+            }
+        }
+    }
+
+    /**
+     * Markiert die möglichen Endpositionen für ein ausgewähltes Startfeld.
+     * Dabei holt es die berechneten Endpositionen vom Datamodel.
+     * 
+     * @param startRow Die Zeilenposition des Startfelds
+     * @param startCol Die Spaltenposition des Startfelds
+     */
+    private void markPossibleEndPositions(int startRow, int startCol) {
+        int[][] possibleEndPositions = datamodel.calculatePossibleEndPositions(startRow, startCol);
+
+        for (int i = 0; i < 4; i++) {
+            int endRow = possibleEndPositions[i][0];
+            int endCol = possibleEndPositions[i][1];
+
+            if (datamodel.isValidPosition(endRow, endCol) && !datamodel.checkCollision(startRow, startCol, endRow, endCol)) {
+                markPossiblePosition(endRow, endCol);
+            }
+        }
     }
 
     //Hilfsfunktion für das Markieren der Endpositionen
+    /**
+     * Färbt das gegebene Feld grün.
+     * @param row
+     * @param col
+     */
     private void markPossiblePosition(int row, int col) {
         playerButtons[row][col].setBackground(Color.GREEN);
     }
 
-
     /**
+     * Reaktion auf das Klicken auf ein Feld im gegnerischen Spielfeld während der Schießphase.
+     * Hier kann der Spieler nur das gegnerische Feld manipulieren. Hier ist nur der Spielmodus 
+     * Bot implementiert, der andere Modus fehlt. 
      * 
-     * @param row
-     * @param col
+     * @param row Die Zeilenposition des geklickten Felds
+     * @param col Die Spaltenposition des geklickten Felds
      */
-    //Aktionen in der Schießen Phase, Spieler darf nur Gegner Feld manipulieren
     private void onEnemyButtonClicked(int row, int col) {
-    	if(Controller.gamePhase==2) {
-        	if(datamodel.getEnemyCellStatus(row, col)=='w') {
-        		controller.onEnemyButtonClicked(row,col);
-        		refreshEnemyCell(row,col);
-        		//Delay einbauen
-        		 try {
-                     Thread.sleep(200);
-                 } catch (InterruptedException e) {
-                     e.printStackTrace();
-                 }
-        		refreshPlayerMap();
-        		instructionshipLabel.setText("Der Bot hat geschossen. Du bist dran!");
-        		if(datamodel.enemyWon) {
-            		instructionLabel.setText("Der Bot hat gewonnen!!");
-            		instructionshipLabel.setText("Das Spiel ist zu Ende!");
-            	}
-        	}else if(datamodel.getEnemyCellStatus(row, col)=='s') {
-        		controller.onEnemyButtonClicked(row,col);
-        		refreshEnemyCell(row,col);
-        		instructionshipLabel.setText("Sie dürfen erneut schießen!");
-        		if(datamodel.playerWon) {
-            		instructionLabel.setText("Du hast gewonnen!!");
-            		instructionshipLabel.setText("Das Spiel ist zu Ende!");
-            	}
-        	}else if(datamodel.getEnemyCellStatus(row, col)=='b' || datamodel.getEnemyCellStatus(row, col)=='x') {
-        		instructionshipLabel.setText("Dieses Feld haben Sie schon getroffen! Wähle ein anderes aus.");
-        	}
-    	}else if(Controller.gamePhase ==1) {
-    		instructionshipLabel.setText("Hier können Sie kein Schiff platzieren! Das ist das gegnerische Feld.");
-    	}
+        if (Controller.gamePhase == 2) {
+            if (datamodel.getEnemyCellStatus(row, col) == 'w') {
+                controller.onEnemyButtonClicked(row, col);
+                refreshEnemyCell(row, col);
+                
+                // Verzögerung einfügen (Delay)
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                
+                refreshPlayerMap();
+                instructionshipLabel.setText("Der Bot hat geschossen. Du bist dran!");
+                
+                if (datamodel.enemyWon) {
+                    instructionLabel.setText("Der Bot hat gewonnen!!");
+                    instructionshipLabel.setText("Das Spiel ist zu Ende!");
+                }
+            } else if (datamodel.getEnemyCellStatus(row, col) == 's') {
+                controller.onEnemyButtonClicked(row, col);
+                refreshEnemyCell(row, col);
+                instructionshipLabel.setText("Sie dürfen erneut schießen!");
+                
+                if (datamodel.playerWon) {
+                    instructionLabel.setText("Du hast gewonnen!!");
+                    instructionshipLabel.setText("Das Spiel ist zu Ende!");
+                }
+            } else if (datamodel.getEnemyCellStatus(row, col) == 'b' || datamodel.getEnemyCellStatus(row, col) == 'x') {
+                instructionshipLabel.setText("Dieses Feld haben Sie bereits getroffen! Wählen Sie ein anderes aus.");
+            }
+        } else if (Controller.gamePhase == 1) {
+            instructionshipLabel.setText("Hier können Sie kein Schiff platzieren! Dies ist das gegnerische Feld.");
+        }
     }
-
+    
     /**
      * Aktualisiert das angegriffene Feld im gegenerischen Feld.
-     * @param row
-     * @param col
+     * @param row Zeile im Feld
+     * @param col Spalte im Feld
      */
     private void refreshEnemyCell(int row,int col) {
     	char enemyStatus = datamodel.getEnemyCellStatus(row, col);
@@ -530,7 +534,7 @@ public class GUI extends JFrame
     }
 
     /**
-     * Aktualisiert den Status eines Buttons in der Spielfeldansicht.
+     * Aktualisiert den Status eines Buttons.
      *
      * @param button Der Button, dessen Status aktualisiert wird
      * @param status Der neue Status des Buttons 
