@@ -110,7 +110,7 @@ public class DataModel {
 
         //Kommentare
         if (frigate <= 0) {
-            System.out.print("Du hast keine Frigatten mehr");
+            System.out.print("Du hast keine Fregatten mehr"); 
         } else if (cruiser <= 0) {
             System.out.print("Du hast keine Kreuzer mehr");
         } else if (battleship <= 0) {
@@ -485,7 +485,7 @@ public class DataModel {
 
     // Getter fuer Schiffs Typ
     public String[] getShipTypes() {
-        return new String[]{"Submarine", "Frigate", "Cruiser", "Battleship"};
+        return new String[]{"U-Boot", "Fregatte", "Kreuzer", "Zerstörer"}; //Englisch: {"Submarine", "Frigate", "Cruiser","Battleship"(nicht übersetzt))}
     }
 
     // Getter fuer Anzahl der verbleibenden Schiffe

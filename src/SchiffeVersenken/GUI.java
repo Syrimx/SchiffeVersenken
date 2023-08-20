@@ -1,6 +1,7 @@
 package SchiffeVersenken;
 
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -16,46 +17,53 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+
+/**
+ * Die Klasse GUI repräsentiert die Benutzeroberfläche für das Schiffe versenken Spiel.
+ * Sie verwaltet die Anzeige des Menüs, der Spielfelder, die Ausgabe von Informationen von
+ * dem Datamodel und die Interaktionen des Benutzers.
+ */
 public class GUI extends JFrame
 {
-	private DataModel datamodel;
-	private Controller controller;
-    
+	private DataModel datamodel; 
+	private Controller controller; 
+	
     private JPanel instructionPanel;
     private JPanel enemyPanel;
     private JPanel playerPanel;
     private JLabel instructionLabel;
     private JLabel instructionshipLabel;
     private JLabel titelmenu;
-    private JLabel playerTitelLabel; //muss noch hinzugefügt werden
-    private JLabel enemyTitelLabel;
     private JPanel mainPanel;
     private JMenuBar menubar;
     private JMenu menuGame;
     private JMenuItem backtoMenu;
     private JButton[][] playerButtons;
     private JButton[][] enemyButtons;
-    private JButton[] shipTypeButtons; //Länge auswählen
+    private JButton[] shipTypeButtons; 
     private JPanel shipSelectionPanel;
     private JLabel[] shipCountLabels;
 
-    //Menu
     private JButton playButtonBot;
     private JButton playButtonFriend;
     private JButton exitButton;
     
+   
+    /**
+     * Konstruktor der GUI Klasse.
+     * Initialisiert das Datenmodell und den Controller für die Benutzeroberfläche.
+     */
     public GUI() {
-    	//Datenmodel in View eingebunden, sodass Daten einfacher aufrufbar sind
         this.datamodel = new DataModel();
         this.controller = new Controller(datamodel);
-        
     }
-    
-    //Menu
+ 
+	/**
+	 * Richtet das Menü ein und macht es sichtbar.
+	 */
     public void drawMenu() {
         this.setLayout(null);
         this.setTitle("Menue Schiffe versenken");
@@ -93,115 +101,158 @@ public class GUI extends JFrame
         setVisible(true);
     }
     
-    //Auswahl Spiel-Modus:
+    /**
+     * Setzt den Spielmodus auf Bot-Modus mithilfe der Controller-Funktion.
+     * Setzt die Benutzeroberfläche zurück und zeichnet die Spielfläche neu.
+     */
     private void openGameWindowBot(){
-    	controller.openGameWindowBot();
-    	resetGUI();
-		drawMap();
+        controller.openGameWindowBot();
+        resetGUI();
+        drawMap();
     }
-    
-    private void openGameWindowFriend() {
-    	controller.openGameWindowFriend();
-    	resetGUI();
-		drawMap();
-    }
-    
-    //GUI reseten
-    public void resetGUI(){
-    	setVisible(false);
-    	this.getContentPane().removeAll();
-    }
-    
-    
-    //Buttonfelder und x-und y-Achsen Beschriftung erstellen, 
-    	public void drawMap() {    
-    		this.setLayout(new BorderLayout());
-        	this.setTitle("Schiffe versenken");
-    		this.getContentPane().setBackground(Color.LIGHT_GRAY);
-    		this.setSize(900, 700); 
-    		this.setLocation(300, 100);
-    		
-    		mainPanel = new JPanel(new GridBagLayout());
-    		mainPanel.setBackground(Color.LIGHT_GRAY);
-    		add(mainPanel,BorderLayout.CENTER); 
-    		
-    		instructionPanel = new JPanel();
-    		instructionPanel.setPreferredSize(new Dimension(900,200));
-    		instructionPanel.setBackground(Color.LIGHT_GRAY);
-    		instructionPanel.setLayout(new GridLayout(2, 1));
-    		add(instructionPanel,BorderLayout.NORTH);
-    		
-    		playerPanel = createGridPanel(Color.WHITE);
-    		enemyPanel = createGridPanel(Color.BLACK);
 
-	    	// Erstelle panels für das player Feld, x-achse labels, and y-achse labels
-	    	JPanel playerXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
-	    	JPanel playerYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
-	    	JPanel labeledPlayerPanel = createLabeledPanel(playerPanel, playerXAxisLabelPanel, playerYAxisLabelPanel, Color.WHITE);
-	
-	    	// Erstelle panels für das enemy Feld, x-Achse labels, and y-Achse labels
-	    	JPanel enemyXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
-	    	JPanel enemyYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
-	    	JPanel labeledEnemyPanel = createLabeledPanel(enemyPanel, enemyXAxisLabelPanel, enemyYAxisLabelPanel, Color.BLACK);
-	    	
-	        addLabeledPanelToMainPanel(labeledEnemyPanel, 0, 0);
-	        addLabeledPanelToMainPanel(labeledPlayerPanel, 1, 0);
-	        
-	        // Erstelle player/enemy buttons und labels
-	        addButtonstoPanel();
-	
-		    addAxisLabels(playerYAxisLabelPanel, playerXAxisLabelPanel, Color.BLACK);
-		    addAxisLabels(enemyYAxisLabelPanel, enemyXAxisLabelPanel, Color.WHITE);
-	
-		    menubar = new JMenuBar();
-			menuGame = new JMenu("Menü");
-			backtoMenu = new JMenuItem("Spiel beenden");
-			menubar.add(menuGame);
-			menuGame.add(backtoMenu);
-			this.setJMenuBar(menubar);
-			backtoMenu.addActionListener(e ->{System.exit(0);});
-			 
-			instructionLabel = createInstructionLabel(SwingConstants.CENTER, SwingConstants.CENTER);
-			instructionLabel.setText("Platziere die Schiffe!");
-			instructionPanel.add(instructionLabel);
-			
-			instructionshipLabel =createInstructionLabel(SwingConstants.CENTER,SwingConstants.TOP);
-			instructionshipLabel.setLayout(new GridBagLayout());
-			instructionPanel.add(instructionshipLabel);
-		
-			//Auswahl Buttons für Schifftyp
-			setupShipSelectionButtons();
-	    	
-		
-	    	setVisible(true);
+    /**
+     * Setzt den Spielmodus auf Freund-Modus mithilfe der Controller-Funktion.
+     * Setzt die Benutzeroberfläche zurück und zeichnet die Spielfläche neu.
+     */
+    private void openGameWindowFriend() {
+        controller.openGameWindowFriend();
+        resetGUI();
+        drawMap();
+    }
+
+    /**
+     * Setzt die Benutzeroberfläche zurück, indem sie unsichtbar geschaltet wird
+     * und alle Komponenten aus dem Hauptinhalt entfernt werden.
+     */
+    public void resetGUI(){
+        setVisible(false);
+        this.getContentPane().removeAll();
     }
     
+    /**
+     * Zeichnet die Spielfläche. 
+     */
+    public void drawMap() {
+        this.setLayout(new BorderLayout());
+        this.setTitle("Schiffe versenken");
+        this.getContentPane().setBackground(Color.LIGHT_GRAY);
+        this.setSize(900, 700);
+        this.setLocation(300, 100);
+
+        // Hauptpanel für das Rasterlayout erstellen
+        mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(Color.LIGHT_GRAY);
+        add(mainPanel, BorderLayout.CENTER);
+
+        // Panel für Anweisungen erstellen und hinzufügen
+        instructionPanel = new JPanel();
+        instructionPanel.setPreferredSize(new Dimension(900, 200));
+        instructionPanel.setBackground(Color.LIGHT_GRAY);
+        instructionPanel.setLayout(new GridLayout(2, 1));
+        add(instructionPanel, BorderLayout.NORTH);
+
+        // Spieler- und Gegnerpanels erstellen
+        playerPanel = createGridPanel(Color.WHITE);
+        enemyPanel = createGridPanel(Color.BLACK);
+
+        // x- und y-Achsenbeschriftungspanels erstellen
+        JPanel playerXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
+        JPanel playerYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
+        JPanel labeledPlayerPanel = createLabeledPanel(playerPanel, playerXAxisLabelPanel, playerYAxisLabelPanel, Color.WHITE);
+
+        JPanel enemyXAxisLabelPanel = new JPanel(new GridLayout(1, 10));
+        JPanel enemyYAxisLabelPanel = new JPanel(new GridLayout(10, 1));
+        JPanel labeledEnemyPanel = createLabeledPanel(enemyPanel, enemyXAxisLabelPanel, enemyYAxisLabelPanel, Color.BLACK);
+
+        // Panels in das Hauptpanel einfügen
+        addLabeledPanelToMainPanel(labeledEnemyPanel, 0, 0);
+        addLabeledPanelToMainPanel(labeledPlayerPanel, 1, 0);
+
+        // Schaltflächen und Achsenbeschriftungen erstellen
+        addButtonstoPanel();
+        addAxisLabels(playerYAxisLabelPanel, playerXAxisLabelPanel, Color.BLACK);
+        addAxisLabels(enemyYAxisLabelPanel, enemyXAxisLabelPanel, Color.WHITE);
+
+        // Menüleiste erstellen und hinzufügen
+        menubar = new JMenuBar();
+        menuGame = new JMenu("Menü");
+        backtoMenu = new JMenuItem("Spiel beenden");
+        menubar.add(menuGame);
+        menuGame.add(backtoMenu);
+        this.setJMenuBar(menubar);
+        backtoMenu.addActionListener(e ->{System.exit(0);});
+
+        // Hauptanweisungslabel für das Spiel erstellen und hinzufügen
+        instructionLabel = createInstructionLabel(SwingConstants.CENTER, SwingConstants.CENTER);
+        instructionLabel.setText("Platziere die Schiffe!");
+        instructionPanel.add(instructionLabel);
+
+        // Unteresanweisungslabel für genauere Informationen erstellen und hinzufügen
+        instructionshipLabel =createInstructionLabel(SwingConstants.CENTER,SwingConstants.TOP);
+        instructionshipLabel.setLayout(new GridBagLayout());
+        instructionPanel.add(instructionshipLabel);
+
+        setupShipSelectionButtons();
+
+        setVisible(true);
+    }
     
     //Hilfsfunktionen für drawMap:
+    /**
+     * Erstellt ein JLabel für Anweisungen mit den angegebenen Ausrichtungen.
+     * 
+     * @param horizontalAlignment Die horizontale Ausrichtung des Labels
+     * @param verticalAlignment Die vertikale Ausrichtung des Labels
+     * @return Das erstellte JLabel für Anweisungen
+     */
     private JLabel createInstructionLabel(int horizontalAlignment, int verticalAlignment) {
-    	JLabel label = new JLabel();
-    	label.setHorizontalAlignment(horizontalAlignment);
-    	label.setVerticalAlignment(verticalAlignment);
-    	return label;
-    	}	
-    	
+        JLabel label = new JLabel(); 
+        label.setHorizontalAlignment(horizontalAlignment); // Horizontale Ausrichtung festlegen
+        label.setVerticalAlignment(verticalAlignment); // Vertikale Ausrichtung festlegen
+        return label; 
+    }
+	
+    /**
+     * Erstellt ein Panel mit einem Rasterlayout (10x10) und der angegebenen Hintergrundfarbe.
+     * 
+     * @param background Die Hintergrundfarbe des Panels
+     * @return Das erstellte Panel mit Rasterlayout
+     */
     private JPanel createGridPanel(Color background) {
-    	JPanel panel = new JPanel(new GridLayout(10, 10));
-    	panel.setBackground(background);
-    	return panel;
-    }	
-    	
-    private void addLabeledPanelToMainPanel(JPanel labeledPanel, int gridX, int gridY) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.gridx = gridX;
-        gbc.gridy = gridY;
-        gbc.insets = new Insets(30, 30, 30, 30);
-        mainPanel.add(labeledPanel, gbc);
+        JPanel panel = new JPanel(new GridLayout(10, 10));
+        panel.setBackground(background); 
+        return panel; 
     }
 
+    /**
+     * Fügt ein beschriftetes Panel an den angegebenen Gitterpositionen im Hauptpanel hinzu.
+     * 
+     * @param labeledPanel Das Panel mit Beschriftungen, das dem Hauptpanel hinzugefügt werden soll
+     * @param gridX Die horizontale Gitterposition, an der das Panel platziert werden soll
+     * @param gridY Die vertikale Gitterposition, an der das Panel platziert werden soll
+     */
+    private void addLabeledPanelToMainPanel(JPanel labeledPanel, int gridX, int gridY) {
+        // Konfigurierung der Platzierung und Ausdehnung des Panels innerhalb des Hauptpanels
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH; // Panel füllt verfügbaren Platz
+        gbc.weightx = 1.0; // Horizontale Ausdehnung
+        gbc.weighty = 1.0; // Vertikale Ausdehnung
+        gbc.gridx = gridX; // Horizontale Gitterposition
+        gbc.gridy = gridY; // Vertikale Gitterposition
+        gbc.insets = new Insets(30, 30, 30, 30); // Randabstand
+        mainPanel.add(labeledPanel, gbc); 
+    }
+
+    /**
+     * Erstellt ein beschriftetes Panel mit Achsenbeschriftungen um das gegebene Panel.
+     * 
+     * @param panel Das zu umgebende Panel
+     * @param xAxisLabelPanel Das Panel für x-Achsenbeschriftungen
+     * @param yAxisLabelPanel Das Panel für y-Achsenbeschriftungen
+     * @param background Die Hintergrundfarbe des Panels
+     * @return labeledPanel Das erstellte beschriftete Panel
+     */
     private JPanel createLabeledPanel(JPanel panel, JPanel xAxisLabelPanel, JPanel yAxisLabelPanel, Color background) {
         JPanel labeledPanel = new JPanel(new BorderLayout());
         labeledPanel.add(xAxisLabelPanel, BorderLayout.NORTH); 
@@ -213,13 +264,18 @@ public class GUI extends JFrame
         return labeledPanel;
     }
     
+    /**
+     * Fügt Schaltflächen für Spieler- und Gegnerfelder sowie die entsprechenden Aktionen hinzu.
+     * 
+     */
     private void addButtonstoPanel() {
-    	// Erstelle player/enemy buttons und labels
+        // Schaltflächen für Spieler- und Gegnerfelder erstellen
         playerButtons = new JButton[10][10];
         enemyButtons = new JButton[10][10];
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
+                // Spieler-Schaltfläche erstellen und konfigurieren
                 playerButtons[row][col] = new JButton();
                 playerButtons[row][col].setPreferredSize(new Dimension(40, 40)); // Größe festlegen
                 playerButtons[row][col].setBackground(Color.BLUE);
@@ -227,23 +283,31 @@ public class GUI extends JFrame
                 final int finalRow = row; // temporäre final Variablen
                 final int finalCol = col;
 
-                // Aktion playerButton
+                // Aktion für Spieler Schaltfläche hinzufügen
                 playerButtons[row][col].addActionListener(e -> onPlayerButtonClicked(finalRow, finalCol));
 
                 playerPanel.add(playerButtons[row][col]);
                 
+                // Gegner-Schaltfläche erstellen und konfigurieren
                 enemyButtons[row][col] = new JButton();
                 enemyButtons[row][col].setPreferredSize(new Dimension(40, 40)); // Größe festlegen
                 enemyButtons[row][col].setBackground(Color.BLUE);
 
-                // Aktion enemyButton
+                // Aktion für Gegner Schaltfläche hinzufügen
                 enemyButtons[row][col].addActionListener(e -> onEnemyButtonClicked(finalRow, finalCol));
 
                 enemyPanel.add(enemyButtons[row][col]);
             }
         }
     }
-    
+
+    /**
+     * Fügt Achsenbeschriftungen zu den gegebenen Panels hinzu.
+     * 
+     * @param yAxisLabelPanel Das Panel für die y-Achsenbeschriftungen
+     * @param xAxisLabelPanel Das Panel für die x-Achsenbeschriftungen
+     * @param foreground Die Farbe der Beschriftungen
+     */
     private void addAxisLabels(JPanel yAxisLabelPanel, JPanel xAxisLabelPanel, Color foreground) {
         for (int i = 0; i < 10; i++) {
             char yLabel = (char) ('A' + i);
@@ -260,41 +324,48 @@ public class GUI extends JFrame
         }
     }
 
- 
+    /**
+     * Einrichtung der Schaltflächen für die Auswahl der Schiffstypen sowie der dazugehörigen Anzeigelabel,
+     * die die aktuelle Anzahl der verbleibenden Schiffe anzeigen.
+     */
     private void setupShipSelectionButtons() {
-        String[] shipTypes = datamodel.getShipTypes();
+        // Schiffstypen (hier auf Deutsch) und Schiffszählungen aus dem Datamodel 
+        String[] shipTypes = datamodel.getShipTypes(); 
         int[] shipCounts = datamodel.getShipCounts();
         
-        instructionshipLabel.setText("Wähle ein Schiffstyp aus!");
+        // Anweisung des Benutzers zur Auswahl eines Schiffstyps 
+        instructionshipLabel.setText("Wähle einen Schiffstyp aus!");
         
+        // Ein Panel für die Schaltflächen der Schiffstypen erstellen
         shipSelectionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         instructionshipLabel.add(shipSelectionPanel);
 
+        // Arrays für Schaltflächen und Anzeigelabel der Schiffstypen initialisieren
         shipTypeButtons = new JButton[shipTypes.length];
         shipCountLabels = new JLabel[shipTypes.length]; 
 
+        // Schleife durch alle Schiffstypen
         for (int i = 0; i < shipTypes.length; i++) {
             final int shipIndex = i;
+            
+            // Schaltfläche für den aktuellen Schiffstyp erstellen und konfigurieren
             shipTypeButtons[i] = new JButton(shipTypes[i]);
             shipTypeButtons[i].setPreferredSize(new Dimension(100, 40));
             shipSelectionPanel.add(shipTypeButtons[i]);
+            
+            // Aktionlistener für die Schaltfläche hinzufügen
             shipTypeButtons[i].addActionListener(e -> onShipTypeButtonClicked(shipTypes[shipIndex]));
             
+            // Anzeigelabel für die Anzahl von Schiffen dieses Typs erstellen und hinzufügen
             shipCountLabels[i] = new JLabel("Anzahl: " + shipCounts[i]); 
             shipSelectionPanel.add(shipCountLabels[i]);
         }
     }
-   
-    private void SelectionButtonsEnabled() {
-    	int[] shipCounts = datamodel.getShipCounts();
-    	for(int i = 0; i < 4; i++) {
-    		if(shipCounts[i]== 0) {
-    			shipTypeButtons[i].setEnabled(false);
-    		}
-    	}
-    }
-    
-    //Aktualisiere die Anzeige Anzahl Schiffe
+
+    /**
+     * Aktualisiert die Anzeigelabel für die Anzahl der verbleibenden Schiffe.
+     * 
+     */
     private void updateShipCountLabels() {
         String[] shipTypes = datamodel.getShipTypes();
         int[] shipCounts = datamodel.getShipCounts();
@@ -303,12 +374,43 @@ public class GUI extends JFrame
         }
     }
 
-    //Aktion: Auswahl Schiff, speicher die Länge
-    private void onShipTypeButtonClicked(String shipType) {
-    	controller.onShipTypeButtonClicked(shipType);
+    /**
+     * Deaktiviert die Auswahlbuttons, falls für einen Schiffstyp keine Schiffe
+     * mehr verfügbar sind.
+     * 
+     */
+    private void SelectionButtonsEnabled() {
+        int[] shipCounts = datamodel.getShipCounts();
+        for (int i = 0; i < 4; i++) {
+            if (shipCounts[i] == 0) {
+                shipTypeButtons[i].setEnabled(false);
+            }
+        }
     }
+
+    /**
+     * Reaktion auf das Klicken eines Schiffstyp-Auswahlbuttons.
+     * Sendet den ausgewählten Schiffstyp an den Controller weiter.
+     * 
+     * @param shipType Der ausgewählte Schiffstyp
+     */
+    private void onShipTypeButtonClicked(String shipType) {
+        controller.onShipTypeButtonClicked(shipType);
+    }
+
+
+
+    
+    
+    
+    
     
     //Schiffe setzen
+    /**
+     * 
+     * @param row
+     * @param col
+     */
     private void onPlayerButtonClicked(int row, int col) {
     	if(datamodel.isPhaseOne()) {
     		if(datamodel.getShipLength()== 0) {
@@ -340,6 +442,11 @@ public class GUI extends JFrame
     }
    
  
+    /**
+     * 
+     * @param startRow
+     * @param startCol
+     */
     //Markierung der möglichen Endpositionen
     private void markPossibleEndPositions(int startRow, int startCol) {
             int[][] possibleEndPositions = datamodel.calculatePossibleEndPositions(startRow, startCol);
@@ -360,6 +467,11 @@ public class GUI extends JFrame
     }
 
 
+    /**
+     * 
+     * @param row
+     * @param col
+     */
     //Aktionen in der Schießen Phase, Spieler darf nur Gegner Feld manipulieren
     private void onEnemyButtonClicked(int row, int col) {
     	if(Controller.gamePhase==2) {
@@ -394,12 +506,19 @@ public class GUI extends JFrame
     	}
     }
 
-    //Aktualisierung der angegriffenen Zelle
+    /**
+     * Aktualisiert das angegriffene Feld im gegenerischen Feld.
+     * @param row
+     * @param col
+     */
     private void refreshEnemyCell(int row,int col) {
     	char enemyStatus = datamodel.getEnemyCellStatus(row, col);
     	setButtonStatus(enemyButtons[row][col],enemyStatus);
     }
     
+    /**
+     * Aktualisiert die Anzeige des Spielerfelds.
+     */
     private void refreshPlayerMap() 
     {
     	for(int row = 0; row < 10; row++) {
@@ -410,27 +529,32 @@ public class GUI extends JFrame
 		}
     }
 
-    //Hilfsfunktion für refreshMap:
-    //Aktuallisierung des Status der enemy Map
-    //Aktuallisierung des Status der player Map
-    private void setButtonStatus(JButton Button, char status) {
+    /**
+     * Aktualisiert den Status eines Buttons in der Spielfeldansicht.
+     *
+     * @param button Der Button, dessen Status aktualisiert wird
+     * @param status Der neue Status des Buttons 
+     * ('w' für Wasser, 's' für Schiff, 'x' für getroffenes Schiff, 'b' für bekanntes Wasserfeld)
+     */
+    private void setButtonStatus(JButton button, char status) {
         switch (status) {
-            case 'w': // Wasser
-                        Button.setBackground(Color.BLUE);
+            case 'w': 
+                button.setBackground(Color.BLUE);
                 break;
-            case 's': // Schiff
-                        Button.setBackground(Color.YELLOW);
+            case 's': 
+                button.setBackground(Color.YELLOW);
                 break;
-            case 'x': // Schiff getroffen
-                        Button.setBackground(Color.RED);
+            case 'x': 
+                button.setBackground(Color.RED);
                 break;
-            case 'b': // Wasser getroffen, jetzt bekannt
-		                Button.setBackground(Color.LIGHT_GRAY);
+            case 'b': 
+                button.setBackground(Color.LIGHT_GRAY);
                 break;
             default: // unbekannter Status
-                        Button.setBackground(Color.WHITE);
+                button.setBackground(Color.WHITE);
                 break;
         }
     }
+
 
 }

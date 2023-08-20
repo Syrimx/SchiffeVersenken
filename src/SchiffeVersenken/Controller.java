@@ -23,22 +23,22 @@ public class Controller {
 
 
     //Auswahl Schiffstyp
-    public void onShipTypeButtonClicked(String shipType) {
+    public void onShipTypeButtonClicked(String shipType) { 
         int shipLength;
         switch(shipType) {
-            case "Submarine":
+            case "U-Boot":
                 shipLength = 1;
                 datamodel.setCurrentShipType(0);
                 break;
-            case "Frigate":
+            case "Fregatte":
                 shipLength = 2;
                 datamodel.setCurrentShipType(1);
                 break;
-            case "Cruiser":
+            case "Kreuzer":
                 shipLength = 3;
                 datamodel.setCurrentShipType(2);
                 break;
-            case "Battleship":
+            case "Zerstörer":
                 shipLength = 4;
                 datamodel.setCurrentShipType(3);
                 break;
